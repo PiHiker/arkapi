@@ -6,7 +6,7 @@
 [![Bitcoin Signet](https://img.shields.io/badge/network-Bitcoin%20Signet-f59e0b?style=flat-square)](https://en.bitcoin.it/wiki/Signet)
 [![Ark Protocol](https://img.shields.io/badge/funding-Ark%20Protocol-f97316?style=flat-square)](https://ark-protocol.org/)
 
-**Pay-per-call APIs powered by Bitcoin. No accounts. No API keys. Just sats.**
+**Pay-per-call APIs powered by Bitcoin. No accounts. No long-lived API keys. Just sats.**
 
 [Live Site](https://arkapi.dev) ·
 [API Docs](https://arkapi.dev/docs/) ·
@@ -23,7 +23,7 @@ It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/b
 - **No API keys to rotate** — sessions are short-lived bearer tokens funded by Bitcoin
 - **Agent-friendly** — machine-readable OpenAPI spec, `llms.txt`, and `.well-known/arkapi.json` for autonomous discovery
 - **Pay only for what you use** — per-call pricing from 1 to 100 sats, no subscriptions
-- **Privacy by default** — no accounts, no tracking, no data retention beyond billing logs
+- **Minimal data footprint** — no accounts, no email — only session state and billing records are retained
 - **Self-hostable** — MIT-licensed Go binary with Docker Compose for all dependencies
 
 ---
@@ -365,7 +365,6 @@ Apache (reverse proxy on host)
           +----> External upstreams
                  - Cloudflare AI
                  - Open-Meteo
-                 - DB-IP Lite (self-hosted MMDB)
                  - NVD API
                  - Polymarket Gamma API
                  - Public DNS / WHOIS / RDAP services
@@ -381,10 +380,10 @@ Apache (reverse proxy on host)
 - **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`.
 - **screenshotter container** — Playwright-based screenshot service on `127.0.0.1:9010`.
 - **MySQL** — Host database on `127.0.0.1:3306` for sessions, balances, and call logs. The `arkapi` MySQL user is scoped to the `arkapi` database.
+- **DB-IP Lite MMDB files** — Self-hosted IP geolocation databases read from disk by `/api/ip-lookup`. Not an external service.
 - **External upstreams** — ArkAPI also calls external services where local infrastructure is not the source of truth:
   - **Cloudflare AI** for `/api/ai-chat` and `/api/ai-translate`
   - **Open-Meteo** for `/api/weather`
-  - **DB-IP Lite** (self-hosted MMDB) for `/api/ip-lookup`
   - **NVD API** for `/api/cve-search` and `/api/cve-lookup`
   - **Polymarket Gamma API** for `/api/prediction-market-search`
   - **Public WHOIS, RDAP, and DNS infrastructure** for domain and registration intelligence
