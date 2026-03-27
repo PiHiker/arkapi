@@ -228,11 +228,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/translate
 ```
 
-Public guide:
-
-```text
-https://arkapi.dev/translate/
-```
+Public guide: [Translate](https://arkapi.dev/translate/)
 
 **Anonymous AI Chat:**
 ```bash
@@ -242,11 +238,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/ai-chat
 ```
 
-Current public guide:
-
-```text
-https://arkapi.dev/ai-chat/
-```
+Public guide: [Anonymous AI Chat](https://arkapi.dev/ai-chat/)
 
 **AI Translate:**
 ```bash
@@ -256,11 +248,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/ai-translate
 ```
 
-Public guide:
-
-```text
-https://arkapi.dev/ai-translate/
-```
+Public guide: [AI Translate](https://arkapi.dev/ai-translate/)
 
 **BTC Price:**
 ```bash
@@ -274,11 +262,7 @@ https://arkapi.dev/ai-translate/
      "https://arkapi.dev/api/btc-price?currencies=USD,EUR,CAD"
 ```
 
-Public guide:
-
-```text
-https://arkapi.dev/btc-price/
-```
+Public guide: [BTC Price](https://arkapi.dev/btc-price/)
 
 **Prediction Market Search:**
 ```bash
@@ -288,11 +272,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/prediction-market-search
 ```
 
-Public guide:
-
-```text
-https://arkapi.dev/prediction-market-search/
-```
+Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-search/)
 
 **Domain Intel:**
 ```bash
@@ -303,11 +283,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 Returns top-level registration, provider detection, parsed `security_txt` disclosure metadata, parsed `robots_txt` crawl metadata, improved `tech_fingerprint` hints, `http_behavior` redirect/final-page metadata, current light subdomain hints, `ct_subdomains` from certificate history, network summary, findings, recommendations, cache metadata, and an optional AI summary alongside the raw DNS / WHOIS / TLS / header / email-auth blocks.
 
-Public guide:
-
-```text
-https://arkapi.dev/domain-intel/
-```
+Public guide: [Domain Intel](https://arkapi.dev/domain-intel/)
 
 **URL to Markdown:**
 ```bash
@@ -317,11 +293,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/url-to-markdown
 ```
 
-Current public guide:
-
-```text
-https://arkapi.dev/url-to-markdown/
-```
+Public guide: [URL to Markdown](https://arkapi.dev/url-to-markdown/)
 
 **AXFR Check:**
 ```bash
@@ -331,11 +303,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/axfr-check
 ```
 
-Public guide:
-
-```text
-https://arkapi.dev/axfr-check/
-```
+Public guide: [AXFR Check](https://arkapi.dev/axfr-check/)
 
 **CVE Lookup:**
 ```bash
@@ -345,11 +313,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/cve-lookup
 ```
 
-Public guide:
-
-```text
-https://arkapi.dev/cve-lookup/
-```
+Public guide: [CVE Lookup](https://arkapi.dev/cve-lookup/)
 
 ### Response Format
 
