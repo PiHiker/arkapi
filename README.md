@@ -13,6 +13,8 @@
 [OpenAPI Spec](https://arkapi.dev/openapi.json) ·
 [Fund a Session](https://arkapi.dev/fund/)
 
+[![ArkAPI homepage preview](./assets/arkapi-homepage.png)](https://arkapi.dev)
+
 ArkAPI is a Bitcoin-native API gateway that meters access to security, OSINT, AI, and utility endpoints via micropayments. Fund an anonymous session with sats, then call any endpoint until your balance runs out.
 
 It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/bark) wallet and the [Ark protocol](https://ark-protocol.org/) for session funding on the Signet test network. Each session can currently be funded with either a Signet Lightning invoice or a Signet Ark address.
