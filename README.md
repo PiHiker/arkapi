@@ -2,7 +2,7 @@
 
 [![Live Site](https://img.shields.io/badge/live-arkapi.dev-0f766e?style=flat-square)](https://arkapi.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2563eb?style=flat-square)](./LICENSE)
-[![Go 1.23+](https://img.shields.io/badge/go-1.23+-0ea5e9?style=flat-square)](https://go.dev/)
+[![Go 1.25+](https://img.shields.io/badge/go-1.25+-0ea5e9?style=flat-square)](https://go.dev/)
 [![Bitcoin Signet](https://img.shields.io/badge/network-Bitcoin%20Signet-f59e0b?style=flat-square)](https://en.bitcoin.it/wiki/Signet)
 [![Ark Protocol](https://img.shields.io/badge/funding-Ark%20Protocol-f97316?style=flat-square)](https://ark-protocol.org/)
 
@@ -22,7 +22,7 @@ It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/b
 
 ## Prerequisites
 
-- Go 1.23+
+- Go 1.25+
 - Docker and Docker Compose
 - MySQL or MariaDB
 - Apache or another reverse proxy if you want a production-style front end
@@ -674,7 +674,7 @@ Consumer                    ArkAPI                      barkd
 
 ## Technology
 
-- **Go 1.23** — API server
+- **Go 1.25** — API server
 - **MySQL or MariaDB** — Session and billing storage
 - **Docker** — Container runtime
 - **Apache or another reverse proxy** — optional front-end web tier
