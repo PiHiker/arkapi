@@ -1,10 +1,10 @@
 # ArkAPI
 
-**Pay-per-call API proxy powered by Bitcoin's Ark protocol.**
+**Bitcoin-funded pay-per-call APIs for agents and developers.**
 
 https://arkapi.dev
 
-No accounts. No API keys. Pay sats, get data. Built for developers and AI agents.
+No accounts. No long-lived API keys. Fund a session, then spend down a balance across security, AI, Bitcoin, and utility endpoints.
 
 ArkAPI proxies security, OSINT, visual, AI, Bitcoin, and utility APIs and meters access via Bitcoin micropayments using Second's Bark wallet and the Ark protocol on Signet testnet.
 
@@ -340,8 +340,8 @@ Apache (reverse proxy on host)
 
 ### Components
 
-- **Apache** — Reverse proxy on the host. Routes `/health`, `/v1/*`, `/api/*` to the Go backend. Serves the static landing page at `/`. Config at `/etc/apache2/sites-available/arkapi.dev-le-ssl.conf`.
-- **Cloudflare** — DNS and SSL termination in front of Apache.
+- **Apache** — Example reverse proxy on the host. Routes `/health`, `/v1/*`, `/api/*` to the Go backend and can serve the static site at `/`.
+- **Cloudflare** — Optional DNS and TLS termination layer in front of the web tier.
 - **arkapi container** — Go binary, `network_mode: host`. Runs the API server on `127.0.0.1:8080`. Handles session management, auth, rate limiting, metering, and proxies requests to external utility APIs. Installs `dig`, `whois`, `curl` for command-based handlers.
 - **bark container** — Second's barkd daemon (Ark protocol wallet) on Signet testnet. Exposes REST API on `127.0.0.1:3000` (localhost only). Handles Lightning invoice generation and payment detection. Wallet data persisted in `bark-data` Docker volume.
 - **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`. Current starter language set: `en`, `es`, `fr`, `de`, `it`, `pt`.
@@ -362,7 +362,7 @@ Apache (reverse proxy on host)
 - bark exposes port 3000 to `127.0.0.1` only — not accessible from the internet.
 - LibreTranslate exposes port 5001 to `127.0.0.1` only — not accessible from the internet.
 - Screenshotter exposes port 9010 to `127.0.0.1` only — not accessible from the internet.
-- No new public-facing ports. Only Apache's existing ports (80, 443) face the internet.
+- In the reference deployment, only the web tier is internet-facing on ports `80` and `443`. Bark, translation, screenshot, and database services stay bound to localhost.
 - If you want optional traffic reporting, set `ARKAPI_ADMIN_TRAFFIC_LOG_PATH` to a readable web access log path.
 
 ---
@@ -503,7 +503,7 @@ created_at         TIMESTAMP
 
 ## Security
 
-- **No public ports added** — only Apache (80/443) faces the internet
+- **Local-only service bindings** — the reference deployment exposes only the web tier on `80/443`; backend services stay on localhost
 - **SSRF protection** — `/api/headers` rejects loopback, private, link-local, and cloud metadata IPs
 - **Rate limiting** — per-IP/path limits on session creation and API calls
 - **Session expiry** — enforced in auth middleware, refreshed on each use
@@ -642,13 +642,13 @@ Consumer                    ArkAPI                      barkd
 
 ## Technology
 
-- **Go 1.22** — API server
-- **MySQL 8** — Session and billing storage
-- **Docker** — Container runtime (Docker Engine 29.3, Compose v5.1)
-- **Apache 2.4** — Reverse proxy (on host)
-- **Cloudflare** — SSL termination and CDN
+- **Go 1.23** — API server
+- **MySQL or MariaDB** — Session and billing storage
+- **Docker** — Container runtime
+- **Apache or another reverse proxy** — optional front-end web tier
+- **Cloudflare** — optional TLS/CDN layer
 - **Second Bark v0.1.0-beta.8** — Ark protocol wallet daemon
 - **Bitcoin Signet** — Testnet (ark.signet.2nd.dev)
 - **Open-Meteo** — Free weather API (no key required)
 - **ip-api.com** — Free IP geolocation API
-- **Oracle Cloud (ARM64)** — Ubuntu 22.04 on aarch64
+- **ARM64-friendly deployment** — the sample Bark image currently targets ARM64
