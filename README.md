@@ -6,17 +6,25 @@
 [![Bitcoin Signet](https://img.shields.io/badge/network-Bitcoin%20Signet-f59e0b?style=flat-square)](https://en.bitcoin.it/wiki/Signet)
 [![Ark Protocol](https://img.shields.io/badge/funding-Ark%20Protocol-f97316?style=flat-square)](https://ark-protocol.org/)
 
-**Bitcoin-funded pay-per-call APIs for agents and developers.**
+**Pay-per-call APIs powered by Bitcoin. No accounts. No API keys. Just sats.**
 
-[arkapi.dev](https://arkapi.dev)
+[Live Site](https://arkapi.dev) ·
+[API Docs](https://arkapi.dev/docs/) ·
+[OpenAPI Spec](https://arkapi.dev/openapi.json) ·
+[Fund a Session](https://arkapi.dev/fund/)
 
-⚡ Anonymous sessions • 🤖 Agent-friendly discovery • ₿ Bitcoin-funded API access
-
-No accounts. No long-lived API keys. Fund a session, then spend down a balance across security, AI, Bitcoin, and utility endpoints.
-
-ArkAPI proxies security, OSINT, visual, AI, Bitcoin, and utility APIs and meters access via Bitcoin micropayments.
+ArkAPI is a Bitcoin-native API gateway that meters access to security, OSINT, AI, and utility endpoints via micropayments. Fund an anonymous session with sats, then call any endpoint until your balance runs out.
 
 It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/bark) wallet and the [Ark protocol](https://ark-protocol.org/) for session funding on the Signet test network. Each session can currently be funded with either a Signet Lightning invoice or a Signet Ark address.
+
+### Why ArkAPI?
+
+- **No sign-up** — create a session with a single POST request, no email or OAuth required
+- **No API keys to rotate** — sessions are short-lived bearer tokens funded by Bitcoin
+- **Agent-friendly** — machine-readable OpenAPI spec, `llms.txt`, and `.well-known/arkapi.json` for autonomous discovery
+- **Pay only for what you use** — per-call pricing from 1 to 100 sats, no subscriptions
+- **Privacy by default** — no accounts, no tracking, no data retention beyond billing logs
+- **Self-hostable** — MIT-licensed Go binary with Docker Compose for all dependencies
 
 ---
 
@@ -47,44 +55,21 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ---
 
-## Documentation & Discovery
+## Discovery & Indexing
 
-ArkAPI publishes a machine-readable OpenAPI specification for agent and tooling discovery:
+ArkAPI publishes machine-readable metadata so AI agents and tooling can discover endpoints without custom glue code:
 
-- [OpenAPI spec](https://arkapi.dev/openapi.json)
+| URL | Purpose |
+|-----|---------|
+| [`openapi.json`](https://arkapi.dev/openapi.json) | Full OpenAPI 3 spec with `x-cost-sats` pricing |
+| [`.well-known/arkapi.json`](https://arkapi.dev/.well-known/arkapi.json) | Lightweight service manifest |
+| [`llms.txt`](https://arkapi.dev/llms.txt) | LLM-friendly plain-text summary |
+| [`llms-full.txt`](https://arkapi.dev/llms-full.txt) | Extended LLM reference |
+| [`sitemap.xml`](https://arkapi.dev/sitemap.xml) | XML sitemap for crawlers |
 
-Additional live discovery URLs:
+The OpenAPI spec includes bearer-token auth (`Authorization: Bearer ak_xxx`), request/response schemas, and explicit per-endpoint pricing in satoshis.
 
-- [Well-known manifest](https://arkapi.dev/.well-known/arkapi.json)
-- [llms.txt](https://arkapi.dev/llms.txt)
-- [llms-full.txt](https://arkapi.dev/llms-full.txt)
-
-This spec is intended for:
-
-- AI agents that need to discover ArkAPI tools without custom glue code
-- MCP-style integrations that can ingest OpenAPI metadata
-- client generation, validation, and agent-side cost awareness
-
-The spec includes:
-
-- public and authenticated endpoints
-- bearer-token auth (`Authorization: Bearer ak_xxx`)
-- request and response schemas
-- explicit per-endpoint pricing in satoshis via `x-cost-sats` and operation descriptions
-
----
-
-## Indexing & Discovery
-
-The live deployment publishes:
-
-- `openapi.json`
-- `.well-known/arkapi.json`
-- `llms.txt`
-- `llms-full.txt`
-- `sitemap.xml`
-
-If you want IndexNow for your own deployment, generate your own verification key and publish your own key file instead of reusing the live production one.
+If you deploy your own instance, generate your own IndexNow verification key rather than reusing the production one.
 
 ---
 
@@ -159,18 +144,23 @@ This deployment is live on the **Signet test network only**. The same session ob
 
 ### Request/Response Examples
 
-**Domain Intel:**
+<details>
+<summary>Domain Intel (25 sats)</summary>
+
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"example.com","ai_summary":true}' \
      https://arkapi.dev/api/domain-intel
 ```
-Returns top-level registration, provider detection, parsed `security_txt` disclosure metadata, parsed `robots_txt` crawl metadata, improved `tech_fingerprint` hints, `http_behavior` redirect/final-page metadata, current light subdomain hints, `ct_subdomains` from certificate history, network summary, findings, recommendations, cache metadata, and an optional AI summary alongside the raw DNS / WHOIS / TLS / header / email-auth blocks.
+Returns DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, tech fingerprints, HTTP behavior, subdomain hints, CT subdomains, network summary, findings, recommendations, and an optional AI summary.
 
 Public guide: [Domain Intel](https://arkapi.dev/domain-intel/)
+</details>
 
-**Anonymous AI Chat:**
+<details>
+<summary>Anonymous AI Chat (100 sats)</summary>
+
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -179,8 +169,11 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 Public guide: [Anonymous AI Chat](https://arkapi.dev/ai-chat/)
+</details>
 
-**AI Translate:**
+<details>
+<summary>AI Translate (25 sats)</summary>
+
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -189,8 +182,11 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 Public guide: [AI Translate](https://arkapi.dev/ai-translate/)
+</details>
 
-**BTC Price:**
+<details>
+<summary>BTC Price (1 sat)</summary>
+
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/btc-price
@@ -203,8 +199,11 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 Public guide: [BTC Price](https://arkapi.dev/btc-price/)
+</details>
 
-**Prediction Market Search:**
+<details>
+<summary>Prediction Market Search (4 sats)</summary>
+
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -213,8 +212,12 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-search/)
+</details>
 
-**Translate:**
+<details>
+<summary>More endpoint examples (Translate, URL to Markdown, AXFR, CVE, DNS, WHOIS, SSL, Headers, Weather, IP)</summary>
+
+**Translate (3 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -222,9 +225,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/translate
 ```
 
-Public guide: [Translate](https://arkapi.dev/translate/)
-
-**URL to Markdown:**
+**URL to Markdown (5 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -232,9 +233,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/url-to-markdown
 ```
 
-Public guide: [URL to Markdown](https://arkapi.dev/url-to-markdown/)
-
-**AXFR Check:**
+**AXFR Check (12 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -242,9 +241,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/axfr-check
 ```
 
-Public guide: [AXFR Check](https://arkapi.dev/axfr-check/)
-
-**CVE Lookup:**
+**CVE Lookup (3 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -252,9 +249,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/cve-lookup
 ```
 
-Public guide: [CVE Lookup](https://arkapi.dev/cve-lookup/)
-
-**DNS Lookup:**
+**DNS Lookup (3 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -262,7 +257,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/dns-lookup
 ```
 
-**WHOIS:**
+**WHOIS (5 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -270,7 +265,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/whois
 ```
 
-**SSL Check:**
+**SSL Check (5 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -278,7 +273,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/ssl-check
 ```
 
-**HTTP Headers Audit:**
+**HTTP Headers Audit (3 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
@@ -286,26 +281,22 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/headers
 ```
 
-**Weather (by city or lat/lon):**
+**Weather (3 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"city":"New York"}' \
      https://arkapi.dev/api/weather
-
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"lat":40.7128,"lon":-74.0060}' \
-     https://arkapi.dev/api/weather
 ```
 
-**IP Lookup:**
+**IP Lookup (3 sats):**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"ip":"8.8.8.8"}' \
      https://arkapi.dev/api/ip-lookup
 ```
+</details>
 
 ### Response Format
 
@@ -374,7 +365,7 @@ Apache (reverse proxy on host)
           +----> External upstreams
                  - Cloudflare AI
                  - Open-Meteo
-                 - ip-api.com
+                 - DB-IP Lite (self-hosted MMDB)
                  - NVD API
                  - Polymarket Gamma API
                  - Public DNS / WHOIS / RDAP services
@@ -393,7 +384,7 @@ Apache (reverse proxy on host)
 - **External upstreams** — ArkAPI also calls external services where local infrastructure is not the source of truth:
   - **Cloudflare AI** for `/api/ai-chat` and `/api/ai-translate`
   - **Open-Meteo** for `/api/weather`
-  - **ip-api.com** for `/api/ip-lookup`
+  - **DB-IP Lite** (self-hosted MMDB) for `/api/ip-lookup`
   - **NVD API** for `/api/cve-search` and `/api/cve-lookup`
   - **Polymarket Gamma API** for `/api/prediction-market-search`
   - **Public WHOIS, RDAP, and DNS infrastructure** for domain and registration intelligence
@@ -423,21 +414,20 @@ Apache (reverse proxy on host)
 
 ### File Locations
 
+The paths below use the reference deployment layout. Adjust to match your setup.
+
 | Path | Purpose |
 |------|---------|
-| `/opt/arkapi/` | Example deployment path for project source and compose files |
-| `/opt/arkapi/.env` | Environment variables (chmod 600) |
-| `/opt/arkapi/docker-compose.yml` | Main services (arkapi + bark + translate + screenshotter) |
-| `/opt/arkapi/translate/Dockerfile` | Dedicated self-hosted LibreTranslate container |
-| `/opt/arkapi/docker-compose.consumer.yml` | Test consumer wallet |
-| `/var/www/arkapi/` | Example static site path when served by Apache |
-| `/etc/apache2/sites-available/arkapi.dev-le-ssl.conf` | Example Apache vhost config path |
+| `./` | Project root — source code and compose files |
+| `./.env` | Environment variables (chmod 600, not in git) |
+| `./docker-compose.yml` | Main services (arkapi + bark + translate + screenshotter) |
+| `./translate/Dockerfile` | Dedicated self-hosted LibreTranslate container |
+| `./docker-compose.consumer.yml` | Test consumer wallet |
+| `site/` | Static site files (served by your reverse proxy) |
 
 ### Docker Commands
 
 ```bash
-cd /opt/arkapi
-
 # View running containers
 sudo docker compose ps
 
@@ -477,15 +467,15 @@ curl -s http://127.0.0.1:3000/api/v1/lightning/receives
 
 ```bash
 # Full API test suite (test mode)
-bash /opt/arkapi/scripts/test.sh
+bash scripts/test.sh
 
 # Bark payment flow test (requires funded consumer wallet)
-bash /opt/arkapi/scripts/test-bark.sh
+bash scripts/test-bark.sh
 ```
 
 ### Switch Payment Modes
 
-Edit `/opt/arkapi/.env`:
+Edit `.env`:
 
 ```bash
 # Test mode — instant free balance, no bark needed
@@ -501,7 +491,7 @@ Then rebuild: `sudo docker compose up -d --build`
 
 ## Configuration
 
-All configuration is via environment variables in `/opt/arkapi/.env`:
+All configuration is via environment variables. Copy `.env.example` to `.env` and edit:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -562,7 +552,7 @@ created_at         TIMESTAMP
 - **Request size limits** — 1MB body cap, no trailing JSON accepted
 - **Non-root container** — arkapi runs as `uid=999` inside the container
 - **MySQL isolation** — `arkapi` user has access only to the `arkapi` database
-- **`.env` permissions** — `chmod 600`, outside the web root at `/opt/arkapi/`
+- **`.env` permissions** — `chmod 600`, outside the web root
 - **Bark localhost-only** — barkd REST API bound to `127.0.0.1:3000`, not internet-accessible
 - **SQL injection safe** — all queries use parameterized statements
 - **Command injection safe** — domain/IP inputs validated before shell execution
@@ -648,38 +638,56 @@ Consumer                        ArkAPI                          barkd
 ## Project Structure
 
 ```
-/opt/arkapi/
-├── cmd/arkapi/main.go           # Entry point, routing, server startup
+arkapi/
+├── cmd/arkapi/main.go              # Entry point, routing, server startup
 ├── internal/
 │   ├── bark/
-│   │   ├── client.go            # barkd REST API client
-│   │   └── poller.go            # Background payment detection
-│   ├── config/config.go         # Environment-based configuration
-│   ├── database/database.go     # MySQL operations (sessions, billing)
+│   │   ├── client.go               # barkd REST API client
+│   │   └── poller.go               # Background payment detection
+│   ├── config/config.go            # Environment-based configuration
+│   ├── database/database.go        # MySQL operations (sessions, billing)
 │   ├── handlers/
-│   │   ├── handlers.go          # Shared handler logic, response formatting
-│   │   ├── session.go           # Session creation (test + bark modes)
-│   │   ├── dns_lookup.go        # DNS lookup handler
-│   │   ├── whois.go             # WHOIS handler
-│   │   ├── ssl_check.go         # SSL certificate check handler
-│   │   ├── headers.go           # HTTP headers audit handler (SSRF-safe)
-│   │   ├── weather.go           # Weather handler (Open-Meteo)
-│   │   └── ip_lookup.go         # IP geolocation handler
+│   │   ├── handlers.go             # Shared handler logic, response formatting
+│   │   ├── session.go              # Session creation (test + bark modes)
+│   │   ├── admin.go                # Admin/traffic endpoints
+│   │   ├── ai_chat.go              # Anonymous AI chat (Cloudflare AI)
+│   │   ├── ai_translate.go         # AI-powered translation
+│   │   ├── axfr_check.go           # DNS zone transfer check
+│   │   ├── bitcoin_address.go      # Bitcoin address validation
+│   │   ├── bitcoin_news.go         # Bitcoin RSS news aggregation
+│   │   ├── bitcoin_price.go        # Live BTC spot price
+│   │   ├── cve_lookup.go           # CVE lookup (NVD)
+│   │   ├── cve_search.go           # CVE keyword search (NVD)
+│   │   ├── dns_lookup.go           # DNS record lookup
+│   │   ├── domain_check.go         # Domain availability check
+│   │   ├── domain_intel.go         # Aggregate domain intelligence
+│   │   ├── email_auth_check.go     # SPF/DKIM/DMARC audit
+│   │   ├── headers.go              # HTTP security headers audit (SSRF-safe)
+│   │   ├── image_generate.go       # AI image generation (ComfyUI)
+│   │   ├── ip_lookup.go            # IP geolocation (DB-IP Lite)
+│   │   ├── markdown.go             # URL to Markdown extraction
+│   │   ├── prediction_market_search.go  # Polymarket search
+│   │   ├── qr_generate.go          # QR code generation
+│   │   ├── screenshot.go           # Webpage screenshot
+│   │   ├── ssl_check.go            # SSL certificate analysis
+│   │   ├── translate.go            # Self-hosted translation (LibreTranslate)
+│   │   ├── weather.go              # Weather forecast (Open-Meteo)
+│   │   └── whois.go                # WHOIS lookup
 │   └── middleware/
-│       ├── auth.go              # Bearer token auth + session validation
-│       └── rate_limit.go        # Per-IP/path rate limiting
+│       ├── auth.go                 # Bearer token auth + session validation
+│       └── rate_limit.go           # Per-IP/path rate limiting
 ├── scripts/
-│   ├── bark-init.sh             # Bark wallet init + daemon startup
-│   ├── test.sh                  # API test suite (test mode)
-│   └── test-bark.sh             # Lightning payment flow test
+│   ├── bark-init.sh                # Bark wallet init + daemon startup
+│   ├── test.sh                     # API test suite (test mode)
+│   └── test-bark.sh                # Lightning payment flow test
 ├── sql/
-│   ├── schema.sql               # Initial database schema
-│   └── 002_bark_columns.sql     # Bark payment columns migration
-├── Dockerfile                   # ArkAPI Go container (multi-stage)
-├── Dockerfile.bark              # Bark wallet daemon container
-├── docker-compose.yml           # Production services
-├── docker-compose.consumer.yml  # Test consumer wallet
-├── .env                         # Configuration (not in git)
+│   ├── schema.sql                  # Initial database schema
+│   └── 002_bark_columns.sql        # Bark payment columns migration
+├── Dockerfile                      # ArkAPI Go container (multi-stage)
+├── Dockerfile.bark                 # Bark wallet daemon container
+├── docker-compose.yml              # Production services
+├── docker-compose.consumer.yml     # Test consumer wallet
+├── .env.example                    # Configuration template (copy to .env)
 ├── .dockerignore
 ├── .gitignore
 └── go.mod
@@ -700,8 +708,25 @@ Consumer                        ArkAPI                          barkd
 - **LibreTranslate** — local translation backend for `/api/translate`
 - **Playwright** — local screenshot rendering backend for `/api/screenshot`
 - **Open-Meteo** — upstream weather data for `/api/weather`
-- **ip-api.com** — upstream IP geolocation data for `/api/ip-lookup`
+- **DB-IP Lite** — self-hosted MMDB files for IP geolocation in `/api/ip-lookup`
 - **NVD API** — upstream CVE data for search and lookup
 - **Polymarket Gamma API** — upstream market discovery data
 - **RDAP / WHOIS / DNS tooling** — registration and domain intelligence inputs
 - **ARM64-friendly deployment** — the sample Bark image currently targets ARM64
+
+---
+
+## Contributing
+
+Contributions are welcome! Please open an issue first to discuss what you'd like to change.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/my-change`)
+3. Commit your changes
+4. Open a pull request against `main`
+
+---
+
+## License
+
+[MIT](./LICENSE) &copy; [PiHiker](https://github.com/PiHiker)
