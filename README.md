@@ -346,39 +346,52 @@ Apache (reverse proxy on host)
    |  proxies /health, /v1/*, /api/* to localhost:8080
    |  serves static landing page at /
    v
-+------------------------------------------+
-|  Docker                                  |
-|                                          |
-|  +--------------+    +-----------------+ |
-|  |   arkapi     |    |   bark (barkd)  | |
-|  |   Go binary  |--->|   Ark wallet    | |
-|  |   :8080      |    |   :3000         | |
-|  |   (host net) |    |   (localhost)   | |
-|  +------+-------+    +-----------------+ |
-|         |         +-------------------+  |
-|         +-------->| LibreTranslate    |  |
-|         |         | :5001 (localhost) |  |
-|         |         +-------------------+  |
-|         |         +-------------------+  |
-|         +-------->| Screenshotter     |  |
-|                   | :9010 (localhost) |  |
-|                   +-------------------+  |
-+---------|--------------------------------+
++-----------------------------------------------+
+|  Docker / Host Services                        |
+|                                                |
+|  +--------------+    +----------------------+  |
+|  |   arkapi     |--->|   bark (barkd)       |  |
+|  |   Go binary  |    |   Ark wallet         |  |
+|  |   :8080      |    |   :3000 (localhost)  |  |
+|  |   (host net) |    +----------------------+  |
+|  +------+-------+                               |
+|         |            +----------------------+   |
+|         +----------->| LibreTranslate       |   |
+|         |            | :5001 (localhost)    |   |
+|         |            +----------------------+   |
+|         |            +----------------------+   |
+|         +----------->| Screenshotter        |   |
+|         |            | :9010 (localhost)    |   |
+|         |            +----------------------+   |
+|         |                                       |
+|         +-----------> MySQL :3306 (host)        |
++---------|---------------------------------------+
           |
-          v
-   MySQL (on host, :3306)
-   arkapi database only
+          +----> External upstreams
+                 - Cloudflare AI
+                 - Open-Meteo
+                 - ip-api.com
+                 - NVD API
+                 - Polymarket Gamma API
+                 - Public DNS / WHOIS / RDAP services
 ```
 
 ### Components
 
 - **Apache** — Example reverse proxy on the host. Routes `/health`, `/v1/*`, `/api/*` to the Go backend and can serve the static site at `/`.
 - **Cloudflare** — Optional DNS and TLS termination layer in front of the web tier.
-- **arkapi container** — Go binary, `network_mode: host`. Runs the API server on `127.0.0.1:8080`. Handles session management, auth, rate limiting, metering, and proxies requests to external utility APIs. Installs `dig`, `whois`, `curl` for command-based handlers.
+- **arkapi container** — Go binary, `network_mode: host`. Runs the API server on `127.0.0.1:8080`. Handles session management, auth, rate limiting, metering, and upstream calls to both local helper services and external APIs. Installs `dig`, `whois`, `curl` for command-based handlers.
 - **bark container** — Second's barkd daemon (Ark protocol wallet) on Signet testnet. Exposes REST API on `127.0.0.1:3000` (localhost only). Handles Lightning invoice generation and payment detection. Wallet data persisted in `bark-data` Docker volume.
 - **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`. Current starter language set: `en`, `es`, `fr`, `de`, `it`, `pt`.
 - **screenshotter container** — Dedicated Playwright-based screenshot service on `127.0.0.1:9010`.
 - **MySQL** — On the host, `127.0.0.1:3306`. Stores sessions and call logs. The `arkapi` MySQL user has access only to the `arkapi` database.
+- **External upstreams** — ArkAPI also calls external services where local data or inference is not the source of truth:
+  - **Cloudflare AI** for `/api/ai-chat` and `/api/ai-translate`
+  - **Open-Meteo** for `/api/weather`
+  - **ip-api.com** for `/api/ip-lookup`
+  - **NVD API** for `/api/cve-search` and `/api/cve-lookup`
+  - **Polymarket Gamma API** for `/api/prediction-market-search`
+  - **WHOIS / RDAP / DNS services** for domain and registration intelligence
 
 ### AI Chat Security Notes
 
