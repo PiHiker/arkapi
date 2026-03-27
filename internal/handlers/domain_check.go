@@ -79,7 +79,7 @@ func doDomainCheck(domain string) (*DomainCheckResponse, error) {
 	}
 
 	cmd := exec.Command("whois", domain)
-	output, err := cmd.Output()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		// whois may exit non-zero for unregistered domains on some systems;
 		// treat that as "available" only if we also got output to inspect.
