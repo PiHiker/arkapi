@@ -1,0 +1,294 @@
+# ArkAPI Full Agent Notes
+
+> ArkAPI is a Bitcoin-native API layer for agents, bots, and automations. It publishes a public OpenAPI spec and accepts session-based bearer tokens funded on the Signet test network.
+
+## Primary discovery URLs
+
+- Homepage: https://arkapi.dev/
+- OpenAPI spec: https://arkapi.dev/openapi.json
+- Well-known manifest: https://arkapi.dev/.well-known/arkapi.json
+- Catalog: https://arkapi.dev/v1/catalog
+
+## Current live model
+
+- Network: Signet test network only
+- Session model: fund once, then spend down a bearer-token balance
+- Auth format: `Authorization: Bearer ak_xxx`
+- Funding methods returned from `POST /v1/sessions`:
+  - Signet Lightning invoice
+  - Signet Ark address
+
+## Recommended agent flow
+
+1. Fetch `https://arkapi.dev/openapi.json`
+2. Discover endpoint paths, request schemas, and `x-cost-sats`
+3. Create a session with `POST /v1/sessions`
+4. Fund the session with Signet sats
+5. Reuse the same bearer token across API calls until the balance is exhausted
+
+## Quick examples
+
+```bash
+curl -X POST https://arkapi.dev/v1/sessions
+
+curl -H "Authorization: Bearer ak_your_token" \
+  https://arkapi.dev/api/btc-price?currency=USD
+
+curl -X POST https://arkapi.dev/api/cve-lookup \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"cve":"CVE-2024-3400"}'
+```
+
+## Endpoint examples
+
+### `/api/dns-lookup` - 3 sats
+- Natural-language example: `Look up A, MX, TXT, NS, and SOA records for example.com.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/dns-lookup \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+### `/api/whois` - 5 sats
+- Natural-language example: `Fetch the WHOIS registration data for openai.com.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/whois \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"openai.com"}'
+```
+
+### `/api/ssl-check` - 5 sats
+- Natural-language example: `Check the TLS certificate and expiry for cloudflare.com.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/ssl-check \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"cloudflare.com"}'
+```
+
+### `/api/headers` - 3 sats
+- Natural-language example: `Audit the security headers for https://www.ibm.com.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/headers \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://www.ibm.com"}'
+```
+
+### `/api/weather` - 3 sats
+- Natural-language example: `Get the current weather and forecast for Toronto.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/weather \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"city":"Toronto"}'
+```
+
+### `/api/ip-lookup` - 3 sats
+- Natural-language example: `Look up the geolocation and ASN for 8.8.8.8.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/ip-lookup \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"ip":"8.8.8.8"}'
+```
+
+### `/api/email-auth-check` - 4 sats
+- Natural-language example: `Check SPF, DKIM, and DMARC posture for proton.me.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/email-auth-check \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"proton.me"}'
+```
+
+### `/api/axfr-check` - 12 sats
+- Natural-language example: `Check whether example.com allows DNS zone transfer and show the exposed records only if AXFR is enabled.`
+- Response note: includes a human-readable `explanation` field when AXFR is denied or allowed.
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/axfr-check \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}'
+```
+
+### `/api/domain-intel` - 25 sats
+- Natural-language example: `Give me a one-call domain intelligence summary for example.com, include security.txt contacts, robots.txt sitemap info, tech fingerprints, HTTP behavior, CT-log subdomains, and add an AI summary at the end.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/domain-intel \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com","ai_summary":true}'
+```
+
+### `/api/bitcoin-news` - 2 sats
+- Natural-language example: `Get the latest 5 Bitcoin headlines.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/bitcoin-news \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":5}'
+```
+
+### `/api/ai-chat` - 100 sats
+- Natural-language example: `Explain the difference between Ark and Lightning in simple terms.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/ai-chat \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"How is Ark different from Lightning?"}'
+```
+
+### `/api/ai-translate` - 25 sats
+- Natural-language example: `Translate a French paragraph into natural English instead of literal utility output.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/ai-translate \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Sous les etoiles, la riviere chante doucement.","target_language":"en","style":"natural"}'
+```
+
+### `/api/translate` - 3 sats
+- Natural-language example: `Translate "Bonjour" to English.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/translate \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"Bonjour","target_language":"en"}'
+```
+
+### `/api/image-generate` - 25 sats
+- Natural-language example: `Generate an image of a glowing bioluminescent forest.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/image-generate \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"glowing bioluminescent forest under a violet night sky"}'
+```
+
+### `/api/screenshot` - 15 sats
+- Natural-language example: `Take a screenshot of https://www.ibm.com.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/screenshot \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://www.ibm.com"}'
+```
+
+### `/api/qr-generate` - 2 sats
+- Natural-language example: `Make a QR code for https://arkapi.dev/fund/.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/qr-generate \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"data":"https://arkapi.dev/fund/"}'
+```
+
+### `/api/bitcoin-address` - 3 sats
+- Natural-language example: `Validate a mainnet Bitcoin address and check its balance.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/bitcoin-address \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"address":"1BoatSLRHtKNngkdXEeobR76b53LETtpyT"}'
+```
+
+### `/api/cve-search` - 4 sats
+- Natural-language example: `Search for WordPress information disclosure CVEs.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/cve-search \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"wordpress information disclosure","limit":5}'
+```
+
+### `/api/prediction-market-search` - 4 sats
+- Natural-language example: `Search open prediction markets for bitcoin ETF outcomes.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/prediction-market-search \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"bitcoin etf","limit":5}'
+```
+
+### `/api/cve-lookup` - 3 sats
+- Natural-language example: `Look up details for CVE-2024-3400.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/cve-lookup \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"cve":"CVE-2024-3400"}'
+```
+
+### `/api/domain-check` - 3 sats
+- Natural-language example: `Check whether an unregistered-looking domain is available.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/domain-check \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example-arkapi-demo-test.com"}'
+```
+
+### `/api/btc-price` - 1 sat
+- Natural-language example: `Get the Bitcoin price in USD only.`
+- Natural-language example: `Get Bitcoin prices in USD, EUR, and CAD.`
+- Curl:
+```bash
+curl -H "Authorization: Bearer ak_your_token" \
+  "https://arkapi.dev/api/btc-price?currency=USD"
+
+curl -H "Authorization: Bearer ak_your_token" \
+  "https://arkapi.dev/api/btc-price?currencies=USD,EUR,CAD"
+```
+
+### `/api/url-to-markdown` - 5 sats
+- Natural-language example: `Extract the main readable content from a news article as Markdown.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/url-to-markdown \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://www.iana.org/domains/reserved"}'
+```
+
+## Operational notes
+
+- Expensive visual endpoints are rate-limited per token
+- `/api/ai-chat` is limited to 5 requests per day per token
+- `/api/image-generate` is limited to 5 requests per hour per token
+- `/api/screenshot` is limited to 25 requests per hour per token
+- Cached endpoints still bill per successful request unless noted otherwise
+- Download results from screenshot and image generation are served from short-lived ArkAPI-hosted URLs
+- Public discovery is intentionally machine-readable through the OpenAPI spec and this document
+- `/v1/stats` is not meant for general third-party tooling; it is restricted for the landing page
+
+## Good fits
+
+- OpenClaw-style agent registries
+- MCP-style wrappers around OpenAPI
+- Browser or CLI agents that want metered tools without long-lived provider keys
+- Security automation that benefits from a single token-funded tool bundle

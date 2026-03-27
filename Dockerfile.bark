@@ -1,0 +1,27 @@
+FROM debian:bookworm-slim
+
+ARG BARK_VERSION=0.1.0-beta.8
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        netbase && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download bark CLI and barkd daemon for ARM64.
+# This Dockerfile currently targets ARM64 hosts.
+RUN curl -fSL "https://gitlab.com/ark-bitcoin/bark/-/releases/bark-${BARK_VERSION}/downloads/bark-${BARK_VERSION}-linux-arm64" \
+        -o /usr/local/bin/bark && \
+    curl -fSL "https://gitlab.com/ark-bitcoin/bark/-/releases/bark-${BARK_VERSION}/downloads/barkd-${BARK_VERSION}-linux-arm64" \
+        -o /usr/local/bin/barkd && \
+    chmod +x /usr/local/bin/bark /usr/local/bin/barkd
+
+COPY scripts/bark-init.sh /usr/local/bin/bark-init.sh
+RUN chmod +x /usr/local/bin/bark-init.sh
+
+VOLUME /root/.bark
+
+EXPOSE 3000
+
+ENTRYPOINT ["/usr/local/bin/bark-init.sh"]

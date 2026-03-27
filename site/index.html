@@ -1,0 +1,2924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArkAPI | Anonymous Pay-per-call APIs for Agents and Developers</title>
+<meta name="description" content="Anonymous pay-per-call APIs for developers and AI agents. Fund a Signet session with Ark or Lightning and call AI chat, domain intelligence, URL-to-Markdown, CVE, Bitcoin price, translation, and prediction-market APIs.">
+<meta name="keywords" content="anonymous API, pay per call API, Bitcoin API, Signet API, AI chat API, domain intelligence API, CVE API, translation API, Bitcoin price API, prediction market API">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="ArkAPI | Anonymous Pay-per-call APIs for Agents and Developers">
+<meta property="og:description" content="Fund a Signet session with Ark or Lightning and call AI chat, domain intelligence, URL-to-Markdown, CVE, Bitcoin price, translation, and prediction-market APIs without accounts or long-lived keys.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ArkAPI | Anonymous Pay-per-call APIs">
+<meta name="twitter:description" content="Fund a Signet session with Ark or Lightning and call AI chat, domain intelligence, URL-to-Markdown, CVE, Bitcoin price, translation, and prediction-market APIs.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ArkAPI",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "url": "https://arkapi.dev/",
+  "description": "Anonymous pay-per-call APIs for AI agents and developers. Fund a session with Ark or Lightning and call security, utility, Bitcoin, and AI endpoints without long-lived keys.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "BTC",
+    "description": "Usage is metered in sats per API call after session funding."
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "ArkAPI",
+    "url": "https://arkapi.dev/"
+  },
+  "keywords": [
+    "agentic APIs",
+    "private API access",
+    "anonymous API",
+    "proxy API",
+    "Bitcoin",
+    "Ark",
+    "Lightning",
+    "OSINT API",
+    "security API",
+    "AI agents",
+    "anonymous AI chat",
+    "AI chat API",
+    "LLM API",
+    "Bitcoin AI API",
+    "pay per call API",
+    "agent API",
+    "developer API",
+    "openclaw"
+  ],
+  "featureList": [
+    "Anonymous pay-per-call API access",
+    "Anonymous session funding",
+    "Short-lived funded sessions for agents",
+    "Openclaw-friendly API workflows",
+    "Ark and Lightning session funding",
+    "Security and OSINT APIs",
+    "Anonymous AI chat",
+    "Image generation and screenshot APIs",
+    "Pay per call with sats"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "ArkAPI",
+  "url": "https://arkapi.dev/",
+  "description": "Anonymous pay-per-call APIs for agents and developers, funded with Ark or Lightning.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "ArkAPI",
+    "url": "https://arkapi.dev/"
+  }
+}
+</script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0b;
+  --bg-raised: #111113;
+  --bg-card: #161619;
+  --bg-card-hover: #1c1c20;
+  --border: #2a2a2f;
+  --border-bright: #3a3a42;
+  --text: #e8e6e3;
+  --text-dim: #8a8a8f;
+  --text-muted: #5a5a60;
+  --accent: #f7931a;
+  --accent-dim: #c47715;
+  --accent-glow: rgba(247, 147, 26, 0.15);
+  --green: #22c55e;
+  --green-dim: rgba(34, 197, 94, 0.12);
+  --red: #ef4444;
+  --cyan: #06b6d4;
+  --purple: #a855f7;
+  --mono: 'JetBrains Mono', 'DM Mono', monospace;
+  --sans: 'Space Grotesk', system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Grid background */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(247, 147, 26, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 147, 26, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- NAV ---- */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 24px;
+  background: rgba(10, 10, 11, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+nav .nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--accent); }
+
+.btn-nav {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 8px 18px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-nav:hover {
+  background: #ffad42;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ---- HAMBURGER MENU ---- */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 101;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 10, 11, 0.97);
+  backdrop-filter: blur(20px);
+  z-index: 99;
+  padding: 100px 24px 40px;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  overflow-y: auto;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--accent); }
+.mobile-menu .btn-mobile-cta {
+  margin-top: 24px;
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+/* ---- HERO ---- */
+.hero {
+  padding: 180px 0 120px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid rgba(247, 147, 26, 0.25);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+  letter-spacing: 0.5px;
+  animation: fadeInUp 0.6s ease both;
+}
+
+.hero-badge .pulse {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(247, 147, 26, 0.5); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(247, 147, 26, 0); }
+}
+
+h1 {
+  font-family: var(--sans);
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+h1 .accent { color: var(--accent); }
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 580px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+.hero-points {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  animation: fadeInUp 0.6s ease 0.35s both;
+}
+
+.hero-point {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: rgba(255,255,255,0.02);
+}
+
+.hero-point-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.hero-point-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-primary {
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
+}
+
+.btn-primary:hover {
+  background: #ffad42;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+
+.btn-secondary {
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 14px 32px;
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-bright);
+  color: var(--text);
+  background: var(--bg-raised);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- CODE DEMO ---- */
+.code-section {
+  padding: 46px 0 78px;
+}
+
+.code-block {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 780px;
+  margin: 0 auto;
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+
+.code-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.code-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-bright);
+}
+
+.code-dots span:first-child { background: var(--red); opacity: 0.7; }
+.code-dots span:nth-child(2) { background: var(--accent); opacity: 0.7; }
+.code-dots span:nth-child(3) { background: var(--green); opacity: 0.7; }
+
+.code-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.code-body {
+  padding: 12px 14px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.16;
+  overflow: hidden;
+  height: 790px;
+}
+
+.code-body pre { white-space: pre; }
+.terminal-output {
+  margin: 0;
+  display: block;
+  height: 742px;
+  overflow: hidden;
+}
+.terminal-line {
+  display: block;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.terminal-line.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.15em;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: var(--accent);
+  animation: terminalBlink 1s steps(1, end) infinite;
+}
+@keyframes terminalBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.c-comment { color: var(--text-muted); }
+.c-cmd { color: var(--green); }
+.c-flag { color: var(--cyan); }
+.c-url { color: var(--accent); }
+.c-str { color: var(--purple); }
+.c-key { color: var(--text-dim); }
+.c-val { color: var(--green); }
+.c-num { color: var(--accent); }
+
+/* ---- HOW IT WORKS ---- */
+.section {
+  padding: 100px 0;
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.section-desc {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 520px;
+  margin-bottom: 60px;
+  line-height: 1.7;
+}
+
+/* Agent cards */
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.agent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 32px 28px;
+  transition: border-color 0.2s;
+}
+
+.agent-card:first-child { border-radius: 8px 0 0 8px; }
+.agent-card:last-child { border-radius: 0 8px 8px 0; }
+
+.agent-card:hover { border-color: var(--accent); }
+
+.agent-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.agent-card h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.agent-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* Steps */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.step {
+  background: var(--bg-card);
+  padding: 40px 32px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.step:hover { background: var(--bg-card-hover); }
+
+.step:first-child { border-radius: 8px 0 0 8px; }
+.step:last-child { border-radius: 0 8px 8px 0; }
+
+.step-num {
+  font-family: var(--mono);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.step:hover .step-num { color: var(--accent-dim); transition: color 0.3s; }
+
+.step h3 {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.step p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* ---- API CATALOG ---- */
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.api-card {
+  background: var(--bg-card);
+  padding: 32px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.api-card:first-child { border-radius: 8px 0 0 0; }
+.api-card:nth-child(2) { border-radius: 0 8px 0 0; }
+.api-card:nth-child(3) { border-radius: 0 0 0 8px; }
+.api-card:nth-child(4) { border-radius: 0 0 8px 0; }
+
+.api-card:hover {
+  background: var(--bg-card-hover);
+}
+
+.api-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.api-card:hover::after { opacity: 1; }
+
+.api-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.tag-security {
+  color: var(--red);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.tag-privacy {
+  color: var(--cyan);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.tag-ai {
+  color: var(--purple);
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.tag-visual {
+  color: var(--cyan);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.tag-osint {
+  color: var(--green);
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.tag-utility {
+  color: var(--cyan);
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.tag-bitcoin {
+  color: var(--accent);
+  background: rgba(247, 147, 26, 0.1);
+  border: 1px solid rgba(247, 147, 26, 0.2);
+}
+
+.api-card h3 {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.api-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.api-card a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.api-card a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.api-endpoint,
+.api-payload {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 10px 12px;
+}
+
+.api-endpoint {
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.api-endpoint span,
+.api-payload span {
+  color: var(--text-muted);
+}
+
+.api-payload {
+  color: var(--accent);
+  margin-bottom: 20px;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.api-auth-note {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+
+.api-auth-note strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.api-request-template {
+  margin: -10px 0 24px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  overflow-x: auto;
+}
+
+.api-request-template code {
+  display: block;
+  white-space: nowrap;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.api-search-wrap {
+  margin: 0 0 24px;
+}
+
+.api-search-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.api-search-input:focus {
+  border-color: rgba(247, 147, 26, 0.5);
+  box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.12);
+}
+
+.api-search-meta {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.api-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.api-filter-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.api-filter-btn:hover {
+  color: var(--text);
+  border-color: rgba(247, 147, 26, 0.35);
+}
+
+.api-filter-btn.active {
+  color: var(--text);
+  background: rgba(247, 147, 26, 0.1);
+  border-color: rgba(247, 147, 26, 0.35);
+}
+
+.api-search-empty {
+  display: none;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.api-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.api-price {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.api-price span {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.api-method {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  background: var(--green-dim);
+  color: var(--green);
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* ---- PRICING ---- */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.price-card {
+  background: var(--bg-card);
+  padding: 40px 32px;
+  transition: background 0.3s;
+}
+
+.price-card:first-child { border-radius: 8px 0 0 8px; }
+.price-card:last-child { border-radius: 0 8px 8px 0; }
+
+.price-card:hover { background: var(--bg-card-hover); }
+
+.price-card.featured {
+  background: var(--bg-card-hover);
+  border-top: 2px solid var(--accent);
+  border-radius: 0;
+}
+
+.price-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+.price-amount {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -1px;
+}
+
+.price-amount span {
+  font-size: 16px;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.price-desc {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.price-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.price-features li {
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+
+.price-features li::before {
+  content: '>';
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.price-btn {
+  display: block;
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 12px;
+  text-align: center;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.25s;
+  cursor: pointer;
+  border: none;
+  letter-spacing: 0.3px;
+}
+
+.price-btn-outline {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.price-btn-outline:hover {
+  border-color: var(--border-bright);
+  color: var(--text);
+}
+
+.price-btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.price-btn-primary:hover {
+  background: #ffad42;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ---- TECH STACK ---- */
+.stack-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.stack-pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+
+.stack-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---- CTA ---- */
+.cta {
+  padding: 100px 0;
+  text-align: center;
+}
+
+.cta-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 64px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.cta h2 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.cta p {
+  color: var(--text-dim);
+  font-size: 16px;
+  margin-bottom: 36px;
+  max-width: 440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---- FOOTER ---- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 24px;
+  list-style: none;
+}
+
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--accent); }
+
+.footer-left {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-left a { color: var(--accent); text-decoration: none; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  .nav-links { display: none !important; }
+  .btn-nav { display: none; }
+
+  .hero { padding: 140px 0 80px; }
+  .hero h1 { font-size: clamp(32px, 8vw, 48px); }
+  .hero-sub { font-size: 16px; }
+
+  .agent-grid { grid-template-columns: 1fr; }
+  .agent-card { border-radius: 0 !important; }
+  .agent-card:first-child { border-radius: 8px 8px 0 0 !important; }
+  .agent-card:last-child { border-radius: 0 0 8px 8px !important; }
+
+  .steps { grid-template-columns: 1fr; }
+  .step { border-radius: 0 !important; }
+  .step:first-child { border-radius: 8px 8px 0 0 !important; }
+  .step:last-child { border-radius: 0 0 8px 8px !important; }
+
+  .api-grid { grid-template-columns: 1fr; }
+  .api-card { border-radius: 0 !important; }
+  .api-card:first-child { border-radius: 8px 8px 0 0 !important; }
+  .api-card:last-child { border-radius: 0 0 8px 8px !important; }
+
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card { border-radius: 0 !important; }
+  .price-card:first-child { border-radius: 8px 8px 0 0 !important; }
+  .price-card:last-child { border-radius: 0 0 8px 8px !important; }
+
+  .hero-actions { flex-direction: column; align-items: center; }
+  .hero-actions a { min-height: 48px; display: flex; align-items: center; justify-content: center; }
+  .section { padding: 60px 0; }
+  .section-title { font-size: clamp(24px, 6vw, 36px); }
+  .section-desc { font-size: 15px; }
+
+  .ticker { gap: 16px; flex-wrap: wrap; padding: 16px 0; margin-bottom: 32px; }
+
+  .code-block { display: none; }
+
+  .api-request-template code { font-size: 11px; word-break: break-all; }
+}
+
+/* ---- LIVE TICKER ---- */
+.ticker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px 0;
+  margin-bottom: 60px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  animation: fadeInUp 0.6s ease 0.5s both;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticker-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.ticker-dot.green { background: var(--green); box-shadow: 0 0 8px rgba(34, 197, 94, 0.5); }
+.ticker-dot.amber { background: var(--accent); }
+
+.ticker-val {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ---- EARNINGS DASHBOARD ---- */
+.earnings-dashboard {
+  margin-top: 48px;
+}
+
+.flow-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 36px 32px;
+  margin-bottom: 2px;
+}
+
+.flow-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.flow-node {
+  text-align: center;
+  padding: 20px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  min-width: 160px;
+  transition: all 0.3s;
+}
+
+.flow-node:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-card-hover);
+}
+
+.flow-consumer { border-color: rgba(6, 182, 212, 0.3); }
+.flow-consumer:hover { border-color: var(--cyan); }
+.flow-platform { border-color: rgba(247, 147, 26, 0.3); }
+.flow-platform:hover { border-color: var(--accent); }
+.flow-provider { border-color: rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.04); }
+.flow-provider:hover { border-color: var(--green); background: rgba(34, 197, 94, 0.08); }
+
+.flow-icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+.flow-consumer .flow-icon { color: var(--cyan); }
+.flow-platform .flow-icon { color: var(--accent); }
+.flow-provider .flow-icon { color: var(--green); }
+
+.flow-node-label {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.flow-node-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+}
+
+.flow-arrow-line {
+  width: 48px;
+  height: 2px;
+  background: var(--border-bright);
+  position: relative;
+}
+
+.flow-arrow-line::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -3px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--border-bright);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.flow-arrow-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+/* Animated sats flowing through the arrow */
+.flow-arrow-line::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  width: 8px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: satFlow 1.5s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+@keyframes satFlow {
+  0% { left: -8px; opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% { left: 48px; opacity: 0; }
+}
+
+/* Earnings panel */
+.earnings-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.earnings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+
+.earn-card {
+  padding: 28px 24px;
+  border-right: 1px solid var(--border);
+  transition: background 0.3s;
+}
+
+.earn-card:last-child { border-right: none; }
+.earn-card:first-child { background: rgba(34, 197, 94, 0.03); }
+.earn-card:hover { background: rgba(255,255,255,0.02); }
+
+.earn-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.earn-value {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.earn-card:first-child .earn-value { color: var(--green); }
+
+.earn-unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.earn-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.earn-flash { color: var(--green) !important; transition: color 0s !important; }
+
+/* Payouts log */
+.payouts-section {
+  padding: 0;
+}
+
+.payouts-header {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.01);
+}
+
+.payouts-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.payout-list {
+  padding: 0;
+}
+
+.payout-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(42, 42, 47, 0.5);
+  font-family: var(--mono);
+  font-size: 12px;
+  transition: background 0.3s;
+}
+
+.payout-row:last-child { border-bottom: none; }
+.payout-row:hover { background: rgba(255,255,255,0.02); }
+
+.payout-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.payout-status-dot.ok { background: var(--green); }
+
+.payout-amount {
+  color: var(--green);
+  font-weight: 600;
+  min-width: 110px;
+}
+
+.payout-dest {
+  color: var(--text-dim);
+  flex: 1;
+}
+
+.payout-method-tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 600;
+  background: var(--accent-glow);
+  color: var(--accent);
+  min-width: 28px;
+  text-align: center;
+}
+
+.payout-time {
+  color: var(--text-muted);
+  min-width: 80px;
+  text-align: right;
+}
+
+.payout-confirmed {
+  color: var(--green);
+  font-size: 11px;
+  min-width: 70px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .flow-row { flex-direction: column; gap: 4px; }
+  .flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+  .flow-node { min-width: 0; width: 100%; }
+  .earnings-grid { grid-template-columns: repeat(2, 1fr); }
+  .earn-card:nth-child(2) { border-right: none; }
+  .earn-card { padding: 20px 16px; }
+  .payout-dest, .payout-time { display: none; }
+}
+@media (max-width: 480px) {
+  .earnings-grid { grid-template-columns: 1fr; }
+  .earn-card { border-right: none; }
+  .flow-node { padding: 14px 16px; }
+}
+
+/* ---- LIVE DASHBOARD ---- */
+.live-dashboard {
+  margin-top: 60px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-raised);
+  animation: fadeInUp 0.6s ease 0.5s both;
+}
+
+.dash-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.015);
+}
+
+.dash-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.dash-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulse-green {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse-g 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+@keyframes pulse-g {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(34, 197, 94, 0.6); }
+  50% { opacity: 0.6; box-shadow: 0 0 12px rgba(34, 197, 94, 0.3); }
+}
+
+/* Stat counters */
+.stat-counters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-counter {
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  transition: background 0.3s;
+}
+
+.stat-counter:last-child { border-right: none; }
+.stat-counter:hover { background: rgba(255,255,255,0.02); }
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 6px;
+  transition: color 0.3s;
+}
+
+.stat-value .stat-unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-delta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+.stat-delta.positive { color: var(--green); }
+.stat-delta.negative { color: var(--red); }
+.stat-delta.neutral { color: var(--text-muted); }
+
+.stat-flash { color: var(--accent) !important; transition: color 0s !important; }
+
+/* Chart area */
+.chart-area {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.chart-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--bg);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.chart-tab {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.chart-tab.active {
+  background: var(--bg-card-hover);
+  color: var(--accent);
+}
+
+.chart-tab:hover:not(.active) { color: var(--text-dim); }
+
+.chart-container {
+  position: relative;
+  height: 180px;
+  margin-bottom: 8px;
+}
+
+.chart-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.chart-y-axis {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.chart-x-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+/* Activity feed */
+.activity-feed {
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.01);
+}
+
+.feed-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.feed-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid rgba(247, 147, 26, 0.2);
+}
+
+.feed-list {
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.feed-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  border-bottom: 1px solid rgba(42, 42, 47, 0.5);
+  font-family: var(--mono);
+  font-size: 12px;
+  animation: feedSlide 0.3s ease both;
+  transition: background 0.3s;
+}
+
+.feed-item:hover { background: rgba(255,255,255,0.02); }
+
+@keyframes feedSlide {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.feed-method {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 36px;
+  text-align: center;
+}
+
+.feed-method.post { background: var(--green-dim); color: var(--green); }
+.feed-method.get { background: rgba(6, 182, 212, 0.12); color: var(--cyan); }
+
+.feed-endpoint { color: var(--text); flex: 1; }
+.feed-cost { color: var(--accent); min-width: 55px; text-align: right; }
+.feed-time { color: var(--text-muted); min-width: 45px; text-align: right; }
+.feed-ago { color: var(--text-muted); min-width: 40px; text-align: right; opacity: 0.6; }
+
+.feed-status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.feed-status.ok { background: var(--green); }
+.feed-status.slow { background: var(--accent); }
+
+/* API breakdown bars */
+.api-breakdown {
+  padding: 20px 24px;
+}
+
+.breakdown-header {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.breakdown-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.breakdown-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.breakdown-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.breakdown-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fill-1 { background: var(--accent); }
+.fill-2 { background: var(--purple); }
+.fill-3 { background: var(--cyan); }
+.fill-4 { background: var(--green); }
+.fill-5 { background: var(--red); }
+.fill-6 { background: #e879f9; }
+
+.breakdown-pct {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 32px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .stat-counters { grid-template-columns: repeat(2, 1fr); }
+  .stat-counter:nth-child(2) { border-right: none; }
+  .chart-tabs { display: none; }
+  .feed-ago, .feed-time { display: none; }
+  .breakdown-name { min-width: 90px; font-size: 10px; }
+  .feed-cost { min-width: 40px; }
+}
+@media (max-width: 480px) {
+  .stat-counters { grid-template-columns: 1fr; }
+  .stat-counter { border-right: none; }
+  .breakdown-name { min-width: 70px; }
+  .dash-body { padding: 16px; }
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">A</div>
+      ArkAPI.dev
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="#how" onclick="document.querySelector('.mobile-menu').classList.remove('open');document.querySelector('.hamburger').classList.remove('active')">How it works</a>
+  <a href="#apis" onclick="document.querySelector('.mobile-menu').classList.remove('open');document.querySelector('.hamburger').classList.remove('active')">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="#docs" onclick="document.querySelector('.mobile-menu').classList.remove('open');document.querySelector('.hamburger').classList.remove('active')">Stack</a>
+  <a href="/marketplace/">Early Access</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      Live on Signet test network only • Built on Ark protocol via Second
+    </div>
+    <h1>API calls cost <span class="accent">sats</span>,<br>not signup forms.</h1>
+    <p class="hero-sub">Pay-per-call APIs with zero accounts, zero long-lived API keys, and zero credit-card lock-in. Fund a Signet session with Ark or Lightning, get a bearer token, and use ArkAPI as a private API layer for agentic workflows, security tooling, OSINT jobs, and automations that should not be tied directly to your own billing identity or infrastructure.</p>
+    <div class="hero-actions">
+      <a href="/fund/" class="btn-primary">Fund Session &rarr;</a>
+      <a href="#apis" class="btn-secondary">Browse APIs</a>
+    </div>
+    <div class="hero-points">
+      <span class="hero-point">Anonymous session funding</span>
+      <span class="hero-point">Private proxy-style API access</span>
+      <span class="hero-point">Good for agents, bots, and automation</span>
+      <span class="hero-point">Live on Signet test network only</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHY AGENTS NEED BITCOIN -->
+<section class="section" id="agents">
+  <div class="container">
+    <div class="section-label">Built for agentic AI</div>
+    <div class="section-title">Agents can't have a credit card.<br>But they can have a wallet.</div>
+    <div class="section-desc" style="max-width:620px;">AI agents are already browsing the web, writing code, and calling APIs. But they can't sign up for accounts, pass KYC, or hold a Visa card. They need a payment rail that is programmable, instant, and permissionless. That rail is Bitcoin, over Ark and Lightning.</div>
+
+    <div class="agent-grid">
+      <div class="agent-card">
+        <div class="agent-icon">&#x1f6ab;</div>
+        <h3>The problem</h3>
+        <p>Traditional APIs require accounts, API keys tied to a human identity, and credit cards. An autonomous agent can't fill out a signup form or pass a CAPTCHA. Every credential is a liability — leaked keys, billing disputes, and identity exposure.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">&#x26a1;</div>
+        <h3>The fix</h3>
+        <p>Give the agent a wallet. It funds a session with sats — over Lightning for speed or Ark for privacy — gets a bearer token, and starts making API calls. No account. No identity. No recurring billing. Just value exchanged for compute, call by call.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">&#x1f310;</div>
+        <h3>Why it matters</h3>
+        <p>As AI agents scale from thousands to millions, they need infrastructure that doesn't bottleneck on human gatekeeping. Bitcoin's programmable money layer — especially Ark's instant, off-chain settlements — is the native payment protocol for the agentic internet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AGENT USE CASES -->
+<section class="section" id="agent-use-cases">
+  <div class="container">
+    <div class="section-label">Agent use cases</div>
+    <div class="section-title">Give agents tools they can actually buy.</div>
+    <div class="section-desc" style="max-width:720px;">ArkAPI is built for agents, bots, and automations that need metered tools without standing accounts. Discovery docs are published directly on the site so systems like OpenClaw can understand the API surface quickly: <code>/openapi.json</code>, <code>/llms.txt</code>, <code>/llms-full.txt</code>, and <code>/.well-known/arkapi.json</code>.</div>
+
+    <div class="agent-grid">
+      <div class="agent-card">
+        <div class="agent-icon">&#x1f6e1;</div>
+        <h3>Security agents</h3>
+        <p>Run DNS lookups, SSL checks, header audits, email-auth checks, CVE search, and CVE lookup from one wallet-funded session. Useful for recon, posture review, and automated triage.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">&#x1f50e;</div>
+        <h3>Research agents</h3>
+        <p>Use WHOIS, IP lookup, Bitcoin news, translation, and domain checks to gather facts without wiring up separate vendors, API keys, or billing relationships for every small task.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">&#x1f916;</div>
+        <h3>Automation agents</h3>
+        <p>Capture screenshots, generate QR codes, create images, run anonymous AI chat, and translate text from the same bearer token. This fits browser agents, CLI jobs, workflow runners, and private proxy-style toolchains.</p>
+      </div>
+    </div>
+
+    <div class="hero-points" style="justify-content:flex-start; margin-top:24px;">
+      <a class="hero-point hero-point-link" href="/openapi.json">OpenAPI spec</a>
+      <a class="hero-point hero-point-link" href="/llms.txt">llms.txt</a>
+      <a class="hero-point hero-point-link" href="/llms-full.txt">llms-full.txt</a>
+      <a class="hero-point hero-point-link" href="/.well-known/arkapi.json">agent manifest</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps. No accounts.</div>
+    <div class="section-desc">Create a Signet session, pay once with Signet sats, then call any endpoint with the same bearer token until your balance runs out. This is useful when you want fast, private access to metered APIs for agents, CLI tools, browser automations, and backend jobs without exposing a personal account or a reusable API key.</div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Create</h3>
+        <p>Request a session and immediately receive a token plus payment instructions. Save the token first.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Pay</h3>
+        <p>Pay the Lightning invoice or fund the Ark address. Poll the same token until the session becomes active.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Call</h3>
+        <p>Send `Authorization: Bearer ...` on each request. ArkAPI meters each call and returns the result immediately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CODE DEMO -->
+<section class="code-section" id="start">
+  <div class="container">
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-title">terminal</span>
+      </div>
+      <div class="code-body">
+<pre id="terminal-demo" class="terminal-output" aria-live="polite"></pre>
+<template id="terminal-template"><span class="c-comment"># 1. Create a session and save the token immediately</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-X POST</span> <span class="c-url">https://arkapi.dev/v1/sessions</span>
+<span class="c-key">{</span>
+  <span class="c-str">"token"</span>: <span class="c-str">"ak_a7f3x9k2..."</span>,
+  <span class="c-str">"amount_sats"</span>: <span class="c-num">500</span>,
+  <span class="c-str">"funding"</span>: <span class="c-key">{</span>
+    <span class="c-str">"lightning_invoice"</span>: <span class="c-str">"lntbs10u1p..."</span>,
+    <span class="c-str">"ark_address"</span>: <span class="c-str">"tark1pem36w..."</span>,
+    <span class="c-str">"payment_hash"</span>: <span class="c-str">"d2297c1f..."</span>
+  <span class="c-key">}</span>,
+  <span class="c-str">"status"</span>: <span class="c-str">"awaiting_payment"</span>
+<span class="c-key">}</span>
+<span class="c-comment"># 2. Pay the lightning_invoice or send sats to the ark_address</span>
+<span class="c-comment"># 3. Poll the same token until the session becomes active</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-H</span> <span class="c-str">"Authorization: Bearer ak_a7f3x9k2..."</span> \
+     <span class="c-url">https://arkapi.dev/v1/balance</span>
+<span class="c-key">{</span>
+  <span class="c-str">"token"</span>: <span class="c-str">"ak_a7f3x9k2..."</span>,
+  <span class="c-str">"balance_sats"</span>: <span class="c-num">500</span>,
+  <span class="c-str">"status"</span>: <span class="c-str">"active"</span>
+<span class="c-key">}</span>
+<span class="c-comment"># 4. Use that same token for API calls</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-H</span> <span class="c-str">"Authorization: Bearer ak_a7f3x9k2..."</span> \
+     <span class="c-flag">-d</span> <span class="c-str">'{"ip": "8.8.8.8"}'</span> \
+     <span class="c-url">https://arkapi.dev/api/ip-lookup</span>
+<span class="c-key">{</span>
+  <span class="c-str">"success"</span>: <span class="c-val">true</span>,
+  <span class="c-str">"cost_sats"</span>: <span class="c-num">3</span>,
+  <span class="c-str">"balance_remaining"</span>: <span class="c-num">497</span>,
+  <span class="c-str">"data"</span>: <span class="c-key">{</span> <span class="c-str">"city"</span>: <span class="c-str">"Ashburn"</span>, <span class="c-str">"region"</span>: <span class="c-str">"VA"</span>, <span class="c-str">"org"</span>: <span class="c-str">"Google Public DNS"</span>, <span class="c-str">"as"</span>: <span class="c-str">"AS15169 Google LLC"</span> <span class="c-key">}</span>
+<span class="c-key">}</span></template>
+      </div>
+    </div>
+
+    <!-- LIVE STATS DASHBOARD -->
+    <div class="live-dashboard">
+      <div class="dash-header">
+        <div class="dash-title-row">
+          <span class="dash-label">LIVE NETWORK</span>
+          <span class="dash-status"><span class="pulse-green"></span> All systems operational</span>
+        </div>
+      </div>
+
+      <!-- Stat counters row -->
+      <div class="stat-counters">
+        <div class="stat-counter">
+          <div class="stat-value" id="stat-calls">0</div>
+          <div class="stat-label">API calls today</div>
+          <div class="stat-delta positive" id="delta-calls">+0 last min</div>
+        </div>
+        <div class="stat-counter">
+          <div class="stat-value" id="stat-sats">0</div>
+          <div class="stat-label">Sats processed</div>
+          <div class="stat-delta positive" id="delta-sats">+0 last min</div>
+        </div>
+        <div class="stat-counter">
+          <div class="stat-value" id="stat-sessions">0</div>
+          <div class="stat-label">Funded sessions</div>
+          <div class="stat-delta neutral" id="delta-sessions">—</div>
+        </div>
+        <div class="stat-counter">
+          <div class="stat-value" id="stat-latency">0<span class="stat-unit"> sats/call</span></div>
+          <div class="stat-label">Avg cost</div>
+          <div class="stat-delta neutral" id="delta-latency">avg cost</div>
+        </div>
+      </div>
+
+      <!-- Chart area -->
+      <div class="chart-area">
+        <div class="chart-header">
+          <span class="chart-title">Calls by hour (24h)</span>
+          <div class="chart-tabs">
+            <button class="chart-tab active" onclick="setChartMode('calls')">Calls</button>
+            <button class="chart-tab" onclick="setChartMode('sats')">Sats</button>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="liveChart"></canvas>
+          <div class="chart-y-axis">
+            <span id="y-max">50</span>
+            <span id="y-mid">25</span>
+            <span id="y-zero">0</span>
+          </div>
+        </div>
+        <div class="chart-x-labels">
+          <span>24h ago</span>
+          <span>18h</span>
+          <span>12h</span>
+          <span>6h</span>
+          <span>now</span>
+        </div>
+      </div>
+
+      <!-- Live activity feed -->
+      <div class="activity-feed">
+        <div class="feed-header">
+          <span class="feed-title">Top endpoints today</span>
+          <span class="feed-badge" id="feed-count">0 events/min</span>
+        </div>
+        <div class="feed-list" id="feed-list">
+        </div>
+      </div>
+
+      <!-- API breakdown bars -->
+      <div class="api-breakdown">
+        <div class="breakdown-header">Traffic by endpoint</div>
+        <div class="breakdown-bars" id="breakdown-bars"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API CATALOG -->
+<section class="section" id="apis">
+  <div class="container">
+    <div class="section-label">API catalog</div>
+    <div class="section-title">Utility APIs.<br>Pay per call.</div>
+    <div class="section-desc">Every API runs on our infrastructure. No accounts needed. No API keys to manage. ArkAPI works well as a private, metered API proxy for agentic systems that need security checks, OSINT lookups, screenshots, image generation, QR codes, translation, and utility calls without embedding provider-specific credentials everywhere.</div>
+    <div class="api-auth-note"><strong>Auth:</strong> After your session activates, send <code>Authorization: Bearer &lt;session_token&gt;</code> with every paid API request. The full flow is shown in the terminal block above.</div>
+    <div class="api-request-template"><code>curl -H "Authorization: Bearer &lt;session_token&gt;" "https://arkapi.dev/api/btc-price?currency=USD"</code></div>
+    <div class="api-search-wrap">
+      <input id="api-search-input" class="api-search-input" type="search" placeholder="Search APIs by name, endpoint, tag, method, or use case" aria-label="Search APIs">
+      <div class="api-filter-row" id="api-filter-row">
+        <button class="api-filter-btn active" type="button" data-filter="all">All</button>
+        <button class="api-filter-btn" type="button" data-filter="security">Security</button>
+        <button class="api-filter-btn" type="button" data-filter="osint">OSINT</button>
+        <button class="api-filter-btn" type="button" data-filter="ai">AI</button>
+        <button class="api-filter-btn" type="button" data-filter="visual">Visual</button>
+        <button class="api-filter-btn" type="button" data-filter="utility">Utility</button>
+        <button class="api-filter-btn" type="button" data-filter="bitcoin">Bitcoin</button>
+      </div>
+      <div id="api-search-meta" class="api-search-meta">Showing all APIs.</div>
+      <div id="api-search-empty" class="api-search-empty">No APIs matched that search. Try terms like <code>bitcoin</code>, <code>translate</code>, <code>cve</code>, or <code>GET</code>.</div>
+    </div>
+
+    <div class="section-label" style="margin-top:32px;">Security</div>
+    <div class="api-grid">
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3>DNS Lookup</h3>
+        <p>Full DNS records as structured JSON — A, AAAA, MX, TXT, NS, CNAME, and SOA records for any domain. Clean, parsed output.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/dns-lookup</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3><a href="/axfr-check/">AXFR Check</a></h3>
+        <p>Check whether a domain’s authoritative nameservers allow DNS zone transfer. Returns exposed zone data only when AXFR is actually permitted, making it useful for defensive reviews and misconfiguration checks. <a href="/axfr-check/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/axfr-check</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">12 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3>SSL Check</h3>
+        <p>SSL certificate analysis — validity, issuer, expiry, protocol version, cipher suite, certificate chain, and full SAN list.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/ssl-check</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">5 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3>Headers Audit</h3>
+        <p>HTTP security headers audit for any URL. Checks CSP, CORS, HSTS, cookie flags, server version leaks, and scores overall hardening.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/headers</div>
+        <div class="api-payload"><span>Body</span><br>{"url":"https://example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3><a href="/domain-intel/">Domain Intel</a></h3>
+        <p>Aggregate DNS, WHOIS, TLS, headers, email-auth, parsed security.txt and robots.txt metadata, improved tech fingerprints, HTTP behavior, CT-log subdomains, provider detection, and resolved IP intelligence for a domain in one response, with optional AI summary output. <a href="/domain-intel/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/domain-intel</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com","ai_summary":true}</div>
+        <div class="api-meta">
+          <span class="api-price">25 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3>Email Auth Check</h3>
+        <p>Check SPF, DKIM, and DMARC posture for a domain and return an email-auth grade from A to F based on policy strength and gaps.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/email-auth-check</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">4 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3>CVE Search</h3>
+        <p>Search the official NVD feed by keyword and return matched CVEs with severity, dates, KEV signal, and direct detail URLs.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/cve-search</div>
+        <div class="api-payload"><span>Body</span><br>{"query":"wordpress information disclosure","limit":10}</div>
+        <div class="api-meta">
+          <span class="api-price">4 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
+        <h3><a href="/cve-lookup/">CVE Lookup</a></h3>
+        <p>Look up a CVE in the official NVD feed. Returns published dates, severity, CVSS, CWE data, KEV signal, and reference links. <a href="/cve-lookup/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/cve-lookup</div>
+        <div class="api-payload"><span>Body</span><br>{"cve":"CVE-2024-3400"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:40px;">OSINT</div>
+    <div class="api-grid">
+      <div class="api-card">
+        <span class="api-tag tag-osint">OSINT</span>
+        <h3>WHOIS</h3>
+        <p>WHOIS data parsed into clean JSON. Registrar, creation date, expiry, name servers, registrant organization, and domain status.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/whois</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">5 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-osint">OSINT</span>
+        <h3>IP Lookup</h3>
+        <p>IP geolocation, ISP, and ASN data. Returns country, city, coordinates, organization, and AS number for any IP address.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/ip-lookup</div>
+        <div class="api-payload"><span>Body</span><br>{"ip":"8.8.8.8"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-label" style="margin-top:40px;">Visual + AI</div>
+    <div class="api-grid">
+      <div class="api-card">
+        <span class="api-tag tag-ai">AI</span>
+        <h3><a href="/ai-chat/">Anonymous AI Chat</a></h3>
+        <p>Prompt a private chat backend through ArkAPI without exposing your own provider key. Returns a concise model answer plus token usage metadata. Limited to 5 requests per day per funded session. <a href="/ai-chat/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/ai-chat</div>
+        <div class="api-payload"><span>Body</span><br>{"prompt":"How is Ark different from Lightning?"}</div>
+        <div class="api-meta">
+          <span class="api-price">100 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-ai">AI</span>
+        <h3><a href="/ai-translate/">AI Translate</a></h3>
+        <p>Higher-quality translation with optional style control for more natural output. Use it when the cheaper utility translator is too literal and you want wording that reads more like edited prose. <a href="/ai-translate/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/ai-translate</div>
+        <div class="api-payload"><span>Body</span><br>{"text":"Bonjour","target_language":"en","style":"natural"}</div>
+        <div class="api-meta">
+          <span class="api-price">25 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-ai">AI</span>
+        <h3>Image Generate</h3>
+        <p>Generate a fresh image through the ArkAPI rendering pipeline. Returns image metadata plus a short-lived ArkAPI download URL that expires quickly.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/image-generate</div>
+        <div class="api-payload"><span>Body</span><br>{"prompt":"cinematic AI control room"}</div>
+        <div class="api-meta">
+          <span class="api-price">25 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-visual">VISUAL</span>
+        <h3>Screenshot</h3>
+        <p>Capture a server-side screenshot of any public webpage. Returns image metadata plus a short-lived ArkAPI download URL for the rendered PNG.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/screenshot</div>
+        <div class="api-payload"><span>Body</span><br>{"url":"https://example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">15 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:40px;">Utility</div>
+    <div class="api-grid">
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
+        <h3>Weather</h3>
+        <p>Current weather conditions and 7-day forecast for any city. Temperature, humidity, wind, conditions, and daily highs/lows.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/weather</div>
+        <div class="api-payload"><span>Body</span><br>{"city":"New York"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
+        <h3><a href="/translate/">Translate</a></h3>
+        <p>Translate plain text with source-language auto-detection and a target language code. Fast utility translation without external API keys. <a href="/translate/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/translate</div>
+        <div class="api-payload"><span>Body</span><br>{"text":"Hola mundo","target_language":"en"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
+        <h3><a href="/prediction-market-search/">Prediction Market Search</a></h3>
+        <p>Search open Polymarket prediction markets and return normalized event titles, probabilities, volume, close times, and URLs for agents tracking macro, Bitcoin, and public-event markets. <a href="/prediction-market-search/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/prediction-market-search</div>
+        <div class="api-payload"><span>Body</span><br>{"query":"bitcoin","limit":10}</div>
+        <div class="api-meta">
+          <span class="api-price">4 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
+        <h3>QR Generate</h3>
+        <p>Generate a QR code PNG from any text, URL, or Bitcoin address. Returns a base64-encoded image and a ready-to-use data URI. Sizes from 64px to 1024px.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/qr-generate</div>
+        <div class="api-payload"><span>Body</span><br>{"data":"https://arkapi.dev","size":256}</div>
+        <div class="api-meta">
+          <span class="api-price">2 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
+        <h3>Domain Check</h3>
+        <p>Check whether a domain appears available through WHOIS and return registrar, dates, and nameserver data when it is already registered.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/domain-check</div>
+        <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
+        <h3><a href="/url-to-markdown/">URL to Markdown</a></h3>
+        <p>Clean Markdown extraction from any public URL. Perfect for LLM context, search indexing, or readable archival of web content. <a href="/url-to-markdown/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/url-to-markdown</div>
+        <div class="api-payload"><span>Body</span><br>{"url":"https://example.com"}</div>
+        <div class="api-meta">
+          <span class="api-price">5 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:40px;">Bitcoin</div>
+    <div class="api-grid">
+      <div class="api-card">
+        <span class="api-tag tag-bitcoin">BITCOIN</span>
+        <h3>Bitcoin News</h3>
+        <p>Aggregated Bitcoin headlines from free RSS feeds, normalized into one JSON response with source, timestamp, summary, and link.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/bitcoin-news</div>
+        <div class="api-payload"><span>Body</span><br>{"limit":10}</div>
+        <div class="api-meta">
+          <span class="api-price">2 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-bitcoin">BITCOIN</span>
+        <h3><a href="/btc-price/">Bitcoin Price</a></h3>
+        <p>Current Bitcoin spot price in 10 major fiat currencies, including USD, EUR, GBP, CAD, JPY, and AUD, with a short cache. Add <span class="code-inline">?currency=USD</span> for one rate or <span class="code-inline">?currencies=USD,EUR,CAD</span> for a subset. <a href="/btc-price/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/btc-price</div>
+        <div class="api-payload"><span>Body</span><br>none required</div>
+        <div class="api-meta">
+          <span class="api-price">1 sat <span>/ call</span></span>
+          <span class="api-method">GET</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-bitcoin">BITCOIN</span>
+        <h3>Address Validate</h3>
+        <p>Validate mainnet Bitcoin addresses (Legacy, SegWit, Taproot) and fetch live on-chain balance data. Returns address type, network, format, confirmed and unconfirmed sats, and transaction count.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/bitcoin-address</div>
+        <div class="api-payload"><span>Body</span><br>{"address":"bc1q..."}</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="section" id="docs">
+  <div class="container">
+    <div class="section-label">Under the hood</div>
+    <div class="section-title">Built on Bitcoin. Not bolted on.</div>
+    <div class="section-desc">ArkAPI uses the Ark protocol via Second's Bark SDK for instant, self-custodial payments. Lightning interop is built in. No new tokens. No sidechains. Just Bitcoin. The result is a Bitcoin-native API access layer that can help developers and agents buy small amounts of API usage privately, on demand, and without standing accounts.</div>
+
+    <div class="stack-row">
+      <span class="stack-pill">Ark protocol</span>
+      <span class="stack-pill">Second / Bark</span>
+      <span class="stack-pill">Lightning bridge</span>
+      <span class="stack-pill">VTXOs</span>
+      <span class="stack-pill">Self-custodial</span>
+      <span class="stack-pill">No KYC</span>
+      <span class="stack-pill">Signet (beta)</span>
+      <span class="stack-pill">Go</span>
+      <span class="stack-pill">MySQL</span>
+      <span class="stack-pill">Docker</span>
+      <span class="stack-pill">MCP compatible</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Your sats are your API key.</h2>
+      <p>Fund a session on Bitcoin Signet right now with Ark or Lightning. Signet sats only. No signup. No API keys. Need test funds? Use the <a href="https://signet.2nd.dev/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:none;">Second Signet faucet</a>.</p>
+      <div class="hero-actions">
+        <a href="/fund/" class="btn-primary">Open Fund Page &rarr;</a>
+        <a href="/contact/" class="btn-secondary">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- TERMINAL DEMO ----
+const terminalDemo = document.getElementById('terminal-demo');
+const terminalTemplate = document.getElementById('terminal-template');
+const terminalLines = terminalTemplate.innerHTML.trim().split('\n');
+let terminalLoopTimer;
+
+function terminalDelayFor(line) {
+  const trimmed = line.replace(/<[^>]+>/g, '').trim();
+  if (!trimmed) return 110;
+  if (trimmed.startsWith('#')) return 520;
+  if (trimmed.startsWith('curl')) return 900;
+  if (trimmed.startsWith('{') || trimmed.startsWith('}')) return 180;
+  if (trimmed.includes('"status"') || trimmed.includes('"balance_sats"')) return 240;
+  if (trimmed.includes('"lightning_invoice"') || trimmed.includes('"ark_address"')) return 220;
+  return 150;
+}
+
+function appendTerminalLine(html) {
+  const line = document.createElement('span');
+  line.className = 'terminal-line';
+  line.innerHTML = html.trim() === '' ? '&nbsp;' : html;
+  terminalDemo.appendChild(line);
+  terminalDemo.appendChild(document.createTextNode('\n'));
+  requestAnimationFrame(() => line.classList.add('revealed'));
+  terminalDemo.scrollTop = terminalDemo.scrollHeight;
+}
+
+function startTerminalLoop() {
+  if (!terminalDemo || !terminalLines.length) return;
+  clearTimeout(terminalLoopTimer);
+  terminalDemo.innerHTML = '';
+
+  let index = 0;
+  const step = () => {
+    if (index < terminalLines.length) {
+      const line = terminalLines[index++];
+      appendTerminalLine(line);
+      terminalLoopTimer = setTimeout(step, terminalDelayFor(line));
+      return;
+    }
+
+    const cursor = document.createElement('span');
+    cursor.className = 'terminal-cursor';
+    terminalDemo.appendChild(cursor);
+    terminalLoopTimer = setTimeout(startTerminalLoop, 20000);
+  };
+
+  step();
+}
+
+// ---- LIVE DASHBOARD — real data from /v1/stats ----
+const POLL_INTERVAL = 60000; // 60 seconds
+const POLL_INTERVAL_LABEL = '60s';
+
+let state = {
+  totalCalls: 0,
+  totalSats: 0,
+  activeSessions: 0,
+  endpointBreakdown: {},
+  chartMode: 'calls',
+  chartData: { calls: new Array(24).fill(0), sats: new Array(24).fill(0) },
+  hourLabels: [],
+  online: false,
+};
+
+function formatNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+
+function flashStat(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('stat-flash');
+  setTimeout(() => el.classList.remove('stat-flash'), 150);
+}
+
+// ---- FETCH REAL STATS ----
+async function fetchStats() {
+  try {
+    const resp = await fetch('/v1/stats');
+    if (!resp.ok) throw new Error('not ok');
+    const data = await resp.json();
+
+    const prevCalls = state.totalCalls;
+    const prevSats = state.totalSats;
+
+    state.totalCalls = data.calls_today || 0;
+    state.totalSats = data.sats_today || 0;
+    state.activeSessions = data.active_sessions || 0;
+    state.endpointBreakdown = data.endpoint_breakdown || {};
+    state.hourLabels = data.hour_labels || [];
+    state.chartData.calls = Array.isArray(data.calls_24h) && data.calls_24h.length ? data.calls_24h : new Array(24).fill(0);
+    state.chartData.sats = Array.isArray(data.sats_24h) && data.sats_24h.length ? data.sats_24h : new Array(24).fill(0);
+    state.online = true;
+
+    const callsDelta = state.totalCalls - prevCalls;
+    const satsDelta = state.totalSats - prevSats;
+
+    updateDisplay(callsDelta, satsDelta);
+    drawChart();
+
+    // If calls changed, flash the counters
+    if (callsDelta > 0) {
+      flashStat('stat-calls');
+      flashStat('stat-sats');
+    }
+  } catch (e) {
+    state.online = false;
+    updateStatus();
+  }
+}
+
+function updateDisplay(callsDelta, satsDelta) {
+  document.getElementById('stat-calls').textContent = formatNum(state.totalCalls);
+  document.getElementById('stat-sats').textContent = formatNum(state.totalSats);
+  document.getElementById('stat-sessions').textContent = state.activeSessions;
+
+  // Avg sats per call
+  const avgCost = state.totalCalls > 0 ? (state.totalSats / state.totalCalls).toFixed(1) : '0';
+  document.getElementById('stat-latency').innerHTML = avgCost + '<span class="stat-unit"> sats/call</span>';
+
+  document.getElementById('delta-calls').textContent = callsDelta > 0 ? '+' + callsDelta + ' last 60s' : 'idle';
+  document.getElementById('delta-calls').className = 'stat-delta ' + (callsDelta > 0 ? 'positive' : 'neutral');
+  document.getElementById('delta-sats').textContent = satsDelta > 0 ? '+' + satsDelta + ' last 60s' : 'idle';
+  document.getElementById('delta-sats').className = 'stat-delta ' + (satsDelta > 0 ? 'positive' : 'neutral');
+  document.getElementById('delta-sessions').textContent = state.activeSessions > 0 ? 'open' : 'none';
+  document.getElementById('delta-latency').textContent = 'avg cost';
+
+  document.getElementById('feed-count').textContent = state.totalCalls + ' calls today';
+
+  updateStatus();
+  updateActivityFeed();
+}
+
+function updateStatus() {
+  const statusEl = document.querySelector('.dash-status');
+  if (state.online) {
+    statusEl.innerHTML = `<span class="pulse-green"></span> Live \u2014 polling every ${POLL_INTERVAL_LABEL}`;
+  } else {
+    statusEl.innerHTML = '<span class="pulse-green" style="background:var(--red);box-shadow:0 0 8px rgba(239,68,68,0.6)"></span> Offline';
+  }
+}
+
+// ---- CANVAS CHART ----
+const canvas = document.getElementById('liveChart');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function drawChart() {
+  const w = canvas.width / window.devicePixelRatio;
+  const h = canvas.height / window.devicePixelRatio;
+  ctx.clearRect(0, 0, w, h);
+
+  const data = state.chartData[state.chartMode];
+  if (!data.length) return;
+
+  const max = Math.max(...data, 1) * 1.2;
+  const padL = 4, padR = 40, padT = 8, padB = 4;
+  const cw = w - padL - padR;
+  const ch = h - padT - padB;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(42, 42, 47, 0.6)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + (ch / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(padL + cw, y);
+    ctx.stroke();
+  }
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, padT, 0, h);
+  if (state.chartMode === 'calls') {
+    grad.addColorStop(0, 'rgba(247, 147, 26, 0.25)');
+    grad.addColorStop(1, 'rgba(247, 147, 26, 0)');
+  } else {
+    grad.addColorStop(0, 'rgba(34, 197, 94, 0.2)');
+    grad.addColorStop(1, 'rgba(34, 197, 94, 0)');
+  }
+
+  ctx.beginPath();
+  const stepCount = Math.max(data.length - 1, 1);
+  data.forEach((v, i) => {
+    const x = padL + (i / stepCount) * cw;
+    const y = padT + ch - (v / max) * ch;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(padL + cw, padT + ch);
+  ctx.lineTo(padL, padT + ch);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Draw line
+  const colors = { calls: '#f7931a', sats: '#22c55e' };
+  ctx.beginPath();
+  ctx.strokeStyle = colors[state.chartMode];
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  data.forEach((v, i) => {
+    const x = padL + (i / stepCount) * cw;
+    const y = padT + ch - (v / max) * ch;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Glow dot on last point
+  const lastX = padL + cw;
+  const lastY = padT + ch - (data[data.length - 1] / max) * ch;
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 3, 0, Math.PI * 2);
+  ctx.fillStyle = colors[state.chartMode];
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(lastX, lastY, 7, 0, Math.PI * 2);
+  ctx.fillStyle = state.chartMode === 'calls' ? 'rgba(247,147,26,0.2)' : 'rgba(34,197,94,0.2)';
+  ctx.fill();
+
+  // Y axis labels
+  document.getElementById('y-max').textContent = Math.round(max);
+  document.getElementById('y-mid').textContent = Math.round(max / 2);
+  document.getElementById('y-zero').textContent = '0';
+}
+
+// Chart tab switching
+function setChartMode(mode) {
+  state.chartMode = mode;
+  document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const titles = { calls: 'Calls by hour (24h)', sats: 'Sats by hour (24h)' };
+  document.querySelector('.chart-title').textContent = titles[mode];
+  drawChart();
+}
+
+const endpointDisplayOrder = [
+  'ai-chat',
+  'ai-translate',
+  'axfr-check',
+  'bitcoin-address',
+  'bitcoin-news',
+  'btc-price',
+  'cve-lookup',
+  'cve-search',
+  'dns-lookup',
+  'domain-check',
+  'domain-intel',
+  'email-auth-check',
+  'headers',
+  'image-generate',
+  'ip-lookup',
+  'prediction-market-search',
+  'qr-generate',
+  'screenshot',
+  'ssl-check',
+  'translate',
+  'url-to-markdown',
+  'weather',
+  'whois'
+].sort((a, b) => a.localeCompare(b));
+
+const endpointLandingPages = {
+  'ai-chat': '/ai-chat/',
+  'ai-translate': '/ai-translate/',
+  'axfr-check': '/axfr-check/',
+  'btc-price': '/btc-price/',
+  'cve-lookup': '/cve-lookup/',
+  'domain-intel': '/domain-intel/',
+  'prediction-market-search': '/prediction-market-search/',
+  'translate': '/translate/',
+  'url-to-markdown': '/url-to-markdown/'
+};
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderEndpointName(name) {
+  const safeName = escapeHTML(name);
+  const href = endpointLandingPages[name];
+  if (!href) return safeName;
+  return `<a href="${href}" style="color:inherit;text-decoration:none;">${safeName}</a>`;
+}
+
+function updateActivityFeed() {
+  const list = document.getElementById('feed-list');
+  if (!list) return;
+
+  const entries = Object.entries(state.endpointBreakdown || {})
+    .filter(([, count]) => Number(count) > 0)
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, 5);
+
+  if (!entries.length) {
+    list.innerHTML = '<div class="feed-item" style="justify-content:center;color:var(--text-muted);">No endpoint traffic recorded today yet.</div>';
+    return;
+  }
+
+  list.innerHTML = entries.map(([name, count], idx) =>
+    `<div class="feed-item"><span style="color:var(--accent);min-width:28px;">#${idx + 1}</span><span style="flex:1;">${renderEndpointName(name)}</span><span style="color:var(--text-dim);">${count} calls</span></div>`
+  ).join('');
+}
+
+// ---- BREAKDOWN BARS ----
+function updateBreakdown() {
+  const container = document.getElementById('breakdown-bars');
+  if (!container) return;
+  const total = Object.values(state.endpointBreakdown || {}).reduce((sum, n) => sum + n, 0);
+  const names = Array.from(new Set([
+    ...endpointDisplayOrder,
+    ...Object.keys(state.endpointBreakdown || {})
+  ])).sort((a, b) => a.localeCompare(b));
+
+  if (!names.length) {
+    container.innerHTML = '<div class="breakdown-row"><span class="breakdown-name">none</span><div class="breakdown-track"><div class="breakdown-fill fill-1" style="width:0%"></div></div><span class="breakdown-pct">0%</span></div>';
+    return;
+  }
+
+  container.innerHTML = names.map((name, idx) => {
+    const count = Number((state.endpointBreakdown && state.endpointBreakdown[name]) || 0);
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    const fillClass = `fill-${(idx % 6) + 1}`;
+    return `<div class="breakdown-row"><span class="breakdown-name">${renderEndpointName(name)}</span><div class="breakdown-track"><div class="breakdown-fill ${fillClass}" style="width:${pct}%"></div></div><span class="breakdown-pct">${pct}%</span></div>`;
+  }).join('');
+}
+
+// ---- START POLLING ----
+startTerminalLoop();
+fetchStats().then(() => {
+  updateBreakdown();
+  drawChart();
+});
+setInterval(() => {
+  fetchStats().then(updateBreakdown);
+}, POLL_INTERVAL);
+
+// ---- API SEARCH ----
+const apiSearchInput = document.getElementById('api-search-input');
+const apiSearchMeta = document.getElementById('api-search-meta');
+const apiSearchEmpty = document.getElementById('api-search-empty');
+const apiFilterButtons = Array.from(document.querySelectorAll('.api-filter-btn'));
+const apiCards = Array.from(document.querySelectorAll('.api-grid .api-card'));
+const apiGrids = Array.from(document.querySelectorAll('#apis .api-grid'));
+let activeApiFilter = 'all';
+
+function updateApiSearch() {
+  if (!apiSearchInput) return;
+  const query = apiSearchInput.value.trim().toLowerCase();
+  let visibleCards = 0;
+
+  apiCards.forEach((card) => {
+    const textMatch = !query || card.textContent.toLowerCase().includes(query);
+    const tag = (card.querySelector('.api-tag')?.textContent || '').trim().toLowerCase();
+    const tagMatch = activeApiFilter === 'all' || tag === activeApiFilter;
+    const match = textMatch && tagMatch;
+    card.style.display = match ? '' : 'none';
+    if (match) visibleCards += 1;
+  });
+
+  apiGrids.forEach((grid) => {
+    const visibleInGrid = Array.from(grid.querySelectorAll('.api-card')).some((card) => card.style.display !== 'none');
+    grid.style.display = visibleInGrid ? '' : 'none';
+    const label = grid.previousElementSibling;
+    if (label && label.classList.contains('section-label')) {
+      label.style.display = visibleInGrid ? '' : 'none';
+    }
+  });
+
+  if (!query) {
+    apiSearchMeta.textContent = activeApiFilter === 'all'
+      ? `Showing all ${apiCards.length} APIs.`
+      : `Showing ${visibleCards} ${activeApiFilter} API${visibleCards === 1 ? '' : 's'}.`;
+  } else {
+    apiSearchMeta.textContent = activeApiFilter === 'all'
+      ? `Showing ${visibleCards} API${visibleCards === 1 ? '' : 's'} for "${apiSearchInput.value.trim()}".`
+      : `Showing ${visibleCards} ${activeApiFilter} API${visibleCards === 1 ? '' : 's'} for "${apiSearchInput.value.trim()}".`;
+  }
+  apiSearchEmpty.style.display = visibleCards === 0 ? 'block' : 'none';
+}
+
+if (apiSearchInput) {
+  apiSearchInput.addEventListener('input', updateApiSearch);
+  apiFilterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeApiFilter = button.dataset.filter || 'all';
+      apiFilterButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+      updateApiSearch();
+    });
+  });
+  updateApiSearch();
+}
+</script>
+
+</body>
+</html>

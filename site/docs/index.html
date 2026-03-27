@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArkAPI Docs | AI Chat, Domain Intel, Bitcoin Price, CVE, Translation</title>
+<meta name="description" content="ArkAPI documentation for anonymous pay-per-call APIs. Create a Signet session, fund it with Ark or Lightning, and call AI chat, domain intelligence, URL-to-Markdown, Bitcoin price, CVE, translation, and prediction-market endpoints.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/docs/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/docs/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="ArkAPI Docs | AI Chat, Domain Intel, Bitcoin Price, CVE, Translation">
+<meta property="og:description" content="Create a Signet session, fund it with Ark or Lightning, and call ArkAPI endpoints for AI chat, domain intelligence, URL-to-Markdown, Bitcoin price, CVE lookup, translation, and prediction markets.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ArkAPI Docs | Anonymous Pay-per-call APIs">
+<meta name="twitter:description" content="ArkAPI docs for AI chat, domain intelligence, URL-to-Markdown, Bitcoin price, CVE lookup, translation, and prediction-market endpoints.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is this on mainnet?", "acceptedAnswer": {"@type": "Answer", "text": "ArkAPI is currently live on Signet test network only. Sats are test sats, not real Bitcoin."}},
+    {"@type": "Question", "name": "Do I need an account?", "acceptedAnswer": {"@type": "Answer", "text": "No. Sessions are anonymous. Create a token, pay, and start making calls."}},
+    {"@type": "Question", "name": "What happens when my balance runs out?", "acceptedAnswer": {"@type": "Answer", "text": "API calls return a 402 error. Create and fund a new session on the fund page."}},
+    {"@type": "Question", "name": "Can I get a refund?", "acceptedAnswer": {"@type": "Answer", "text": "Failed API calls are automatically refunded to your session balance. On Signet, session balances are non-refundable — test sats are free from the faucet. Session balance refunds will be available when ArkAPI launches on mainnet."}},
+    {"@type": "Question", "name": "What wallets work?", "acceptedAnswer": {"@type": "Answer", "text": "Any Lightning or Ark-compatible wallet. For testing on Signet, use bark or other Signet wallets."}},
+    {"@type": "Question", "name": "Is there a rate limit?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The default limit is 60 requests per minute per session, with tighter per-token limits on expensive endpoints like image generation, screenshots, and anonymous AI chat."}},
+    {"@type": "Question", "name": "Can I publish my own API?", "acceptedAnswer": {"@type": "Answer", "text": "The ArkAPI API-publisher program is currently in early access. Visit the Early Access page to request access and follow development."}},
+    {"@type": "Question", "name": "How do I get Signet test sats?", "acceptedAnswer": {"@type": "Answer", "text": "Visit the Second Signet faucet at signet.2nd.dev, enter your Signet wallet address, and you'll receive free test sats. Use those to fund an ArkAPI session on the Fund page. Signet sats have no real value — they exist only for testing."}},
+    {"@type": "Question", "name": "Where can I read more about Ark?", "acceptedAnswer": {"@type": "Answer", "text": "Read the official Ark protocol docs at ark-protocol.org/intro/."}},
+    {"@type": "Question", "name": "Where can I buy real sats?", "acceptedAnswer": {"@type": "Answer", "text": "Bitcoin Well is a non-custodial exchange — you buy, they send directly to your wallet. Available in Canada and the US."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.step { display: flex; gap: 16px; margin-bottom: 20px; }
+.step-num { flex-shrink: 0; width: 32px; height: 32px; background: rgba(247,147,26,0.12); border: 1px solid rgba(247,147,26,0.25); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--accent); }
+.step-body { flex: 1; min-width: 0; }
+.step-body p { margin-bottom: 8px; }
+.endpoint-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+.endpoint-table th, .endpoint-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+.endpoint-table th { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.endpoint-table td { color: var(--text-dim); }
+.endpoint-table .mono { font-family: var(--mono); color: var(--text); font-size: 13px; }
+.endpoint-table .cost { color: var(--accent); font-family: var(--mono); }
+.api-search-wrap { margin: 14px 0 10px; }
+.api-search-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.api-search-input:focus {
+  border-color: rgba(247, 147, 26, 0.5);
+  box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.12);
+}
+.api-search-meta { margin-top: 10px; color: var(--text-muted); font-size: 13px; }
+.api-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.api-filter-btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.api-filter-btn:hover {
+  color: var(--text);
+  border-color: rgba(247, 147, 26, 0.35);
+}
+.api-filter-btn.active {
+  color: var(--text);
+  background: rgba(247, 147, 26, 0.1);
+  border-color: rgba(247, 147, 26, 0.35);
+}
+.api-search-empty {
+  display: none;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.02);
+}
+.faq-item { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 16px; }
+.faq-item:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.faq-q { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.faq-a { color: var(--text-dim); }
+.faq-a a { color: var(--accent); text-decoration: none; }
+@media (max-width: 768px) {
+  .endpoint-table { font-size: 12px; }
+  .endpoint-table th, .endpoint-table td { padding: 8px 6px; }
+  .code-block { font-size: 11px; padding: 12px; }
+  .step { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Early Access</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Documentation &bull; Live on Signet test network only</div>
+    <h1>Get started with ArkAPI.</h1>
+    <p class="sub">No accounts, no API keys to manage. Fund a session with Bitcoin and start making calls.</p>
+  </section>
+
+  <div class="card">
+    <h2>Quick Start</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <p>Create a session:</p>
+        <div class="code-block">curl -X POST https://arkapi.dev/v1/sessions</div>
+        <p>Returns a session token (<span class="code-inline">ak_...</span>) and a Lightning/Ark invoice.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <p>Pay the invoice with any Lightning or Ark wallet. The session activates automatically once payment is confirmed.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <p>Make API calls with your token:</p>
+        <div class="code-block">curl -X POST https://arkapi.dev/api/dns-lookup \
+  -H "Authorization: Bearer ak_your_token" \
+  -d '{"domain":"example.com"}'</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Authentication</h2>
+    <p>Every API call requires a Bearer token in the <span class="code-inline">Authorization</span> header. Tokens start with <span class="code-inline">ak_</span> and are returned when you create a session.</p>
+    <h3>Check your balance</h3>
+    <div class="code-block">curl https://arkapi.dev/v1/balance \
+  -H "Authorization: Bearer ak_your_token"</div>
+  </div>
+
+  <div class="card">
+    <h2>Available Endpoints</h2>
+    <div class="api-search-wrap">
+      <input id="docs-api-search-input" class="api-search-input" type="search" placeholder="Search endpoints by name, path, cost, or description" aria-label="Search endpoints">
+      <div class="api-filter-row" id="docs-api-filter-row">
+        <button class="api-filter-btn active" type="button" data-filter="all">All</button>
+        <button class="api-filter-btn" type="button" data-filter="security">Security</button>
+        <button class="api-filter-btn" type="button" data-filter="osint">OSINT</button>
+        <button class="api-filter-btn" type="button" data-filter="ai">AI</button>
+        <button class="api-filter-btn" type="button" data-filter="visual">Visual</button>
+        <button class="api-filter-btn" type="button" data-filter="utility">Utility</button>
+        <button class="api-filter-btn" type="button" data-filter="bitcoin">Bitcoin</button>
+      </div>
+      <div id="docs-api-search-meta" class="api-search-meta">Showing all endpoints.</div>
+      <div id="docs-api-search-empty" class="api-search-empty">No endpoints matched that search. Try <code>bitcoin</code>, <code>translate</code>, <code>cve</code>, or <code>1 sat</code>.</div>
+    </div>
+    <table class="endpoint-table">
+      <thead><tr><th>Endpoint</th><th>Cost</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr data-category="security"><td class="mono">/api/dns-lookup</td><td class="cost">3 sats</td><td>Full DNS records as structured JSON</td></tr>
+        <tr data-category="osint"><td class="mono">/api/whois</td><td class="cost">5 sats</td><td>WHOIS data parsed into clean JSON</td></tr>
+        <tr data-category="security"><td class="mono">/api/ssl-check</td><td class="cost">5 sats</td><td>SSL certificate analysis</td></tr>
+        <tr data-category="security"><td class="mono">/api/headers</td><td class="cost">3 sats</td><td>HTTP security headers audit with score</td></tr>
+        <tr data-category="utility"><td class="mono">/api/weather</td><td class="cost">3 sats</td><td>Current weather + 7-day forecast</td></tr>
+        <tr data-category="osint"><td class="mono">/api/ip-lookup</td><td class="cost">3 sats</td><td>IP geolocation, ISP, and ASN data</td></tr>
+        <tr data-category="security"><td class="mono">/api/email-auth-check</td><td class="cost">4 sats</td><td>SPF, DKIM, and DMARC posture check</td></tr>
+        <tr data-category="security"><td class="mono"><a href="/axfr-check/">/api/axfr-check</a></td><td class="cost">12 sats</td><td>Check whether a domain allows DNS zone transfer and return exposed AXFR records when available</td></tr>
+        <tr data-category="security"><td class="mono"><a href="/domain-intel/">/api/domain-intel</a></td><td class="cost">25 sats</td><td>Aggregate DNS, WHOIS, TLS, headers, email auth, parsed <span class="code-inline">security.txt</span>, parsed <span class="code-inline">robots.txt</span>, improved tech fingerprinting, <span class="code-inline">http_behavior</span>, CT-log subdomains, provider detection, and resolved IP intelligence, with optional <span class="code-inline">ai_summary</span></td></tr>
+        <tr data-category="bitcoin"><td class="mono">/api/bitcoin-news</td><td class="cost">2 sats</td><td>Aggregated Bitcoin headlines</td></tr>
+        <tr data-category="ai"><td class="mono"><a href="/ai-chat/">/api/ai-chat</a></td><td class="cost">100 sats</td><td>Anonymous AI chat</td></tr>
+        <tr data-category="ai"><td class="mono"><a href="/ai-translate/">/api/ai-translate</a></td><td class="cost">25 sats</td><td>Higher-quality AI translation with optional style control</td></tr>
+        <tr data-category="ai"><td class="mono">/api/image-generate</td><td class="cost">25 sats</td><td>AI image generation</td></tr>
+        <tr data-category="visual"><td class="mono">/api/screenshot</td><td class="cost">15 sats</td><td>Full-page website screenshot</td></tr>
+        <tr data-category="utility"><td class="mono">/api/qr-generate</td><td class="cost">2 sats</td><td>QR code generation from text or URL</td></tr>
+        <tr data-category="bitcoin"><td class="mono">/api/bitcoin-address</td><td class="cost">3 sats</td><td>Bitcoin address validation + balance</td></tr>
+        <tr data-category="bitcoin"><td class="mono"><a href="/btc-price/">/api/btc-price</a></td><td class="cost">1 sat</td><td>Live Bitcoin spot price in 10 major fiat currencies, with optional <span class="code-inline">currency</span> or <span class="code-inline">currencies</span> query parameters</td></tr>
+        <tr data-category="security"><td class="mono">/api/cve-search</td><td class="cost">4 sats</td><td>Search CVEs by keyword or product</td></tr>
+        <tr data-category="utility"><td class="mono"><a href="/prediction-market-search/">/api/prediction-market-search</a></td><td class="cost">4 sats</td><td>Search open Polymarket prediction markets and return normalized results</td></tr>
+        <tr data-category="security"><td class="mono"><a href="/cve-lookup/">/api/cve-lookup</a></td><td class="cost">3 sats</td><td>Look up a specific CVE by ID</td></tr>
+        <tr data-category="utility"><td class="mono"><a href="/translate/">/api/translate</a></td><td class="cost">3 sats</td><td>Text translation between languages</td></tr>
+        <tr data-category="utility"><td class="mono">/api/domain-check</td><td class="cost">3 sats</td><td>Domain availability check</td></tr>
+        <tr data-category="utility"><td class="mono"><a href="/url-to-markdown/">/api/url-to-markdown</a></td><td class="cost">5 sats</td><td>Extract clean Markdown from any public URL</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px;">Most endpoints accept <span class="code-inline">POST</span> with a JSON body. <span class="code-inline">/api/btc-price</span> is a lightweight <span class="code-inline">GET</span> endpoint with no request body. If you do not pass a currency filter, the response defaults to <span class="code-inline">USD</span>. Optional query params: <span class="code-inline">?currency=USD</span> or <span class="code-inline">?currencies=USD,EUR,CAD</span>. See the <a href="/v1/catalog">live catalog</a> for latest pricing.</p>
+  </div>
+
+  <div class="card">
+    <h2>Response Format</h2>
+    <p>Every API response follows the same wrapper:</p>
+    <div class="code-block">{
+  "success": true,
+  "data": { ... },
+  "cost_sats": 3,
+  "balance_remaining": 9997,
+  "response_ms": 45,
+  "endpoint": "/api/dns-lookup"
+}</div>
+    <ul>
+      <li><span class="code-inline">success</span> &mdash; whether the call succeeded</li>
+      <li><span class="code-inline">data</span> &mdash; the endpoint-specific response payload</li>
+      <li><span class="code-inline">cost_sats</span> &mdash; sats deducted for this call</li>
+      <li><span class="code-inline">balance_remaining</span> &mdash; session balance after this call</li>
+      <li><span class="code-inline">response_ms</span> &mdash; server-side processing time</li>
+    </ul>
+    <p style="margin-top:12px;">On error, <span class="code-inline">success</span> is <span class="code-inline">false</span> and an <span class="code-inline">error</span> field describes the issue. Failed calls are not charged.</p>
+  </div>
+
+  <div class="card">
+    <h2>Featured Guide</h2>
+    <p>Focused endpoint guides: <a href="/ai-chat/">Anonymous AI Chat API</a>, <a href="/ai-translate/">AI Translate API</a>, <a href="/domain-intel/">Domain Intel API</a>, <a href="/axfr-check/">AXFR Check API</a>, and <a href="/url-to-markdown/">URL to Markdown API</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Error Codes</h2>
+    <ul>
+      <li><span class="code-inline">400</span> &mdash; Bad request (invalid or missing input)</li>
+      <li><span class="code-inline">401</span> &mdash; Unauthorized (missing or invalid token)</li>
+      <li><span class="code-inline">402</span> &mdash; Payment required (insufficient balance)</li>
+      <li><span class="code-inline">405</span> &mdash; Method not allowed (use POST)</li>
+      <li><span class="code-inline">429</span> &mdash; Rate limited (60 requests/minute by default, with tighter limits on some endpoints)</li>
+      <li><span class="code-inline">500</span> &mdash; Internal error (sats are refunded)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>FAQ</h2>
+    <div class="faq-item"><div class="faq-q">Is this on mainnet?</div><div class="faq-a">ArkAPI is currently live on Signet test network only. Sats are test sats, not real Bitcoin.</div></div>
+    <div class="faq-item"><div class="faq-q">Do I need an account?</div><div class="faq-a">No. Sessions are anonymous. Create a token, pay, and start making calls.</div></div>
+    <div class="faq-item"><div class="faq-q">What happens when my balance runs out?</div><div class="faq-a">API calls return a 402 error. Create and fund a new session on the <a href="/fund/">Fund page</a>.</div></div>
+    <div class="faq-item"><div class="faq-q">Can I get a refund?</div><div class="faq-a">Failed API calls are automatically refunded to your session balance. On Signet, session balances are non-refundable — test sats are free from the <a href="https://signet.2nd.dev/" target="_blank" rel="noopener noreferrer">faucet</a>. Session balance refunds will be available when ArkAPI launches on mainnet.</div></div>
+    <div class="faq-item"><div class="faq-q">What wallets work?</div><div class="faq-a">Any Lightning or Ark-compatible wallet. For testing on Signet, use bark or other Signet wallets.</div></div>
+    <div class="faq-item"><div class="faq-q">Is there a rate limit?</div><div class="faq-a">Yes. The default limit is 60 requests per minute per session. Expensive endpoints have tighter per-token limits: image generation and screenshot are 5 per hour, and anonymous AI chat is 5 per day.</div></div>
+    <div class="faq-item"><div class="faq-q">Can I publish my own API?</div><div class="faq-a">The <a href="/marketplace/">Early Access</a> program is currently the path for API publishers. Visit the page to request access and follow development.</div></div>
+    <div class="faq-item"><div class="faq-q">How do I get Signet test sats?</div><div class="faq-a">Visit the <a href="https://signet.2nd.dev/" target="_blank" rel="noopener noreferrer">Second Signet faucet</a>, enter your Signet wallet address, and you'll receive free test sats. Use those to fund an ArkAPI session on the <a href="/fund/">Fund page</a>. Signet sats have no real value — they exist only for testing.</div></div>
+    <div class="faq-item"><div class="faq-q">Where can I read more about Ark?</div><div class="faq-a">Read the official Ark protocol docs at <a href="https://ark-protocol.org/intro/" target="_blank" rel="noopener noreferrer">ark-protocol.org/intro/</a>.</div></div>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+const docsApiSearchInput = document.getElementById('docs-api-search-input');
+const docsApiSearchMeta = document.getElementById('docs-api-search-meta');
+const docsApiSearchEmpty = document.getElementById('docs-api-search-empty');
+const docsApiFilterButtons = Array.from(document.querySelectorAll('#docs-api-filter-row .api-filter-btn'));
+const docsApiRows = Array.from(document.querySelectorAll('.endpoint-table tbody tr'));
+let activeDocsApiFilter = 'all';
+
+function updateDocsApiSearch() {
+  if (!docsApiSearchInput) return;
+  const query = docsApiSearchInput.value.trim().toLowerCase();
+  let visibleRows = 0;
+
+  docsApiRows.forEach((row) => {
+    const textMatch = !query || row.textContent.toLowerCase().includes(query);
+    const category = row.dataset.category || '';
+    const categoryMatch = activeDocsApiFilter === 'all' || category === activeDocsApiFilter;
+    const match = textMatch && categoryMatch;
+    row.style.display = match ? '' : 'none';
+    if (match) visibleRows += 1;
+  });
+
+  if (!query) {
+    docsApiSearchMeta.textContent = activeDocsApiFilter === 'all'
+      ? `Showing all ${docsApiRows.length} endpoints.`
+      : `Showing ${visibleRows} ${activeDocsApiFilter} endpoint${visibleRows === 1 ? '' : 's'}.`;
+  } else {
+    docsApiSearchMeta.textContent = activeDocsApiFilter === 'all'
+      ? `Showing ${visibleRows} endpoint${visibleRows === 1 ? '' : 's'} for "${docsApiSearchInput.value.trim()}".`
+      : `Showing ${visibleRows} ${activeDocsApiFilter} endpoint${visibleRows === 1 ? '' : 's'} for "${docsApiSearchInput.value.trim()}".`;
+  }
+  docsApiSearchEmpty.style.display = visibleRows === 0 ? 'block' : 'none';
+}
+
+if (docsApiSearchInput) {
+  docsApiSearchInput.addEventListener('input', updateDocsApiSearch);
+  docsApiFilterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeDocsApiFilter = button.dataset.filter || 'all';
+      docsApiFilterButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+      updateDocsApiSearch();
+    });
+  });
+  updateDocsApiSearch();
+}
+</script>
+</body>
+</html>

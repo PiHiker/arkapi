@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anonymous AI Chat API | ArkAPI</title>
+<meta name="description" content="Use ArkAPI anonymous AI chat with a funded Signet session. Send a prompt, get a concise answer, and pay 100 sats per call with a 5-per-day token limit.">
+<meta name="keywords" content="anonymous AI chat, AI chat API, LLM API, Bitcoin AI API, agentic AI API, pay per call AI chat, sats AI API, ArkAPI ai-chat">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/ai-chat/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/ai-chat/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Anonymous AI Chat API | ArkAPI">
+<meta property="og:description" content="Prompt ArkAPI anonymous AI chat with a funded Signet session. 100 sats per call, 5 requests per day per token, and a simple JSON response contract.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anonymous AI Chat API | ArkAPI">
+<meta name="twitter:description" content="Anonymous AI chat for agents and developers. Fund a Signet session, prompt /api/ai-chat, and pay per call in sats.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Anonymous AI Chat API",
+  "description": "ArkAPI anonymous AI chat for agents and developers, priced per call in sats.",
+  "author": {
+    "@type": "Organization",
+    "name": "ArkAPI"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ArkAPI",
+    "url": "https://arkapi.dev/"
+  },
+  "mainEntityOfPage": "https://arkapi.dev/ai-chat/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does AI chat cost?", "acceptedAnswer": {"@type": "Answer", "text": "Anonymous AI chat costs 100 sats per call."}},
+    {"@type": "Question", "name": "What is the rate limit?", "acceptedAnswer": {"@type": "Answer", "text": "AI chat is limited to 5 requests per day per token."}},
+    {"@type": "Question", "name": "Is this on mainnet?", "acceptedAnswer": {"@type": "Answer", "text": "No. ArkAPI is currently live on the Signet test network only."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Early Access</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Anonymous AI Chat API &bull; Live on Signet test network only</div>
+    <h1>Prompt AI chat through ArkAPI.</h1>
+    <p class="sub">Use a funded Signet session to send a prompt, get a concise answer, and keep your own provider credentials out of the client. Built for agents, scripts, and lightweight private AI workflows.</p>
+    <div class="pill-row">
+      <div class="pill">100 sats / call</div>
+      <div class="pill">5 per day / token</div>
+      <div class="pill">POST /api/ai-chat</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>What It Does</h2>
+      <p>ArkAPI anonymous AI chat gives you a simple prompt-response API behind a funded bearer token. It is useful for agentic workflows, quick explanations, lightweight drafting, and private utility AI tasks where you do not want to expose a separate provider key to every script or browser client.</p>
+      <ul>
+        <li>Anonymous session-based access</li>
+        <li>Simple JSON request and response shape</li>
+        <li>Usage metadata in every successful response</li>
+        <li>Built for Signet testing right now</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Limits</h2>
+      <p>AI chat is intentionally priced and rate-limited above the lightweight utility APIs.</p>
+      <ul>
+        <li>Cost: <span class="code-inline">100 sats</span> per call</li>
+        <li>Rate limit: <span class="code-inline">5</span> requests per day per token</li>
+        <li>Exact repeat prompts can return faster through ArkAPI caching</li>
+        <li>Current deployment is <span class="code-inline">Signet only</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="code-block">curl -X POST https://arkapi.dev/api/ai-chat \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"How is Ark different from Lightning?"}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The same request body also works from agents that consume <a href="/openapi.json">/openapi.json</a>.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Body</h2>
+      <div class="code-block">{
+  "prompt": "How is Ark different from Lightning?"
+}</div>
+      <h3>Optional fields</h3>
+      <ul>
+        <li><span class="code-inline">messages</span> for multi-message chat input with prior user and assistant turns</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "answer": "Ark uses coordinated rounds and virtual outputs, while Lightning uses payment channels between participants.",
+    "model": "arkapi-chat-v1",
+    "usage": {
+      "prompt_tokens": 18,
+      "completion_tokens": 33,
+      "total_tokens": 51
+    }
+  },
+  "cost_sats": 100,
+  "balance_remaining": 1400,
+  "response_ms": 980,
+  "endpoint": "/api/ai-chat"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Prompt Examples</h2>
+    <ul>
+      <li>How is Ark different from Lightning?</li>
+      <li>Explain CVE-2024-3400 in plain English.</li>
+      <li>Rewrite this paragraph to be clearer and shorter.</li>
+      <li>Summarize the main ideas in four bullet points.</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <p>ArkAPI publishes machine-readable discovery metadata for agents and toolchains.</p>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

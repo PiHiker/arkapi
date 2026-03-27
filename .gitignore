@@ -1,0 +1,26 @@
+# Binary
+/arkapi
+/site/admin/
+
+# Go
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config with secrets
+.env
+.env.*
+*.env.local
+WALLETS.md
+CLOUDFLARE.md
+
+# Private/local data
+geoip/*.mmdb

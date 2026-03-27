@@ -1,0 +1,45 @@
+# ArkAPI
+
+> Bitcoin-native pay-per-call APIs for agents and developers. Live on the Signet test network only.
+
+- Homepage: https://arkapi.dev/
+- OpenAPI: https://arkapi.dev/openapi.json
+- Agent manifest: https://arkapi.dev/.well-known/arkapi.json
+- Full agent notes: https://arkapi.dev/llms-full.txt
+
+## Authentication
+
+- Create a session with `POST /v1/sessions`
+- Fund the returned Signet Lightning invoice or Signet Ark address
+- Use `Authorization: Bearer ak_xxx` on paid API calls
+
+## Best agent tools
+
+- `POST /api/dns-lookup`
+- `POST /api/whois`
+- `POST /api/ssl-check`
+- `POST /api/headers`
+- `POST /api/ip-lookup`
+- `POST /api/email-auth-check`
+- `POST /api/axfr-check` for defensive DNS zone-transfer checking and exposed AXFR records when a nameserver is misconfigured
+- `POST /api/domain-intel` for one-call domain intelligence with parsed `security.txt`, parsed `robots.txt`, improved tech fingerprinting, `http_behavior`, CT-log subdomains, and optional `ai_summary`
+- `POST /api/cve-search`
+- `POST /api/prediction-market-search` for open Polymarket markets
+- `POST /api/cve-lookup`
+- `GET /api/btc-price` with optional `?currency=CAD` or `?currencies=USD,EUR,CAD`
+- `POST /api/ai-chat`
+- `POST /api/ai-translate`
+- `POST /api/translate`
+- `POST /api/screenshot`
+- `POST /api/image-generate`
+
+## URL to Markdown
+
+- `POST /api/url-to-markdown` - 5 sats
+- Provides clean extraction of web content for LLM context.
+
+## Pricing model
+
+- Pay per call in sats
+- No standing account required
+- Session funding is on Signet only in the current live deployment

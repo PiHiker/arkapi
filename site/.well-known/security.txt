@@ -1,0 +1,4 @@
+Contact: mailto:support@arkapi.dev
+Expires: 2027-03-22T00:00:00Z
+Preferred-Languages: en
+Canonical: https://arkapi.dev/.well-known/security.txt

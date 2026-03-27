@@ -1,0 +1,2282 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ArkAPI | Bitcoin-native Pay-per-call API Platform",
+    "version": "2026-03-27",
+    "description": "Bitcoin-native pay-per-call API platform for developers and AI agents. Access security, OSINT, AI, and utility APIs anonymously using Signet Lightning and Ark. No API keys or accounts required."
+  },
+  "servers": [
+    {
+      "url": "https://arkapi.dev",
+      "description": "Public ArkAPI endpoint"
+    }
+  ],
+  "tags": [
+    {
+      "name": "public",
+      "description": "Public discovery and session setup endpoints"
+    },
+    {
+      "name": "session",
+      "description": "Session and balance endpoints"
+    },
+    {
+      "name": "security",
+      "description": "Security and reconnaissance APIs"
+    },
+    {
+      "name": "osint",
+      "description": "OSINT and lookup APIs"
+    },
+    {
+      "name": "visual",
+      "description": "Visual and image APIs"
+    },
+    {
+      "name": "ai",
+      "description": "AI and language APIs"
+    },
+    {
+      "name": "bitcoin",
+      "description": "Bitcoin-focused APIs"
+    },
+    {
+      "name": "utility",
+      "description": "Utility and Bitcoin APIs"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Health check",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                },
+                "example": {
+                  "status": "ok"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "OpenAPI specification",
+        "operationId": "getOpenAPISpec",
+        "responses": {
+          "200": {
+            "description": "Machine-readable OpenAPI specification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "openapi": "3.0.3",
+                  "info": {
+                    "title": "ArkAPI | Bitcoin-native Pay-per-call API Platform",
+                    "version": "2026-03-25"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/catalog": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "List available endpoints and pricing",
+        "operationId": "getCatalog",
+        "responses": {
+          "200": {
+            "description": "Catalog response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogResponse"
+                },
+                "example": {
+                  "endpoints": [
+                    {
+                      "path": "/api/ai-chat",
+                      "method": "POST",
+                      "cost_sats": 100,
+                      "description": "Anonymous AI chat"
+                    },
+                    {
+                      "path": "/api/ai-translate",
+                      "method": "POST",
+                      "cost_sats": 25,
+                      "description": "Higher-quality AI translation with style control"
+                    },
+                    {
+                      "path": "/api/translate",
+                      "method": "POST",
+                      "cost_sats": 3,
+                      "description": "Translate text"
+                    },
+                    {
+                      "path": "/api/axfr-check",
+                      "method": "POST",
+                      "cost_sats": 12,
+                      "description": "Check whether a domain allows DNS zone transfer"
+                    },
+                    {
+                      "path": "/api/cve-lookup",
+                      "method": "POST",
+                      "cost_sats": 3,
+                      "description": "Lookup a CVE by ID"
+                    },
+                    {
+                      "path": "/api/image-generate",
+                      "method": "POST",
+                      "cost_sats": 25,
+                      "description": "Generate an image and return a short-lived download URL"
+                    }
+                  ],
+                  "session": {
+                    "create": "/v1/sessions",
+                    "balance": "/v1/balance"
+                  },
+                  "auth": "Authorization: Bearer ak_xxx"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "tags": [
+          "public",
+          "session"
+        ],
+        "summary": "Create a new funded session",
+        "description": "Creates a new Signet session and returns a bearer token plus Signet Lightning invoice and Signet Ark funding address.",
+        "operationId": "createSession",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              },
+              "example": {
+                "amount_sats": 500
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSessionResponse"
+                },
+                "example": {
+                  "token": "ak_exampletoken123",
+                  "funding": {
+                    "lightning_invoice": "lntbs5u1exampleinvoice",
+                    "ark_address": "tark1examplefundingaddress",
+                    "payment_hash": "examplepaymenthash"
+                  },
+                  "amount_sats": 500,
+                  "balance_sats": 500,
+                  "status": "awaiting_payment",
+                  "expires_in": 86400
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/balance": {
+      "get": {
+        "tags": [
+          "session"
+        ],
+        "summary": "Check session balance",
+        "operationId": "getBalance",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceResponse"
+                },
+                "example": {
+                  "balance_sats": 475,
+                  "status": "active",
+                  "token": "ak_exampletoken123"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": "Unauthorized",
+                  "message": "missing or invalid bearer token"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Session exists but has insufficient or inactive balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/downloads/{id}": {
+      "get": {
+        "tags": [
+          "visual"
+        ],
+        "summary": "Fetch a short-lived hosted download",
+        "operationId": "getDownload",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Binary asset such as PNG",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "message": "Binary PNG download returned on success; this path expires quickly."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expired or missing download"
+          }
+        }
+      }
+    },
+    "/api/dns-lookup": {
+      "post": {
+        "tags": [
+          "osint"
+        ],
+        "summary": "Bitcoin-native DNS lookup API",
+        "description": "Cost: 3 sats. Returns full, structured DNS records (A, AAAA, MX, NS, TXT, SOA) for a domain as clean JSON. Optimized for AI agents and OSINT automation.",
+        "operationId": "dnsLookup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainRequest"
+              },
+              "example": {
+                "domain": "example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "domain": "example.com",
+                    "a": [
+                      "93.184.216.34"
+                    ],
+                    "mx": [
+                      "0 ."
+                    ],
+                    "ns": [
+                      "a.iana-servers.net.",
+                      "b.iana-servers.net."
+                    ]
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 12,
+                  "endpoint": "/api/dns-lookup"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": "Unauthorized",
+                  "message": "missing or invalid bearer token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/axfr-check": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "Check DNS zone transfer exposure",
+        "description": "Cost: 12 sats. Tests whether authoritative nameservers permit AXFR and returns the exposed zone records only when zone transfer is enabled.",
+        "operationId": "axfrCheck",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 12,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AXFRCheckRequest"
+              },
+              "example": {
+                "domain": "example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "domain": "example.com",
+                    "allowed": false,
+                    "explanation": "AXFR was not permitted by the checked authoritative nameservers, so no zone records were returned.",
+                    "nameservers_checked": [
+                      "a.iana-servers.net",
+                      "b.iana-servers.net"
+                    ],
+                    "transfer_record_count": 0
+                  },
+                  "cost_sats": 12,
+                  "balance_remaining": 488,
+                  "response_ms": 214,
+                  "endpoint": "/api/axfr-check"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/whois": {
+      "post": {
+        "tags": [
+          "osint"
+        ],
+        "summary": "Parsed WHOIS data API",
+        "description": "Cost: 5 sats. Returns cleanly parsed WHOIS registration data (registrar, dates, status) for a domain. Eliminates manual parsing of raw WHOIS output.",
+        "operationId": "whoisLookup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 5,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainRequest"
+              },
+              "example": {
+                "domain": "example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "domain": "example.com",
+                    "registrar": "IANA",
+                    "created_date": "1995-08-14",
+                    "expiry_date": "2026-08-13"
+                  },
+                  "cost_sats": 5,
+                  "balance_remaining": 495,
+                  "response_ms": 18,
+                  "endpoint": "/api/whois"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid bearer token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 401,
+                  "error": "Unauthorized",
+                  "message": "missing or invalid bearer token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ssl-check": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "SSL certificate analysis",
+        "description": "Cost: 5 sats. Returns certificate validity, issuer, protocol, and remaining lifetime.",
+        "operationId": "sslCheck",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 5,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainRequest"
+              },
+              "example": {
+                "domain": "cloudflare.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "valid": true,
+                    "issuer": "WE1 / Google Trust Services",
+                    "protocol": "TLS 1.3",
+                    "days_remaining": 79
+                  },
+                  "cost_sats": 5,
+                  "balance_remaining": 495,
+                  "response_ms": 15,
+                  "endpoint": "/api/ssl-check"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/headers": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "HTTP security headers audit",
+        "description": "Cost: 3 sats. Audits a public HTTP or HTTPS URL for security headers. Private, local, and reserved targets are rejected.",
+        "operationId": "headersAudit",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/URLRequest"
+              },
+              "example": {
+                "url": "https://example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "url": "https://example.com",
+                    "grade": "B",
+                    "score": 72,
+                    "headers": {
+                      "strict-transport-security": "max-age=63072000"
+                    }
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 24,
+                  "endpoint": "/api/headers"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/weather": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Weather forecast",
+        "description": "Cost: 3 sats. Returns current conditions and forecast by city or coordinates.",
+        "operationId": "weatherLookup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeatherRequest"
+              },
+              "example": {
+                "city": "New York"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "location": "New York, US",
+                    "current": {
+                      "temperature_c": 7.2,
+                      "condition": "Cloudy"
+                    }
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 220,
+                  "endpoint": "/api/weather"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ip-lookup": {
+      "post": {
+        "tags": [
+          "osint"
+        ],
+        "summary": "IP geolocation and ASN lookup",
+        "description": "Cost: 3 sats. Returns country, region, city, ISP, org, and AS data for a public IP.",
+        "operationId": "ipLookup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IPRequest"
+              },
+              "example": {
+                "ip": "8.8.8.8"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "ip": "8.8.8.8",
+                    "country": "United States",
+                    "city": "Ashburn",
+                    "timezone": "America/New_York",
+                    "isp": "Google LLC",
+                    "org": "Google Public DNS",
+                    "as": "AS15169 Google LLC"
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 8,
+                  "endpoint": "/api/ip-lookup"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/email-auth-check": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "SPF, DKIM, DMARC check",
+        "description": "Cost: 4 sats. Returns email authentication posture and an A-F grade.",
+        "operationId": "emailAuthCheck",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 4,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainRequest"
+              },
+              "example": {
+                "domain": "google.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "domain": "google.com",
+                    "grade": "B",
+                    "spf": {
+                      "present": true
+                    },
+                    "dmarc": {
+                      "present": true,
+                      "policy": "reject"
+                    },
+                    "dkim": {
+                      "present": false
+                    }
+                  },
+                  "cost_sats": 4,
+                  "balance_remaining": 496,
+                  "response_ms": 36,
+                  "endpoint": "/api/email-auth-check"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bitcoin-news": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Bitcoin news feed",
+        "description": "Cost: 2 sats. Aggregates recent Bitcoin-related headlines from free RSS feeds.",
+        "operationId": "bitcoinNews",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 2,
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LimitRequest"
+              },
+              "example": {
+                "limit": 5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "title": "Bitcoin miners adjust to new hashprice reality",
+                        "source": "CoinDesk",
+                        "link": "https://www.coindesk.com/example",
+                        "published_at": "2026-03-25T00:00:00Z"
+                      }
+                    ]
+                  },
+                  "cost_sats": 2,
+                  "balance_remaining": 498,
+                  "response_ms": 5,
+                  "endpoint": "/api/bitcoin-news"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai-chat": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Anonymous AI chat",
+        "description": "Cost: 100 sats. Anonymous AI chat with ArkAPI-managed inference. Limited to 5 requests per day per token.",
+        "operationId": "aiChat",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 100,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIChatRequest"
+              },
+              "example": {
+                "prompt": "How is Ark different from Lightning?"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "answer": "Ark is a Bitcoin scaling design that lets users hold and transfer off-chain value through virtual outputs coordinated by an Ark server.",
+                    "model": "arkapi-chat-v1",
+                    "usage": {
+                      "prompt_tokens": 18,
+                      "completion_tokens": 33,
+                      "total_tokens": 51
+                    }
+                  },
+                  "cost_sats": 100,
+                  "balance_remaining": 1400,
+                  "response_ms": 980,
+                  "endpoint": "/api/ai-chat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ai-translate": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "summary": "Higher-quality AI translation",
+        "description": "Cost: 25 sats. Premium AI translation with optional style control for more natural output than the utility translation endpoint.",
+        "operationId": "aiTranslate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 25,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AITranslateRequest"
+              },
+              "example": {
+                "text": "Sous les etoiles, la riviere chante doucement.",
+                "target_language": "en",
+                "source_language": "auto",
+                "style": "natural"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "text": "Sous les etoiles, la riviere chante doucement.",
+                    "translated_text": "Under the stars, the river sings softly.",
+                    "target_language": "en",
+                    "source_language": "fr",
+                    "detected_language": "fr",
+                    "style": "natural",
+                    "model": "arkapi-translate-v1",
+                    "usage": {
+                      "prompt_tokens": 54,
+                      "completion_tokens": 24,
+                      "total_tokens": 78
+                    }
+                  },
+                  "cost_sats": 25,
+                  "balance_remaining": 475,
+                  "response_ms": 1089,
+                  "endpoint": "/api/ai-translate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/translate": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Translate text",
+        "description": "Cost: 3 sats. Self-hosted translation with source-language auto-detection and target language selection.",
+        "operationId": "translateText",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslateRequest"
+              },
+              "example": {
+                "text": "Bonjour",
+                "target_language": "en",
+                "source_language": "auto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "text": "Bonjour",
+                    "translated_text": "Hello",
+                    "target_language": "en",
+                    "source_language": "fr",
+                    "detected_language": "fr",
+                    "detected_confidence": 100
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 42,
+                  "endpoint": "/api/translate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/image-generate": {
+      "post": {
+        "tags": [
+          "visual"
+        ],
+        "summary": "Generate an AI image",
+        "description": "Cost: 25 sats. Returns a short-lived ArkAPI-hosted download URL for a generated image.",
+        "operationId": "imageGenerate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 25,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageGenerateRequest"
+              },
+              "example": {
+                "prompt": "cinematic AI control room"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "prompt": "cinematic AI control room",
+                    "width": 512,
+                    "height": 512,
+                    "steps": 12,
+                    "mime_type": "image/png",
+                    "download_url": "https://arkapi.dev/v1/downloads/exampleimageid",
+                    "expires_at": "2026-03-25T03:30:00Z"
+                  },
+                  "cost_sats": 25,
+                  "balance_remaining": 475,
+                  "response_ms": 9300,
+                  "endpoint": "/api/image-generate"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 429,
+                  "error": "Too Many Requests",
+                  "message": "per-token hourly rate limit exceeded"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/screenshot": {
+      "post": {
+        "tags": [
+          "visual"
+        ],
+        "summary": "Capture a website screenshot",
+        "description": "Cost: 15 sats. Returns a short-lived ArkAPI-hosted download URL for a rendered webpage screenshot.",
+        "operationId": "screenshotCapture",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 15,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/URLRequest"
+              },
+              "example": {
+                "url": "https://example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "url": "https://example.com",
+                    "final_url": "https://www.example.com/",
+                    "status_code": 200,
+                    "mime_type": "image/png",
+                    "download_url": "https://arkapi.dev/v1/downloads/examplescreenshotid",
+                    "expires_at": "2026-03-25T03:30:00Z"
+                  },
+                  "cost_sats": 15,
+                  "balance_remaining": 485,
+                  "response_ms": 4100,
+                  "endpoint": "/api/screenshot"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "code": 429,
+                  "error": "Too Many Requests",
+                  "message": "per-token hourly rate limit exceeded"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/qr-generate": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Generate a QR code PNG",
+        "description": "Cost: 2 sats. Returns base64 and data URI output for a PNG QR code.",
+        "operationId": "qrGenerate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 2,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QRRequest"
+              },
+              "example": {
+                "data": "https://arkapi.dev/fund/"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "format": "png",
+                    "size": 256,
+                    "data_uri": "data:image/png;base64,iVBORw0KGgoAAA..."
+                  },
+                  "cost_sats": 2,
+                  "balance_remaining": 498,
+                  "response_ms": 6,
+                  "endpoint": "/api/qr-generate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bitcoin-address": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Validate a mainnet Bitcoin address",
+        "description": "Cost: 3 sats. Validates a mainnet Bitcoin address and returns live on-chain balance data.",
+        "operationId": "bitcoinAddressValidate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BitcoinAddressRequest"
+              },
+              "example": {
+                "address": "1BoatSLRHtKNngkdXEeobR76b53LETtpyT"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "address": "1BoatSLRHtKNngkdXEeobR76b53LETtpyT",
+                    "valid": true,
+                    "network": "mainnet",
+                    "balance_sats": 0
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 44,
+                  "endpoint": "/api/bitcoin-address"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cve-search": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "Search NVD CVEs by keyword",
+        "description": "Cost: 4 sats. Searches the official NIST National Vulnerability Database (NVD) for CVEs by keyword or product version and returns ranked matches with severity and CVSS scores.",
+        "operationId": "cveSearch",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 4,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CVESearchRequest"
+              },
+              "example": {
+                "query": "wordpress information disclosure",
+                "limit": 5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "query": "wordpress information disclosure",
+                    "results": [
+                      {
+                        "cve_id": "CVE-2023-39999",
+                        "severity": "MEDIUM",
+                        "cvss_score": 4.3,
+                        "nvd_url": "https://nvd.nist.gov/vuln/detail/CVE-2023-39999"
+                      }
+                    ]
+                  },
+                  "cost_sats": 4,
+                  "balance_remaining": 496,
+                  "response_ms": 90,
+                  "endpoint": "/api/cve-search"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/prediction-market-search": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Search open Polymarket prediction markets",
+        "description": "Cost: 4 sats. Searches Polymarket's public market index and returns normalized results for open markets only, including title, platform, probability, volume, and close time. Cached for 5 minutes.",
+        "operationId": "predictionMarketSearch",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 4,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "query"
+                ],
+                "properties": {
+                  "query": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "query": "bitcoin etf",
+                "limit": 5
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "query": "bitcoin etf",
+                    "platform": "Polymarket",
+                    "results": [
+                      {
+                        "market_id": "1652063",
+                        "event_id": "286722",
+                        "title": "Will the price of Bitcoin be above $60,000 on March 26?",
+                        "event_title": "Bitcoin above ___ on March 26?",
+                        "platform": "Polymarket",
+                        "status": "open",
+                        "probability": 0.63,
+                        "volume_usd": 485549.81,
+                        "close_time": "2026-03-26T16:00:00Z",
+                        "url": "https://polymarket.com/event/bitcoin-above-on-march-26"
+                      }
+                    ]
+                  },
+                  "cost_sats": 4,
+                  "balance_remaining": 496,
+                  "response_ms": 120,
+                  "endpoint": "/api/prediction-market-search"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cve-lookup": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "Look up NVD CVE details by ID",
+        "description": "Cost: 3 sats. Returns full NIST NVD severity, CVSS, CWE, KEV, and reference data for a specific CVE ID. Optimized for automated vulnerability scanning.",
+        "operationId": "cveLookup",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CVELookupRequest"
+              },
+              "example": {
+                "cve": "CVE-2024-3400"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "cve_id": "CVE-2024-3400",
+                    "severity": "CRITICAL",
+                    "cvss_score": 10.0,
+                    "has_kev": true,
+                    "nvd_url": "https://nvd.nist.gov/vuln/detail/CVE-2024-3400",
+                    "primary_reference_url": "https://security.paloaltonetworks.com/CVE-2024-3400"
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 4,
+                  "endpoint": "/api/cve-lookup"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/domain-intel": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "Aggregate domain intelligence",
+        "description": "Cost: 25 sats. Returns an aggregated view of a domain including DNS, WHOIS, TLS certificate details, security headers, email authentication posture, parsed security.txt disclosure metadata, parsed robots.txt crawl metadata, improved tech fingerprinting, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, light subdomain hints, findings, recommendations, resolved IP intelligence, and an optional AI summary when ai_summary is true. Cached for 1 hour.",
+        "operationId": "domainIntel",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 25,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainRequest"
+              },
+              "example": {
+                "domain": "example.com",
+                "ai_summary": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aggregated domain intelligence",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "domain": "example.com",
+                    "registration": {
+                      "registrar": "RESERVED-Internet Assigned Numbers Authority",
+                      "created_date": "1995-08-14T04:00:00Z",
+                      "name_servers": [
+                        "a.iana-servers.net",
+                        "b.iana-servers.net"
+                      ]
+                    },
+                    "providers": {
+                      "registrar": "RESERVED-Internet Assigned Numbers Authority",
+                      "dns_provider": "Example DNS",
+                      "hosting_provider": "Example ISP"
+                    },
+                    "security_txt": {
+                      "present": true,
+                      "source_url": "https://example.com/.well-known/security.txt",
+                      "contacts": [
+                        "mailto:security@example.com"
+                      ],
+                      "emails": [
+                        "security@example.com"
+                      ],
+                      "policy": [
+                        "https://example.com/security-policy"
+                      ],
+                      "expires": "2026-12-31T23:59:59Z"
+                    },
+                    "robots_txt": {
+                      "present": true,
+                      "source_url": "https://example.com/robots.txt",
+                      "user_agents": [
+                        "*"
+                      ],
+                      "sitemaps": [
+                        "https://example.com/sitemap.xml"
+                      ]
+                    },
+                    "tech_fingerprint": {
+                      "cms": "WordPress",
+                      "frontend": "React",
+                      "server": "nginx",
+                      "detected": [
+                        "WordPress",
+                        "React",
+                        "nginx"
+                      ],
+                      "final_url": "https://example.com/"
+                    },
+                    "http_behavior": {
+                      "initial_url": "http://example.com",
+                      "final_url": "https://www.example.com/",
+                      "canonical_host": "www.example.com",
+                      "redirect_count": 2,
+                      "redirect_chain": [
+                        "https://example.com/",
+                        "https://www.example.com/"
+                      ],
+                      "status_chain": [
+                        301,
+                        301,
+                        200
+                      ],
+                      "https_redirect": true,
+                      "www_redirect": true
+                    },
+                    "ct_subdomains": [
+                      "blog.example.com",
+                      "mail.example.com"
+                    ],
+                    "network": {
+                      "ip_count": 1,
+                      "asns": [
+                        "AS15133 Example ISP"
+                      ],
+                      "organizations": [
+                        "Example ISP"
+                      ],
+                      "countries": [
+                        "United States"
+                      ]
+                    },
+                    "subdomains": [
+                      "www.example.com"
+                    ],
+                    "findings": [
+                      "No major issues were detected from DNS, TLS, header, and email-auth checks."
+                    ],
+                    "recommendations": [],
+                    "cache": {
+                      "cached": false,
+                      "ttl_seconds": 3600,
+                      "expires_at": "2026-03-26T23:00:00Z"
+                    },
+                    "ai_summary": {
+                      "answer": "Example.com has a straightforward footprint with limited exposed infrastructure and no major issues detected in the sampled DNS, TLS, header, and mail-auth checks.",
+                      "model": "arkapi-chat-v1"
+                    },
+                    "dns": {
+                      "domain": "example.com",
+                      "records": {
+                        "A": [
+                          {
+                            "name": "example.com",
+                            "ttl": "",
+                            "type": "A",
+                            "value": "93.184.216.34"
+                          }
+                        ]
+                      }
+                    },
+                    "whois": {
+                      "domain": "example.com",
+                      "registrar": "RESERVED-Internet Assigned Numbers Authority",
+                      "created_date": "1995-08-14T04:00:00Z"
+                    },
+                    "ssl": {
+                      "domain": "example.com",
+                      "valid": true,
+                      "issuer": "CN=Example Issuer",
+                      "days_remaining": 75,
+                      "protocol": "TLS 1.3"
+                    },
+                    "headers": {
+                      "url": "https://example.com",
+                      "status_code": 200,
+                      "score": 84,
+                      "grade": "B"
+                    },
+                    "email_auth": {
+                      "domain": "example.com",
+                      "grade": "B"
+                    },
+                    "resolved_ips": [
+                      {
+                        "ip": "93.184.216.34",
+                        "country": "United States",
+                        "country_code": "US",
+                        "isp": "Example ISP"
+                      }
+                    ]
+                  },
+                  "cost_sats": 25,
+                  "balance_remaining": 490,
+                  "response_ms": 186,
+                  "endpoint": "/api/domain-intel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/btc-price": {
+      "get": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Live Bitcoin spot price API",
+        "description": "Cost: 1 sat. Returns current Bitcoin prices in 10 major fiat currencies. Optional query params: currency=CAD for one rate or currencies=USD,EUR,CAD for a subset. Data is cached for 60 seconds.",
+        "operationId": "getBTCPrice",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 1,
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional single fiat currency code, for example CAD or USD."
+          },
+          {
+            "name": "currencies",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional comma-separated list of fiat currency codes, for example USD,EUR,CAD."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current Bitcoin prices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "btc_usd": "65432.10",
+                    "btc_eur": "60123.45",
+                    "btc_gbp": "51234.56",
+                    "btc_cad": "92543.21",
+                    "btc_jpy": "10234567.89",
+                    "btc_aud": "104321.76",
+                    "btc_chf": "58321.44",
+                    "btc_cny": "492345.11",
+                    "btc_hkd": "534210.67",
+                    "btc_sgd": "91543.22",
+                    "updated_at": "2026-03-26T12:00:00Z"
+                  },
+                  "cost_sats": 1,
+                  "balance_remaining": 499,
+                  "response_ms": 5,
+                  "endpoint": "/api/btc-price"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/url-to-markdown": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Clean Markdown extraction API",
+        "description": "Cost: 5 sats. Fetches a public URL and uses a Readability algorithm to extract the main content, returning it as clean Markdown. Ideal for AI agents and LLM context reduction.",
+        "operationId": "urlToMarkdown",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 5,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/URLRequest"
+              },
+              "example": {
+                "url": "https://example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Markdown extraction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "url": "https://example.com",
+                    "title": "Example Domain",
+                    "markdown": "# Example Domain\n\nThis domain is for use in illustrative examples..."
+                  },
+                  "cost_sats": 5,
+                  "balance_remaining": 495,
+                  "response_ms": 1200,
+                  "endpoint": "/api/url-to-markdown"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/domain-check": {
+      "post": {
+        "tags": [
+          "osint"
+        ],
+        "summary": "Domain Name Availability API",
+        "description": "Cost: 3 sats. Real-time domain name availability check using WHOIS-based lookup. Supports major TLDs.",
+        "operationId": "domainCheck",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainRequest"
+              },
+              "example": {
+                "domain": "example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "domain": "example.com",
+                    "registered": true,
+                    "available": false,
+                    "status": [
+                      "ok"
+                    ]
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 28,
+                  "endpoint": "/api/domain-check"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "ArkAPI session token"
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Missing or invalid bearer token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Rate limit exceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "PaidSuccess": {
+        "description": "Successful paid response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PaidSuccessResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CatalogEndpoint": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "cost_sats": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "CatalogResponse": {
+        "type": "object",
+        "properties": {
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogEndpoint"
+            }
+          },
+          "session": {
+            "type": "object"
+          },
+          "auth": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateSessionRequest": {
+        "type": "object",
+        "properties": {
+          "amount_sats": {
+            "type": "integer",
+            "example": 500,
+            "description": "Requested Signet funding amount"
+          }
+        }
+      },
+      "CreateSessionResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "ak_xxx"
+          },
+          "funding": {
+            "type": "object",
+            "properties": {
+              "lightning_invoice": {
+                "type": "string"
+              },
+              "ark_address": {
+                "type": "string"
+              },
+              "payment_hash": {
+                "type": "string"
+              }
+            }
+          },
+          "amount_sats": {
+            "type": "integer"
+          },
+          "balance_sats": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "example": "awaiting_payment"
+          },
+          "expires_in": {
+            "type": "integer"
+          }
+        }
+      },
+      "BalanceResponse": {
+        "type": "object",
+        "properties": {
+          "balance_sats": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "PaidSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "description": "Endpoint-specific result payload"
+          },
+          "cost_sats": {
+            "type": "integer"
+          },
+          "balance_remaining": {
+            "type": "integer"
+          },
+          "response_ms": {
+            "type": "integer"
+          },
+          "endpoint": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "cost_sats",
+          "balance_remaining",
+          "response_ms",
+          "endpoint"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer"
+          },
+          "cost_sats": {
+            "type": "integer"
+          },
+          "endpoint": {
+            "type": "string"
+          },
+          "response_ms": {
+            "type": "integer"
+          }
+        }
+      },
+      "DomainRequest": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "example": "example.com"
+        },
+        "ai_summary": {
+          "type": "boolean",
+          "description": "When true, append an AI-written summary of the domain report.",
+          "example": true
+        }
+      },
+      "required": [
+        "domain"
+      ]
+      },
+      "URLRequest": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "IPRequest": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "example": "8.8.8.8"
+          }
+        },
+        "required": [
+          "ip"
+        ]
+      },
+      "WeatherRequest": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "New York"
+          },
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lon": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "LimitRequest": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "AIChatRequest": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "example": "How is Ark different from Lightning?"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AIChatMessage"
+            }
+          }
+        }
+      },
+      "AIChatMessage": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Allowed roles: user, assistant",
+            "example": "user"
+          },
+          "content": {
+            "type": "string",
+            "example": "How is Ark different from Lightning?"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ]
+      },
+      "AITranslateRequest": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "Sous les etoiles, la riviere chante doucement."
+          },
+          "target_language": {
+            "type": "string",
+            "example": "en"
+          },
+          "source_language": {
+            "type": "string",
+            "example": "auto"
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "literal",
+              "natural",
+              "polished"
+            ],
+            "example": "natural"
+          }
+        },
+        "required": [
+          "text",
+          "target_language"
+        ]
+      },
+      "TranslateRequest": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "Hola, me llamo ArkAPI."
+          },
+          "target_language": {
+            "type": "string",
+            "example": "en"
+          },
+          "source_language": {
+            "type": "string",
+            "example": "auto"
+          }
+        },
+        "required": [
+          "text",
+          "target_language"
+        ]
+      },
+      "AXFRCheckRequest": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "example": "example.com"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "ImageGenerateRequest": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "example": "cinematic AI control room"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      },
+      "QRRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "example": "https://arkapi.dev/fund/"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "BitcoinAddressRequest": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "example": "1BoatSLRHtKNngkdXEeobR76b53LETtpyT"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "CVESearchRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "example": "wordpress 6.7"
+          },
+          "limit": {
+            "type": "integer",
+            "example": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "CVELookupRequest": {
+        "type": "object",
+        "properties": {
+          "cve": {
+            "type": "string",
+            "example": "CVE-2024-3400"
+          }
+        },
+        "required": [
+          "cve"
+        ]
+      }
+    }
+  }
+}

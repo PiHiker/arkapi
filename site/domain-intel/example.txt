@@ -1,0 +1,232 @@
+{
+  "success": true,
+  "data": {
+    "domain": "example.com",
+    "ai_summary": {
+      "answer": "The domain example.com is registered with the Internet Assigned Numbers Authority and is set to expire in 2026. The domain is proxied through Cloudflare, which also provides DNS and CDN services. The TLS connection is valid, but the HTTP headers grade is F due to the absence of a Content-Security-Policy, and the email authentication grade is A. To improve security, it is recommended to add a Content-Security-Policy header, publish a security.txt policy file, and a robots.txt file with a sitemap reference.",
+      "model": "arkapi-chat-v1",
+      "usage": {
+        "prompt_tokens": 373,
+        "completion_tokens": 108,
+        "total_tokens": 481
+      }
+    },
+    "registration": {
+      "registrar": "RESERVED-Internet Assigned Numbers Authority",
+      "created_date": "1995-08-14T04:00:00Z",
+      "updated_date": "2026-01-16T18:26:50Z",
+      "expiry_date": "2026-08-13T04:00:00Z",
+      "name_servers": [
+        "elliott.ns.cloudflare.com",
+        "hera.ns.cloudflare.com"
+      ]
+    },
+    "providers": {
+      "registrar": "RESERVED-Internet Assigned Numbers Authority",
+      "dns_provider": "Cloudflare",
+      "cdn_provider": "Cloudflare",
+      "hosting_provider": "Cloudflare",
+      "proxy_detected": true,
+      "behind_cloudflare": true
+    },
+    "network": {
+      "ip_count": 4,
+      "asns": [
+        "AS13335 Cloudflare, Inc."
+      ],
+      "organizations": [
+        "Cloudflare, Inc."
+      ],
+      "countries": [
+        "Canada"
+      ],
+      "anycast_or_cdn": true
+    },
+    "tech_fingerprint": {
+      "server": "cloudflare",
+      "detected": [
+        "cloudflare"
+      ],
+      "final_url": "https://example.com"
+    },
+    "http_behavior": {
+      "initial_url": "http://example.com",
+      "final_url": "http://example.com",
+      "canonical_host": "example.com",
+      "redirect_count": 0,
+      "status_chain": [
+        200
+      ]
+    },
+    "subdomains": [
+      "www.example.com"
+    ],
+    "findings": [
+      "Content-Security-Policy is missing on the checked page.",
+      "HTTP security headers grade is F.",
+      "No security.txt policy file was detected.",
+      "No robots.txt file was detected.",
+      "Domain appears to be proxied through Cloudflare."
+    ],
+    "recommendations": [
+      "Add a Content-Security-Policy header to reduce XSS and content injection risk.",
+      "Publish /.well-known/security.txt with at least a Contact field for security disclosures.",
+      "Publish a robots.txt file with at least a sitemap reference if the site should be indexed."
+    ],
+    "cache": {
+      "cached": false,
+      "ttl_seconds": 3599,
+      "expires_at": "2026-03-27T01:07:02Z"
+    },
+    "dns": {
+      "domain": "example.com",
+      "records": {
+        "A": [
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "A",
+            "value": "104.18.26.120"
+          },
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "A",
+            "value": "104.18.27.120"
+          }
+        ],
+        "AAAA": [
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "AAAA",
+            "value": "2606:4700::6812:1a78"
+          },
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "AAAA",
+            "value": "2606:4700::6812:1b78"
+          }
+        ],
+        "MX": [
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "MX",
+            "value": "0 ."
+          }
+        ],
+        "NS": [
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "NS",
+            "value": "elliott.ns.cloudflare.com"
+          },
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "NS",
+            "value": "hera.ns.cloudflare.com"
+          }
+        ],
+        "SOA": [
+          {
+            "name": "example.com",
+            "ttl": "1773",
+            "type": "SOA",
+            "value": "elliott.ns.cloudflare.com. dns.cloudflare.com. 2399341694 10000 2400 604800 1800"
+          }
+        ],
+        "TXT": [
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "TXT",
+            "value": "_k2n1y4vw3qtb4skdx9e7dxt97qrmmq9"
+          },
+          {
+            "name": "example.com",
+            "ttl": "",
+            "type": "TXT",
+            "value": "v=spf1 -all"
+          }
+        ]
+      }
+    },
+    "whois": {
+      "domain": "example.com",
+      "registrar": "RESERVED-Internet Assigned Numbers Authority",
+      "created_date": "1995-08-14T04:00:00Z",
+      "expiry_date": "2026-08-13T04:00:00Z",
+      "updated_date": "2026-01-16T18:26:50Z",
+      "name_servers": [
+        "elliott.ns.cloudflare.com",
+        "hera.ns.cloudflare.com"
+      ]
+    },
+    "ssl": {
+      "domain": "example.com",
+      "valid": true,
+      "issuer": "CN=Cloudflare TLS Issuing ECC CA 3,O=SSL Corporation,C=US",
+      "subject": "CN=example.com",
+      "not_before": "2026-02-13T18:53:48Z",
+      "not_after": "2026-05-14T18:57:50Z",
+      "days_remaining": 48,
+      "protocol": "TLS 1.3",
+      "cipher_suite": "TLS_AES_128_GCM_SHA256",
+      "sans": [
+        "example.com",
+        "*.example.com"
+      ],
+      "chain": [
+        "example.com",
+        "Cloudflare TLS Issuing ECC CA 3",
+        "SSL.com TLS Transit ECC CA R2"
+      ],
+      "expired": false
+    },
+    "headers": {
+      "url": "https://example.com",
+      "status_code": 200,
+      "server": "cloudflare",
+      "score": 25,
+      "grade": "F"
+    },
+    "email_auth": {
+      "domain": "example.com",
+      "grade": "A"
+    },
+    "resolved_ips": [
+      {
+        "ip": "104.18.26.120",
+        "country": "Canada",
+        "country_code": "CA",
+        "isp": "Cloudflare, Inc."
+      },
+      {
+        "ip": "104.18.27.120",
+        "country": "Canada",
+        "country_code": "CA",
+        "isp": "Cloudflare, Inc."
+      },
+      {
+        "ip": "2606:4700::6812:1a78",
+        "country": "Canada",
+        "country_code": "CA",
+        "isp": "Cloudflare, Inc."
+      },
+      {
+        "ip": "2606:4700::6812:1b78",
+        "country": "Canada",
+        "country_code": "CA",
+        "isp": "Cloudflare, Inc."
+      }
+    ]
+  },
+  "cost_sats": 25,
+  "balance_remaining": 8228,
+  "response_ms": 8649,
+  "endpoint": "/api/domain-intel"
+}

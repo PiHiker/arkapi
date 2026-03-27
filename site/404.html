@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 | ArkAPI</title>
+<meta name="description" content="Page not found. The page you're looking for doesn't exist or has been moved.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<style>
+.actions { display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap; }
+.btn-primary { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 600; padding: 14px 28px; background: var(--accent); color: var(--bg); border-radius: 4px; text-decoration: none; transition: all 0.2s; }
+.btn-primary:hover { background: #ffad42; box-shadow: 0 0 20px rgba(247, 147, 26, 0.15); }
+.btn-secondary { display: inline-block; font-family: var(--mono); font-size: 14px; font-weight: 600; padding: 14px 28px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; text-decoration: none; transition: all 0.2s; }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 768px) {
+  .actions { flex-direction: column; }
+  .btn-primary, .btn-secondary { text-align: center; min-height: 48px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">A</div>
+      ArkAPI.dev
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Marketplace</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Marketplace</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">404 &bull; Page not found</div>
+    <h1>Nothing here.</h1>
+    <p class="sub">The page you're looking for doesn't exist or has been moved. If you were trying to reach an API endpoint, check the documentation.</p>
+    <div class="actions">
+      <a href="/" class="btn-primary">Back to Home &rarr;</a>
+      <a href="/docs/" class="btn-secondary">Read the Docs &rarr;</a>
+    </div>
+    <div style="margin-top:48px;">
+      <p style="font-family:var(--mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">Popular pages</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <a href="/fund/" style="font-family:var(--mono);font-size:13px;color:var(--text-dim);text-decoration:none;padding:10px 16px;border:1px solid var(--border);border-radius:8px;transition:all 0.2s;">Fund a Session</a>
+        <a href="/dashboard/" style="font-family:var(--mono);font-size:13px;color:var(--text-dim);text-decoration:none;padding:10px 16px;border:1px solid var(--border);border-radius:8px;transition:all 0.2s;">Dashboard</a>
+        <a href="/marketplace/" style="font-family:var(--mono);font-size:13px;color:var(--text-dim);text-decoration:none;padding:10px 16px;border:1px solid var(--border);border-radius:8px;transition:all 0.2s;">Marketplace</a>
+        <a href="/contact/" style="font-family:var(--mono);font-size:13px;color:var(--text-dim);text-decoration:none;padding:10px 16px;border:1px solid var(--border);border-radius:8px;transition:all 0.2s;">Contact</a>
+        <a href="/v1/catalog" style="font-family:var(--mono);font-size:13px;color:var(--text-dim);text-decoration:none;padding:10px 16px;border:1px solid var(--border);border-radius:8px;transition:all 0.2s;">API Catalog (JSON)</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/fund/">Fund</a></li>
+        <li><a href="/#docs">Stack</a></li>
+        <li><a href="/marketplace/">Marketplace</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

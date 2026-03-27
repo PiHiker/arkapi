@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction Market Search API | ArkAPI</title>
+<meta name="description" content="Search open prediction markets through ArkAPI. Query Polymarket and get normalized market titles, event context, probabilities, volume, close times, and URLs for 4 sats per call.">
+<meta name="keywords" content="prediction market API, Polymarket API, event probabilities API, market search API, ArkAPI prediction-market-search">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/prediction-market-search/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/prediction-market-search/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Prediction Market Search API | ArkAPI">
+<meta property="og:description" content="Search open Polymarket markets through ArkAPI and get normalized event title, probability, volume, close time, and URL data for 4 sats per call.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Prediction Market Search API | ArkAPI">
+<meta name="twitter:description" content="Search open prediction markets through ArkAPI and return normalized event, probability, and volume data for agents, news workflows, and market monitoring.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Prediction Market Search API","description":"ArkAPI prediction market search API for agents and researchers, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/prediction-market-search/"}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .code-block { font-size: 11px; padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav><div class="nav-inner"><a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a><ul class="nav-links"><li><a href="/#how">How it works</a></li><li><a href="/#apis">APIs</a></li><li><a href="/dashboard/">Dashboard</a></li><li><a href="/fund/">Fund</a></li><li><a href="/#docs">Stack</a></li><li><a href="/marketplace/">Early Access</a></li><li><a href="/contact/">Contact</a></li><li><a href="/docs/">Docs</a></li></ul><a href="/fund/" class="btn-nav">Fund</a></div></nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Prediction Market Search API &bull; Live on Signet test network only</div>
+    <h1>Search live prediction markets in one call.</h1>
+    <p class="sub">Search open Polymarket markets and return normalized event titles, probabilities, volume, close times, and URLs. Built for agents, market monitoring, research workflows, and event-driven automation.</p>
+    <div class="pill-row">
+      <div class="pill">4 sats / call</div>
+      <div class="pill">POST /api/prediction-market-search</div>
+      <div class="pill">Open markets only</div>
+    </div>
+  </section>
+
+  <div class="card">
+    <h2>What It Does</h2>
+    <p>ArkAPI prediction market search queries Polymarket and normalizes the response into a clean JSON shape that agents can work with. You get event context, market titles, probability, volume, close time, and a market URL without needing to wire up the upstream source directly.</p>
+    <ul>
+      <li>Searches open markets only</li>
+      <li>Returns normalized event, probability, and volume data</li>
+      <li>Useful for market, news, macro, and event workflows</li>
+      <li>Simple JSON request and response shape</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Result Shape</h2>
+    <p>Each result is designed to be easy for agents and scripts to rank, filter, and display. ArkAPI returns a compact structure with the key fields that matter most for downstream workflows.</p>
+    <ul>
+      <li><span class="code-inline">market_id</span> and <span class="code-inline">event_id</span> for stable references</li>
+      <li><span class="code-inline">title</span> and <span class="code-inline">event_title</span> for user-facing context</li>
+      <li><span class="code-inline">probability</span> and <span class="code-inline">volume_usd</span> for ranking and analysis</li>
+      <li><span class="code-inline">close_time</span> and <span class="code-inline">url</span> for navigation and timing</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Request</h2>
+      <div class="code-block">curl -X POST https://arkapi.dev/api/prediction-market-search \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"bitcoin","limit":3}' | jq</div>
+    </div>
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "query": "bitcoin",
+    "platform": "Polymarket",
+    "results": [
+      {
+        "market_id": "1662879",
+        "event_id": "286715",
+        "title": "Will the price of Bitcoin be above $68,000 on March 27?",
+        "event_title": "Bitcoin above ___ on March 27?",
+        "platform": "Polymarket",
+        "status": "open",
+        "probability": 0.979,
+        "volume_usd": 163398.20,
+        "close_time": "2026-03-27T16:00:00Z",
+        "url": "https://polymarket.com/event/bitcoin-above-on-march-27"
+      }
+    ]
+  },
+  "cost_sats": 4,
+  "endpoint": "/api/prediction-market-search"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Queries</h2>
+    <ul>
+      <li>bitcoin</li>
+      <li>bitcoin etf</li>
+      <li>federal reserve</li>
+      <li>fed rates</li>
+      <li>elections</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

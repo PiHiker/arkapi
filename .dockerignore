@@ -1,0 +1,14 @@
+.env
+.env.*
+*.env.local
+.git
+.gitignore
+.dockerignore
+Dockerfile.bark
+docker-compose*.yml
+scripts/test*.sh
+sql/
+README.md
+WALLETS.md
+CLOUDFLARE.md
+geoip/*.mmdb

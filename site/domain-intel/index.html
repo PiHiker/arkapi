@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain Intel API | ArkAPI</title>
+<meta name="description" content="Use ArkAPI Domain Intel to combine DNS, WHOIS, TLS, headers, email auth, security.txt metadata, robots.txt metadata, improved tech fingerprinting, HTTP redirect behavior, CT-log subdomains, provider detection, and optional AI summary in one response for 25 sats per call.">
+<meta name="keywords" content="domain intelligence API, domain intel API, DNS WHOIS TLS API, attack surface API, domain security API, email auth API, AI domain summary, ArkAPI domain-intel">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/domain-intel/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/domain-intel/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Domain Intel API | ArkAPI">
+<meta property="og:description" content="One-call domain intelligence for agents and defenders. Query DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, CT-log subdomains, providers, findings, and optional AI summary for 25 sats.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Domain Intel API | ArkAPI">
+<meta name="twitter:description" content="Aggregate domain intelligence and optional AI summary through ArkAPI. Built for agents, OSINT, and fast attack-surface review.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Domain Intel API",
+  "description": "ArkAPI domain intelligence API for agents and defenders, priced per call in sats.",
+  "author": {
+    "@type": "Organization",
+    "name": "ArkAPI"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ArkAPI",
+    "url": "https://arkapi.dev/"
+  },
+  "mainEntityOfPage": "https://arkapi.dev/domain-intel/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does Domain Intel cost?", "acceptedAnswer": {"@type": "Answer", "text": "Domain Intel costs 25 sats per call."}},
+    {"@type": "Question", "name": "What does Domain Intel return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns DNS, WHOIS, TLS, headers, email-auth posture, parsed security.txt metadata, parsed robots.txt metadata, improved tech fingerprinting, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, network summary, light subdomain hints, findings, recommendations, and optional AI summary."}},
+    {"@type": "Question", "name": "Can I request an AI summary?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Send ai_summary=true in the request body to append a concise ArkAPI-managed AI summary to the report."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Early Access</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Domain Intelligence API &bull; Live on Signet test network only</div>
+    <h1>Get a full domain report in one call.</h1>
+    <p class="sub">Query DNS, WHOIS, TLS, headers, email auth, parsed security.txt disclosure metadata, parsed robots.txt crawl metadata, improved tech fingerprints, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, network summary, light subdomain hints, findings, recommendations, and an optional AI summary. Built for agents, security review, and fast attack-surface checks.</p>
+    <div class="pill-row">
+      <div class="pill">25 sats / call</div>
+      <div class="pill">Optional AI summary</div>
+      <div class="pill">POST /api/domain-intel</div>
+    </div>
+  </section>
+
+  <div class="card">
+      <h2>What It Does</h2>
+      <p>ArkAPI Domain Intel combines the most useful domain checks into one structured response. Instead of calling DNS, WHOIS, SSL, headers, email-auth, disclosure-policy, crawl-policy, lightweight fingerprinting, and certificate-history lookups one by one, you can request a single report that summarizes the technical footprint and highlights actionable issues.</p>
+      <ul>
+        <li>Registration and nameserver summary</li>
+        <li>Provider detection for DNS, CDN, mail, and hosting context</li>
+        <li>Network footprint with ASN and country summary</li>
+        <li>security.txt contacts, emails, policy links, and disclosure metadata</li>
+        <li>robots.txt sitemap, user-agent, and crawl metadata</li>
+        <li>Improved CMS, frontend, and ecommerce fingerprinting</li>
+        <li>HTTP redirect behavior and final-page URL summary</li>
+        <li>CT-log subdomains from certificate history</li>
+        <li>Findings and recommendations for fast triage</li>
+      </ul>
+  </div>
+
+  <div class="card">
+      <h2>AI Summary Option</h2>
+      <p>If you set <span class="code-inline">ai_summary</span> to <span class="code-inline">true</span>, ArkAPI appends a concise AI-written interpretation of the report. The structured data stays intact, and the summary is just an extra layer for faster human review or agent narration.</p>
+      <ul>
+        <li>Same endpoint, no separate route</li>
+        <li>Returns <span class="code-inline">data.ai_summary.answer</span></li>
+        <li>Cached with the rest of the report</li>
+        <li>Good for dashboards, briefings, and agent outputs</li>
+      </ul>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="code-block">curl -X POST https://arkapi.dev/api/domain-intel \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com","ai_summary":true}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The same request body also works from agents that consume <a href="/openapi.json">/openapi.json</a>.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Body</h2>
+      <div class="code-block">{
+  "domain": "example.com",
+  "ai_summary": true
+}</div>
+      <h3>Input notes</h3>
+      <ul>
+        <li><span class="code-inline">domain</span> is required</li>
+        <li><span class="code-inline">ai_summary</span> is optional</li>
+        <li>Reports are cached for one hour</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <p>The full sample response is published as plain text so this page stays readable.</p>
+      <div class="code-block"><a href="/domain-intel/example.txt">View full example.com sample response</a></div>
+      <p>The sample was generated from a live <span class="code-inline">example.com</span> run with <span class="code-inline">ai_summary=true</span>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Targets</h2>
+    <ul>
+      <li>Your own domains before launch, after DNS changes, or during routine hardening reviews</li>
+      <li>Client or partner domains you are authorized to assess and summarize quickly</li>
+      <li>Third-party services your team depends on and wants to inventory for TLS, email-auth, and disclosure posture</li>
+      <li>Agent workflows that need one-call domain context for triage, reporting, or security checklists</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Acceptable Use</h2>
+    <p>Use Domain Intel for authorized security review, asset discovery, and defensive research. Do not use ArkAPI to target systems you do not own, administer, or have clear permission to assess.</p>
+    <p>Short disclaimer: ArkAPI provides informational output based on publicly accessible information and standard protocol responses only. You are responsible for how you use the results and for complying with applicable law, contracts, and acceptable-use policies.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <p>ArkAPI publishes machine-readable discovery metadata for agents and toolchains.</p>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

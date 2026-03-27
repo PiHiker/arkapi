@@ -1,0 +1,268 @@
+{
+  "name": "ArkAPI",
+  "description": "Bitcoin-native pay-per-call APIs for agents and developers. Live deployment is on the Signet test network only.",
+  "homepage": "https://arkapi.dev/",
+  "openapi_url": "https://arkapi.dev/openapi.json",
+  "llms_url": "https://arkapi.dev/llms.txt",
+  "llms_full_url": "https://arkapi.dev/llms-full.txt",
+  "catalog_url": "https://arkapi.dev/v1/catalog",
+  "version": "2026-03-27",
+  "auth": {
+    "type": "bearer",
+    "format": "Authorization: Bearer ak_xxx",
+    "session_create_url": "https://arkapi.dev/v1/sessions",
+    "session_balance_url": "https://arkapi.dev/v1/balance"
+  },
+  "funding": {
+    "network": "signet",
+    "methods": [
+      "lightning",
+      "ark"
+    ],
+    "note": "Current live deployment is Signet only."
+  },
+  "pricing_model": {
+    "type": "pay_per_call",
+    "unit": "sats",
+    "cost_field": "x-cost-sats"
+  },
+  "discovery": {
+    "machine_readable": true,
+    "agent_friendly": true,
+    "openclaw_compatible": true
+  },
+  "capabilities": [
+    "dns-lookup",
+    "whois",
+    "ssl-check",
+    "headers",
+    "weather",
+    "ip-lookup",
+    "email-auth-check",
+    "axfr-check",
+    "domain-intel",
+    "bitcoin-news",
+    "btc-price",
+    "ai-chat",
+    "ai-translate",
+    "translate",
+    "image-generate",
+    "screenshot",
+    "qr-generate",
+    "bitcoin-address",
+    "cve-search",
+    "prediction-market-search",
+    "cve-lookup",
+    "domain-check",
+    "url-to-markdown"
+  ],
+  "tools": [
+    {
+      "id": "dns-lookup",
+      "path": "/api/dns-lookup",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "security",
+      "description": "Full DNS records as structured JSON.",
+      "sample_intent": "Look up A, MX, TXT, NS, and SOA records for example.com."
+    },
+    {
+      "id": "whois",
+      "path": "/api/whois",
+      "method": "POST",
+      "cost_sats": 5,
+      "category": "security",
+      "description": "WHOIS registration data parsed into clean JSON.",
+      "sample_intent": "Fetch the WHOIS registration data for openai.com."
+    },
+    {
+      "id": "ssl-check",
+      "path": "/api/ssl-check",
+      "method": "POST",
+      "cost_sats": 5,
+      "category": "security",
+      "description": "TLS certificate analysis and expiry details.",
+      "sample_intent": "Check the TLS certificate and expiry for cloudflare.com."
+    },
+    {
+      "id": "headers",
+      "path": "/api/headers",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "security",
+      "description": "HTTP security header audit with score.",
+      "sample_intent": "Audit the security headers for https://www.ibm.com."
+    },
+    {
+      "id": "weather",
+      "path": "/api/weather",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "utility",
+      "description": "Current weather and forecast by city.",
+      "sample_intent": "Get the current weather and forecast for Toronto."
+    },
+    {
+      "id": "ip-lookup",
+      "path": "/api/ip-lookup",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "osint",
+      "description": "IP geolocation, ISP, and ASN lookup.",
+      "sample_intent": "Look up the geolocation and ASN for 8.8.8.8."
+    },
+    {
+      "id": "email-auth-check",
+      "path": "/api/email-auth-check",
+      "method": "POST",
+      "cost_sats": 4,
+      "category": "security",
+      "description": "SPF, DKIM, and DMARC posture with A-F grade.",
+      "sample_intent": "Check SPF, DKIM, and DMARC posture for proton.me."
+    },
+    {
+      "id": "axfr-check",
+      "path": "/api/axfr-check",
+      "method": "POST",
+      "cost_sats": 12,
+      "category": "security",
+      "description": "Check whether a domain allows DNS zone transfer and return exposed records when AXFR is enabled.",
+      "sample_intent": "Check whether example.com allows DNS zone transfer."
+    },
+    {
+      "id": "domain-intel",
+      "path": "/api/domain-intel",
+      "method": "POST",
+      "cost_sats": 25,
+      "category": "security",
+      "description": "Aggregate DNS, WHOIS, TLS, headers, email auth, parsed security.txt metadata, parsed robots.txt metadata, improved tech fingerprinting, HTTP redirect behavior, CT-log subdomains, provider detection, and resolved IP intelligence for a domain, with optional ai_summary.",
+      "sample_intent": "Give me a one-call domain intelligence summary for example.com, including security.txt contacts, robots.txt sitemap info, tech fingerprints, HTTP behavior, CT-log subdomains, and an AI summary."
+    },
+    {
+      "id": "bitcoin-news",
+      "path": "/api/bitcoin-news",
+      "method": "POST",
+      "cost_sats": 2,
+      "category": "utility",
+      "description": "Aggregated Bitcoin headlines from free RSS feeds.",
+      "sample_intent": "Get the latest 5 Bitcoin headlines."
+    },
+    {
+      "id": "btc-price",
+      "path": "/api/btc-price",
+      "method": "GET",
+      "cost_sats": 1,
+      "category": "bitcoin",
+      "description": "Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering.",
+      "sample_intent": "Get the Bitcoin price in USD only."
+    },
+    {
+      "id": "ai-chat",
+      "path": "/api/ai-chat",
+      "method": "POST",
+      "cost_sats": 100,
+      "category": "ai",
+      "description": "Anonymous AI chat with a 5-per-day token limit.",
+      "sample_intent": "Explain the difference between Ark and Lightning in simple terms."
+    },
+    {
+      "id": "ai-translate",
+      "path": "/api/ai-translate",
+      "method": "POST",
+      "cost_sats": 25,
+      "category": "ai",
+      "description": "Higher-quality AI translation with optional style control for more natural output.",
+      "sample_intent": "Translate a French paragraph into natural English."
+    },
+    {
+      "id": "translate",
+      "path": "/api/translate",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "ai",
+      "description": "Text translation with source-language auto-detection.",
+      "sample_intent": "Translate Bonjour to English."
+    },
+    {
+      "id": "image-generate",
+      "path": "/api/image-generate",
+      "method": "POST",
+      "cost_sats": 25,
+      "category": "visual",
+      "description": "AI image generation with ArkAPI-hosted download URLs.",
+      "sample_intent": "Generate an image of a glowing bioluminescent forest."
+    },
+    {
+      "id": "screenshot",
+      "path": "/api/screenshot",
+      "method": "POST",
+      "cost_sats": 15,
+      "category": "visual",
+      "description": "Full-page website screenshot with ArkAPI-hosted download URL.",
+      "sample_intent": "Take a screenshot of https://www.ibm.com."
+    },
+    {
+      "id": "qr-generate",
+      "path": "/api/qr-generate",
+      "method": "POST",
+      "cost_sats": 2,
+      "category": "utility",
+      "description": "Generate QR code PNG from any text or URL.",
+      "sample_intent": "Make a QR code for https://arkapi.dev/fund/."
+    },
+    {
+      "id": "bitcoin-address",
+      "path": "/api/bitcoin-address",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "bitcoin",
+      "description": "Validate mainnet Bitcoin addresses and fetch live on-chain balance data.",
+      "sample_intent": "Validate a mainnet Bitcoin address and check its balance."
+    },
+    {
+      "id": "cve-search",
+      "path": "/api/cve-search",
+      "method": "POST",
+      "cost_sats": 4,
+      "category": "security",
+      "description": "Search the official NVD feed for CVEs by keyword.",
+      "sample_intent": "Search for WordPress information disclosure CVEs."
+    },
+    {
+      "id": "prediction-market-search",
+      "path": "/api/prediction-market-search",
+      "method": "POST",
+      "cost_sats": 4,
+      "category": "utility",
+      "description": "Search open Polymarket prediction markets and return normalized results.",
+      "sample_intent": "Search open prediction markets for Iran."
+    },
+    {
+      "id": "cve-lookup",
+      "path": "/api/cve-lookup",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "security",
+      "description": "Look up a CVE in NVD with severity, CWE, KEV, and references.",
+      "sample_intent": "Look up details for CVE-2024-3400."
+    },
+    {
+      "id": "domain-check",
+      "path": "/api/domain-check",
+      "method": "POST",
+      "cost_sats": 3,
+      "category": "osint",
+      "description": "Check domain availability via WHOIS lookup.",
+      "sample_intent": "Check whether an unregistered-looking domain is available."
+    },
+    {
+      "id": "url-to-markdown",
+      "path": "/api/url-to-markdown",
+      "method": "POST",
+      "cost_sats": 5,
+      "category": "content",
+      "description": "Extract the main readable content from a public URL as clean Markdown.",
+      "sample_intent": "Extract the main readable content from a news article as Markdown."
+    }
+  ]
+}

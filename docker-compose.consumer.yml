@@ -1,0 +1,32 @@
+# Consumer bark wallet for testing — simulates a customer paying for API access
+#
+# This is a separate bark wallet used to pay Lightning invoices generated
+# by the merchant wallet. Signet only, no real money.
+#
+# Usage:
+#   sudo docker compose -f docker-compose.consumer.yml up -d
+#   sudo docker exec bark-consumer bark address    # get address to fund
+#   sudo docker exec bark-consumer bark balance    # check balance
+#   sudo docker exec bark-consumer bark send <invoice>  # pay an invoice
+#
+# Fund from: https://signet.2nd.dev
+#
+# Seed phrase is printed on first run and stored in the bark-consumer-data
+# volume at /root/.bark/mnemonic. To view it later:
+#   sudo docker exec bark-consumer cat /root/.bark/mnemonic
+
+services:
+  bark-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile.bark-consumer
+    container_name: bark-consumer
+    restart: unless-stopped
+    volumes:
+      - bark-consumer-data:/root/.bark
+    environment:
+      - BARK_ARK_SERVER=${BARK_ARK_SERVER:-ark.signet.2nd.dev}
+      - BARK_ESPLORA=${BARK_ESPLORA:-esplora.signet.2nd.dev}
+
+volumes:
+  bark-consumer-data:

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AXFR Check API | ArkAPI</title>
+<meta name="description" content="Use ArkAPI AXFR Check to test whether a domain allows DNS zone transfer and return exposed records when AXFR is enabled.">
+<meta name="keywords" content="AXFR API, zone transfer API, DNS zone transfer check, DNS security API, ArkAPI axfr-check">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/axfr-check/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/axfr-check/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="AXFR Check API | ArkAPI">
+<meta property="og:description" content="Check whether a domain allows DNS zone transfer and return exposed records only when AXFR is actually enabled.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AXFR Check API | ArkAPI">
+<meta name="twitter:description" content="Defensive DNS zone-transfer checking for authorized security review and misconfiguration detection.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"AXFR Check API","description":"ArkAPI AXFR check API for defensive DNS review, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/axfr-check/"}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .code-block { font-size: 11px; padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav><div class="nav-inner"><a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a><ul class="nav-links"><li><a href="/#how">How it works</a></li><li><a href="/#apis">APIs</a></li><li><a href="/dashboard/">Dashboard</a></li><li><a href="/fund/">Fund</a></li><li><a href="/#docs">Stack</a></li><li><a href="/marketplace/">Early Access</a></li><li><a href="/contact/">Contact</a></li><li><a href="/docs/">Docs</a></li></ul><a href="/fund/" class="btn-nav">Fund</a></div></nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">AXFR Check API &bull; Live on Signet test network only</div>
+    <h1>Check zone-transfer exposure in one API call.</h1>
+    <p class="sub">AXFR Check tests whether a domain’s authoritative nameservers allow DNS zone transfer. If AXFR is enabled, ArkAPI returns the exposed records in structured JSON. If it is not, the response tells you cleanly without noisy parsing.</p>
+    <div class="pill-row">
+      <div class="pill">12 sats / call</div>
+      <div class="pill">POST /api/axfr-check</div>
+      <div class="pill">Defensive DNS review</div>
+    </div>
+  </section>
+
+  <div class="card">
+    <h2>What It Does</h2>
+    <p>ArkAPI AXFR Check is designed for authorized security review and DNS hygiene checks. It queries the authoritative nameservers for a zone transfer and returns the zone records only when the server actually permits AXFR.</p>
+    <ul>
+      <li>Checks the authoritative nameserver set</li>
+      <li>Returns <span class="code-inline">allowed: false</span> when zone transfer is denied</li>
+      <li>Adds an <span class="code-inline">explanation</span> field so the result is immediately readable without interpreting the raw flags</li>
+      <li>Returns structured records only when exposure exists</li>
+      <li>Keeps the result usable for agents and reports</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Request</h2>
+      <div class="code-block">curl -X POST https://arkapi.dev/api/axfr-check \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}' | jq</div>
+    </div>
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "domain": "example.com",
+    "allowed": false,
+    "explanation": "AXFR was not permitted by the checked authoritative nameservers, so no zone records were returned.",
+    "nameservers_checked": [
+      "a.iana-servers.net",
+      "b.iana-servers.net"
+    ],
+    "transfer_record_count": 0
+  },
+  "cost_sats": 12,
+  "endpoint": "/api/axfr-check"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Targets</h2>
+    <ul>
+      <li>Your own domains after DNS or provider changes</li>
+      <li>Authorized client or partner domains during review</li>
+      <li>Internal checklists for exposed zone-transfer posture</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Acceptable Use</h2>
+    <p>Use AXFR Check only on domains you own, administer, or have permission to assess. ArkAPI provides informational output based on publicly reachable DNS behavior only. You are responsible for complying with law, contracts, and acceptable-use policies.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

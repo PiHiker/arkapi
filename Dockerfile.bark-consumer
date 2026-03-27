@@ -1,0 +1,22 @@
+FROM debian:bookworm-slim
+
+ARG BARK_VERSION=0.1.0-beta.8
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        netbase && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download bark CLI only (no barkd needed for consumer)
+RUN curl -fSL "https://gitlab.com/ark-bitcoin/bark/-/releases/bark-${BARK_VERSION}/downloads/bark-${BARK_VERSION}-linux-arm64" \
+        -o /usr/local/bin/bark && \
+    chmod +x /usr/local/bin/bark
+
+COPY scripts/bark-consumer-init.sh /usr/local/bin/bark-consumer-init.sh
+RUN chmod +x /usr/local/bin/bark-consumer-init.sh
+
+VOLUME /root/.bark
+
+ENTRYPOINT ["/usr/local/bin/bark-consumer-init.sh"]

@@ -1,0 +1,50 @@
+services:
+  arkapi:
+    build: .
+    container_name: arkapi
+    user: "999:4"
+    network_mode: host
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - arkapi-data:/data
+      - ./geoip:/geoip:ro
+
+  bark:
+    build:
+      context: .
+      dockerfile: Dockerfile.bark
+    container_name: bark
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - bark-data:/root/.bark
+    environment:
+      - BARK_ARK_SERVER=${BARK_ARK_SERVER:-ark.signet.2nd.dev}
+      - BARK_ESPLORA=${BARK_ESPLORA:-esplora.signet.2nd.dev}
+
+  translate:
+    build:
+      context: ./translate
+      dockerfile: Dockerfile
+    container_name: arkapi-translate
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5000"
+
+  screenshotter:
+    build:
+      context: .
+      dockerfile: screenshotter/Dockerfile
+    container_name: arkapi-screenshotter
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9010:9010"
+    env_file:
+      - .env
+
+volumes:
+  arkapi-data:
+  bark-data:

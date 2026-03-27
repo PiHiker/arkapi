@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Translate API | ArkAPI</title>
+<meta name="description" content="Translate plain text through ArkAPI for 3 sats per call. Send text and a target language code, and get fast utility translation with source-language detection.">
+<meta name="keywords" content="translate API, text translation API, language translation API, ArkAPI translate">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/translate/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/translate/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Translate API | ArkAPI">
+<meta property="og:description" content="Translate plain text through ArkAPI for 3 sats per call with source-language detection and target language control.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Translate API | ArkAPI">
+<meta name="twitter:description" content="Translate plain text through ArkAPI for 3 sats per call. Built for agents, scripts, and utility language workflows.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Translate API","description":"ArkAPI translation API for agents and developers, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/translate/"}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .code-block { font-size: 11px; padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav><div class="nav-inner"><a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a><ul class="nav-links"><li><a href="/#how">How it works</a></li><li><a href="/#apis">APIs</a></li><li><a href="/dashboard/">Dashboard</a></li><li><a href="/fund/">Fund</a></li><li><a href="/#docs">Stack</a></li><li><a href="/marketplace/">Early Access</a></li><li><a href="/contact/">Contact</a></li><li><a href="/docs/">Docs</a></li></ul><a href="/fund/" class="btn-nav">Fund</a></div></nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Translate API &bull; Live on Signet test network only</div>
+    <h1>Translate text in one API call.</h1>
+    <p class="sub">Send text and a target language code, and get fast utility translation with detected source language. Built for agents, scripts, support tools, and lightweight multilingual workflows.</p>
+    <div class="pill-row">
+      <div class="pill">3 sats / call</div>
+      <div class="pill">POST /api/translate</div>
+      <div class="pill">Source auto-detection</div>
+    </div>
+  </section>
+
+  <div class="card">
+    <h2>What It Does</h2>
+    <p>ArkAPI Translate provides inexpensive utility translation for plain text. It is useful when you need quick translation in a workflow without wiring in another vendor account or exposing a separate API key to every script.</p>
+    <ul>
+      <li>Simple request body with <span class="code-inline">text</span> and <span class="code-inline">target_language</span></li>
+      <li>Source-language auto-detection</li>
+      <li>Fast enough for lightweight agent and CLI tasks</li>
+      <li>Priced below the AI chat endpoint for utility use</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>When To Use It</h2>
+    <p>Use <span class="code-inline">/api/translate</span> when you want fast, inexpensive language conversion. If you need more natural phrasing or cleaner prose, <a href="/ai-translate/">/api/ai-translate</a> is the better premium option, but it costs more.</p>
+    <ul>
+      <li>Best for utility translation and workflow normalization</li>
+      <li>Good for short messages, tickets, notes, and prompts</li>
+      <li>Not the best choice when tone or style matters more than cost</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Request</h2>
+      <div class="code-block">curl -X POST https://arkapi.dev/api/translate \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"La lune eclaire la riviere et le vent chante dans les arbres.","target_language":"en"}' | jq</div>
+    </div>
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "text": "La lune eclaire la riviere et le vent chante dans les arbres.",
+    "translated_text": "The moon lights the river and the wind sings in the trees.",
+    "target_language": "en",
+    "source_language": "auto",
+    "detected_language": "fr",
+    "detected_confidence": 100
+  },
+  "cost_sats": 3,
+  "response_ms": 279,
+  "endpoint": "/api/translate"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Translating user messages or tickets into a working language</li>
+      <li>Quick multilingual enrichment for agents and bots</li>
+      <li>Normalizing small text snippets before downstream analysis</li>
+      <li>Low-cost translation where literary quality is not the main goal</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Good Language Tasks</h2>
+    <ul>
+      <li>Translate to English for downstream analysis</li>
+      <li>Normalize support or chat messages into one working language</li>
+      <li>Prepare short text for indexing, sentiment, or moderation workflows</li>
+    </ul>
+    <p>If you want a more natural or polished result instead of utility wording, compare this endpoint with <a href="/ai-translate/">AI Translate</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

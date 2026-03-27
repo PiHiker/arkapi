@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin Price API | ArkAPI</title>
+<meta name="description" content="Get the live Bitcoin spot price through ArkAPI. Query USD by default or request a subset of 10 major fiat currencies for 1 sat per call.">
+<meta name="keywords" content="Bitcoin price API, BTC price API, BTC USD API, Bitcoin exchange rate API, sats API, ArkAPI btc-price">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/btc-price/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/btc-price/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Bitcoin Price API | ArkAPI">
+<meta property="og:description" content="Get live Bitcoin spot prices in USD by default or request a subset of 10 major fiat currencies for 1 sat per call.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bitcoin Price API | ArkAPI">
+<meta name="twitter:description" content="Query live Bitcoin spot prices through ArkAPI with optional currency filters like USD, EUR, and CAD.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Bitcoin Price API",
+  "description": "ArkAPI Bitcoin price API for agents and developers, priced per call in sats.",
+  "author": {"@type": "Organization", "name": "ArkAPI"},
+  "publisher": {"@type": "Organization", "name": "ArkAPI", "url": "https://arkapi.dev/"},
+  "mainEntityOfPage": "https://arkapi.dev/btc-price/"
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .code-block { font-size: 11px; padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav><div class="nav-inner"><a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a><ul class="nav-links"><li><a href="/#how">How it works</a></li><li><a href="/#apis">APIs</a></li><li><a href="/dashboard/">Dashboard</a></li><li><a href="/fund/">Fund</a></li><li><a href="/#docs">Stack</a></li><li><a href="/marketplace/">Early Access</a></li><li><a href="/contact/">Contact</a></li><li><a href="/docs/">Docs</a></li></ul><a href="/fund/" class="btn-nav">Fund</a></div></nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Bitcoin Price API &bull; Live on Signet test network only</div>
+    <h1>Get the Bitcoin price in one call.</h1>
+    <p class="sub">Query the live Bitcoin spot price in USD by default or request a subset of 10 major fiat currencies. Built for dashboards, agents, bots, and lightweight BTC price checks.</p>
+    <div class="pill-row">
+      <div class="pill">1 sat / call</div>
+      <div class="pill">GET /api/btc-price</div>
+      <div class="pill">Defaults to USD</div>
+    </div>
+  </section>
+
+  <div class="card">
+    <h2>What It Does</h2>
+    <p>ArkAPI Bitcoin Price returns the live Bitcoin spot price rounded to the nearest cent. By default it returns USD, but you can request one currency or a subset of supported fiat codes through query parameters.</p>
+    <ul>
+      <li>Default response returns <span class="code-inline">btc_usd</span></li>
+      <li>Optional single-currency filter with <span class="code-inline">?currency=CAD</span></li>
+      <li>Optional subset filter with <span class="code-inline">?currencies=USD,EUR,CAD</span></li>
+      <li>Supported set includes USD, EUR, GBP, CAD, JPY, AUD, CHF, CNY, HKD, and SGD</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Behavior</h2>
+    <p>This endpoint is intentionally lightweight. It uses <span class="code-inline">GET</span>, has no request body, and is designed for quick market context instead of historical charting or exchange-specific order data.</p>
+    <ul>
+      <li>If no filter is passed, the response defaults to <span class="code-inline">USD</span></li>
+      <li>Single-currency responses are compact and easy to consume in scripts</li>
+      <li>Subset responses work well for dashboards that need only a few fiat pairs</li>
+      <li>Values are rounded to the nearest cent for readability</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Request</h2>
+      <div class="code-block">curl -H "Authorization: Bearer ak_your_token" "https://arkapi.dev/api/btc-price?currencies=USD,EUR,CAD" | jq</div>
+      <p>Use a funded token from the <a href="/fund/">Fund page</a>. No JSON body is required, and omitting query parameters returns USD by default.</p>
+    </div>
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "btc_usd": "68406.28",
+    "btc_eur": "59345.62",
+    "btc_cad": "94738.48",
+    "updated_at": "2026-03-26T19:15:36Z"
+  },
+  "cost_sats": 1,
+  "balance_remaining": 8637,
+  "response_ms": 4,
+  "endpoint": "/api/btc-price"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Agent decisions that need a quick BTC/USD reference</li>
+      <li>CLI checks before pricing or settlement logic</li>
+      <li>Lightweight BTC widgets and dashboards</li>
+      <li>Market-context enrichment for Bitcoin workflows</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Useful Query Patterns</h2>
+    <ul>
+      <li><span class="code-inline">/api/btc-price</span> for the default USD price</li>
+      <li><span class="code-inline">/api/btc-price?currency=CAD</span> for one fiat rate</li>
+      <li><span class="code-inline">/api/btc-price?currencies=USD,EUR,CAD</span> for a compact multi-currency response</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

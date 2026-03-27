@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | ArkAPI.dev Signet Sessions</title>
+<meta name="description" content="Open the ArkAPI.dev dashboard with your session token. Check Signet balance, confirm session status, and jump back into the API catalog.">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/dashboard/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/dashboard/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Session Dashboard | ArkAPI">
+<meta property="og:description" content="Open the ArkAPI dashboard with your session token, check Signet balance, and jump into the live API catalog.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Session Dashboard | ArkAPI">
+<meta name="twitter:description" content="Open the ArkAPI dashboard with your session token, check Signet balance, and jump into the live API catalog.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a0b;
+  --bg-card: #161619;
+  --border: #2a2a2f;
+  --border-bright: #3a3a42;
+  --text: #e8e6e3;
+  --text-dim: #8a8a8f;
+  --text-muted: #5a5a60;
+  --accent: #f7931a;
+  --accent-glow: rgba(247, 147, 26, 0.16);
+  --green: #22c55e;
+  --red: #ef4444;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Space Grotesk', system-ui, sans-serif;
+}
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(247, 147, 26, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 147, 26, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 90px 24px 40px;
+  position: relative;
+  z-index: 1;
+}
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 24px;
+  background: rgba(10, 10, 11, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+nav .nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a, .footer-links a {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .footer-links a:hover { color: var(--accent); }
+.btn-nav, .btn-primary, .btn-secondary, .copy-btn {
+  font-family: var(--mono);
+  font-size: 13px;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-nav, .btn-primary {
+  padding: 10px 18px;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  font-weight: 700;
+}
+.btn-nav:hover, .btn-primary:hover {
+  background: #ffad42;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.btn-secondary, .copy-btn {
+  padding: 12px 16px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-bright);
+}
+.btn-secondary:hover, .copy-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 28px;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+h1 {
+  font-size: clamp(40px, 6vw, 74px);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  margin-bottom: 18px;
+}
+.sub {
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 720px;
+}
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+  padding: 24px;
+}
+.card h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.card h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.card p {
+  color: var(--text-dim);
+}
+.hero-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.hero-list li {
+  color: var(--text-dim);
+  font-size: 15px;
+}
+.hero-list strong {
+  color: var(--text);
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+}
+.stack {
+  display: grid;
+  gap: 24px;
+}
+.field {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+.field label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.field textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 18px;
+}
+.status-pill.awaiting { border-color: rgba(247,147,26,0.35); color: #ffbf6b; }
+.status-pill.active { border-color: rgba(34,197,94,0.35); color: var(--green); }
+.status-pill.expired { border-color: rgba(239,68,68,0.35); color: #ff9a9a; }
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.stat {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.token-preview {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(247,147,26,0.08);
+  border: 1px solid rgba(247,147,26,0.18);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  word-break: break-all;
+}
+.mini-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.mini-list li {
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.mini-list strong {
+  color: var(--text);
+}
+.quick-links {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.quick-links a {
+  display: block;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  text-decoration: none;
+}
+.quick-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.quick-links span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.faucet-note {
+  margin-top: 16px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.faucet-note a, .footer-left a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.faucet-note a:hover, .footer-left a:hover { text-decoration: underline; }
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  margin-top: 28px;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+.footer-left {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 24px;
+  list-style: none;
+}
+/* HAMBURGER MENU */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 101;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  margin: 5px 0;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 10, 11, 0.97);
+  backdrop-filter: blur(20px);
+  z-index: 99;
+  padding: 100px 24px 40px;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--mono);
+  font-size: 18px;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+.mobile-menu a:hover { color: var(--accent); }
+.mobile-menu .btn-mobile-cta {
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 4px;
+}
+@media (max-width: 980px) {
+  .hero, .dashboard-grid, .summary-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .hamburger { display: block; }
+  .nav-links { display: none !important; }
+  .btn-nav { display: none; }
+  h1 { font-size: clamp(28px, 7vw, 48px); }
+  .sub { font-size: 16px; }
+  .btn-primary, .btn-secondary, .copy-btn { min-height: 48px; }
+  .field textarea { min-height: 80px; font-size: 14px; }
+  .quick-links a { padding: 16px; min-height: 48px; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">A</div>
+      ArkAPI.dev
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Marketplace</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Marketplace</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+
+<div class="container">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Dashboard • Live on Signet test network only</div>
+      <h1>Open your <span style="color:var(--accent)">session dashboard</span>.</h1>
+      <p class="sub">Paste a saved ArkAPI token to check live Signet balance, confirm session status, and jump straight back into the API catalog. No account layer. No separate login. The token is the session.</p>
+    </div>
+    <div class="card">
+      <h2>What this page does</h2>
+      <ul class="hero-list">
+        <li><strong>Loads one session:</strong> token-based access only, using the same bearer token you already funded.</li>
+        <li><strong>Reads live state:</strong> current session status and remaining balance via <code>GET /v1/balance</code>.</li>
+        <li><strong>Keeps it simple:</strong> quick links back to funding, the JSON catalog, and the public API overview.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="stack">
+      <div class="card">
+        <h2>Load a session</h2>
+        <p>Paste the bearer token from your Signet funding flow. This token is the credential for the session balance. Anyone with it can use and spend that session, so only save it on a trusted device and keep your own copy too.</p>
+        <div class="field">
+          <label for="token-input">Session token</label>
+          <textarea id="token-input" placeholder="ak_your_session_token"></textarea>
+        </div>
+        <div class="actions">
+          <button id="load-session" class="btn-primary" type="button">Load Dashboard</button>
+          <button id="save-token" class="btn-secondary" type="button">Save on This Device</button>
+          <button id="clear-token" class="btn-secondary" type="button">Clear</button>
+        </div>
+        <div id="status-pill" class="status-pill">Paste a token to load live session status</div>
+        <p class="faucet-note">Need a new session instead? Open the <a href="/fund/">Fund page</a> or get test funds from the <a href="https://signet.2nd.dev/" target="_blank" rel="noopener noreferrer">Second Signet faucet</a>.</p>
+      </div>
+
+      <div class="card">
+        <h2>Session overview</h2>
+        <p>The dashboard reads the live session state from ArkAPI and keeps the output intentionally minimal.</p>
+        <div class="summary-grid">
+          <div class="stat">
+            <div class="stat-label">Status</div>
+            <div class="stat-value" id="session-status">Not loaded</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Balance</div>
+            <div class="stat-value" id="session-balance">0 sats</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Network</div>
+            <div class="stat-value">Signet</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Last checked</div>
+            <div class="stat-value" id="last-checked">Never</div>
+          </div>
+        </div>
+        <div class="token-preview" id="token-preview">No session token loaded</div>
+        <div class="actions">
+          <button id="refresh-session" class="btn-primary" type="button">Refresh Status</button>
+          <button id="copy-token" class="copy-btn" type="button">Copy Token</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="card">
+        <h3>Quick actions</h3>
+        <p>This first dashboard stays focused on the minimum useful state for a funded session.</p>
+        <ul class="mini-list">
+          <li><strong>No account required:</strong> your token is the credential and controls the session balance.</li>
+          <li><strong>Signet only:</strong> this dashboard tracks test-network sessions, not mainnet funds.</li>
+          <li><strong>Best practice:</strong> only save the token on a device you trust, and keep a separate copy outside the browser.</li>
+        </ul>
+        <div class="quick-links">
+          <a href="/fund/">Fund another session<span>Create a fresh Signet session and pay with Ark or Lightning.</span></a>
+          <a href="/#apis">Open API catalog<span>See live endpoints, request bodies, and current pricing.</span></a>
+          <a href="/v1/catalog" target="_blank" rel="noopener noreferrer">Open JSON catalog<span>Machine-readable endpoint list for scripts and agents.</span></a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>How to use it</h3>
+        <ul class="mini-list">
+          <li><strong>1.</strong> Fund a session on the <a href="/fund/" style="color:var(--accent);text-decoration:none;">Fund page</a>.</li>
+          <li><strong>2.</strong> Save the returned bearer token.</li>
+          <li><strong>3.</strong> Paste it here to confirm balance and status.</li>
+          <li><strong>4.</strong> Use the same token in <code>Authorization: Bearer ...</code> for ArkAPI calls.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/fund/">Fund</a></li>
+        <li><a href="/#docs">Stack</a></li>
+        <li><a href="/marketplace/">Marketplace</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+const storageKey = 'arkapi_session_token';
+const tokenInput = document.getElementById('token-input');
+const loadBtn = document.getElementById('load-session');
+const saveBtn = document.getElementById('save-token');
+const clearBtn = document.getElementById('clear-token');
+const refreshBtn = document.getElementById('refresh-session');
+const copyBtn = document.getElementById('copy-token');
+const statusPill = document.getElementById('status-pill');
+const sessionStatus = document.getElementById('session-status');
+const sessionBalance = document.getElementById('session-balance');
+const lastChecked = document.getElementById('last-checked');
+const tokenPreview = document.getElementById('token-preview');
+
+function setStatus(text, kind = '') {
+  statusPill.textContent = text;
+  statusPill.className = 'status-pill' + (kind ? ' ' + kind : '');
+}
+
+function updateView(status, balance, token) {
+  sessionStatus.textContent = status || 'Unknown';
+  sessionBalance.textContent = typeof balance === 'number' ? `${balance} sats` : '0 sats';
+  lastChecked.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  tokenPreview.textContent = token || 'No session token loaded';
+
+  if (status === 'active') setStatus('Session active on Signet', 'active');
+  else if (status === 'awaiting_payment') setStatus('Awaiting Signet payment', 'awaiting');
+  else if (status === 'expired') setStatus('Session expired', 'expired');
+  else setStatus('Session loaded', '');
+}
+
+async function refreshSession() {
+  const token = tokenInput.value.trim();
+  if (!token) {
+    setStatus('Paste a token first', 'expired');
+    return;
+  }
+
+  setStatus('Checking live session status…', 'awaiting');
+  try {
+    const resp = await fetch('/v1/balance', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      sessionStatus.textContent = 'Unavailable';
+      sessionBalance.textContent = '0 sats';
+      lastChecked.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      tokenPreview.textContent = token;
+      setStatus(data.message || data.error || 'Unable to load session', 'expired');
+      return;
+    }
+
+    updateView(data.status, data.balance_sats, data.token || token);
+  } catch (err) {
+    setStatus('Dashboard request failed', 'expired');
+  }
+}
+
+function saveToken() {
+  const token = tokenInput.value.trim();
+  if (!token) {
+    setStatus('Nothing to save yet', 'expired');
+    return;
+  }
+  sessionStorage.setItem(storageKey, token);
+  setStatus('Token saved in this browser', 'active');
+}
+
+function clearToken() {
+  sessionStorage.removeItem(storageKey);
+  tokenInput.value = '';
+  sessionStatus.textContent = 'Not loaded';
+  sessionBalance.textContent = '0 sats';
+  lastChecked.textContent = 'Never';
+  tokenPreview.textContent = 'No session token loaded';
+  setStatus('Token cleared from this browser', '');
+}
+
+async function copyToken() {
+  const token = tokenInput.value.trim();
+  if (!token) return;
+  try {
+    await navigator.clipboard.writeText(token);
+    setStatus('Token copied', 'active');
+  } catch (err) {
+    setStatus('Copy failed', 'expired');
+  }
+}
+
+loadBtn.addEventListener('click', refreshSession);
+saveBtn.addEventListener('click', saveToken);
+clearBtn.addEventListener('click', clearToken);
+refreshBtn.addEventListener('click', refreshSession);
+copyBtn.addEventListener('click', copyToken);
+
+const savedToken = sessionStorage.getItem(storageKey);
+if (savedToken) {
+  tokenInput.value = savedToken;
+  refreshSession();
+}
+</script>
+</body>
+</html>
