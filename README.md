@@ -356,6 +356,10 @@ Apache (reverse proxy on host)
 |  |   (host net) |    +----------------------+  |
 |  +------+-------+                               |
 |         |            +----------------------+   |
+|         +----------->| ComfyUI              |   |
+|         |            | :8188 (localhost)    |   |
+|         |            +----------------------+   |
+|         |            +----------------------+   |
 |         +----------->| LibreTranslate       |   |
 |         |            | :5001 (localhost)    |   |
 |         |            +----------------------+   |
@@ -382,6 +386,7 @@ Apache (reverse proxy on host)
 - **Cloudflare** — Optional DNS and TLS termination layer in front of the web tier.
 - **arkapi container** — Go binary, `network_mode: host`. Runs the API server on `127.0.0.1:8080`. Handles session management, auth, rate limiting, metering, and upstream calls to both local helper services and external APIs. Installs `dig`, `whois`, `curl` for command-based handlers.
 - **bark container** — Second's barkd daemon (Ark protocol wallet) on Signet testnet. Exposes REST API on `127.0.0.1:3000` (localhost only). Handles Lightning invoice generation and payment detection. Wallet data persisted in `bark-data` Docker volume.
+- **ComfyUI** — Local image generation backend on `127.0.0.1:8188` used by `/api/image-generate`.
 - **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`. Current starter language set: `en`, `es`, `fr`, `de`, `it`, `pt`.
 - **screenshotter container** — Dedicated Playwright-based screenshot service on `127.0.0.1:9010`.
 - **MySQL** — On the host, `127.0.0.1:3306`. Stores sessions and call logs. The `arkapi` MySQL user has access only to the `arkapi` database.
@@ -405,6 +410,7 @@ Apache (reverse proxy on host)
 
 - arkapi uses `network_mode: host` so it can reach both MySQL (`127.0.0.1:3306`) and barkd (`127.0.0.1:3000`).
 - bark exposes port 3000 to `127.0.0.1` only — not accessible from the internet.
+- ComfyUI exposes port 8188 to `127.0.0.1` only — not accessible from the internet.
 - LibreTranslate exposes port 5001 to `127.0.0.1` only — not accessible from the internet.
 - Screenshotter exposes port 9010 to `127.0.0.1` only — not accessible from the internet.
 - In the reference deployment, only the web tier is internet-facing on ports `80` and `443`. Bark, translation, screenshot, and database services stay bound to localhost.
