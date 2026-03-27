@@ -382,21 +382,21 @@ Apache (reverse proxy on host)
 
 ### Components
 
-- **Apache** — Example reverse proxy on the host. Routes `/health`, `/v1/*`, `/api/*` to the Go backend and can serve the static site at `/`.
-- **Cloudflare** — Optional DNS and TLS termination layer in front of the web tier.
-- **arkapi container** — Go binary, `network_mode: host`. Runs the API server on `127.0.0.1:8080`. Handles session management, auth, rate limiting, metering, and upstream calls to both local helper services and external APIs. Installs `dig`, `whois`, `curl` for command-based handlers.
-- **bark container** — Second's barkd daemon (Ark protocol wallet) on Signet testnet. Exposes REST API on `127.0.0.1:3000` (localhost only). Handles Lightning invoice generation and payment detection. Wallet data persisted in `bark-data` Docker volume.
+- **Apache** — Example reverse proxy on the host. Routes `/health`, `/v1/*`, and `/api/*` to the Go backend and can serve the static site at `/`.
+- **Cloudflare** — Optional DNS, TLS, and CDN layer in front of the web tier.
+- **arkapi container** — Go binary running with `network_mode: host`. Serves the API on `127.0.0.1:8080`, handles sessions, auth, rate limiting, billing, and calls both local helper services and external upstream APIs. Installs `dig`, `whois`, and `curl` for command-based handlers.
+- **bark container** — Second's `barkd` daemon on Bitcoin Signet. Exposes a REST API on `127.0.0.1:3000` and handles session funding detection for both Lightning invoices and Ark-address funding. Wallet data is persisted in the `bark-data` Docker volume.
 - **ComfyUI** — Local image generation backend on `127.0.0.1:8188` used by `/api/image-generate`.
-- **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`. Current starter language set: `en`, `es`, `fr`, `de`, `it`, `pt`.
-- **screenshotter container** — Dedicated Playwright-based screenshot service on `127.0.0.1:9010`.
-- **MySQL** — On the host, `127.0.0.1:3306`. Stores sessions and call logs. The `arkapi` MySQL user has access only to the `arkapi` database.
-- **External upstreams** — ArkAPI also calls external services where local data or inference is not the source of truth:
+- **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`.
+- **screenshotter container** — Playwright-based screenshot service on `127.0.0.1:9010`.
+- **MySQL** — Host database on `127.0.0.1:3306` for sessions, balances, and call logs. The `arkapi` MySQL user is scoped to the `arkapi` database.
+- **External upstreams** — ArkAPI also calls external services where local infrastructure is not the source of truth:
   - **Cloudflare AI** for `/api/ai-chat` and `/api/ai-translate`
   - **Open-Meteo** for `/api/weather`
   - **ip-api.com** for `/api/ip-lookup`
   - **NVD API** for `/api/cve-search` and `/api/cve-lookup`
   - **Polymarket Gamma API** for `/api/prediction-market-search`
-  - **WHOIS / RDAP / DNS services** for domain and registration intelligence
+  - **Public WHOIS, RDAP, and DNS infrastructure** for domain and registration intelligence
 
 ### AI Chat Security Notes
 
@@ -408,12 +408,13 @@ Apache (reverse proxy on host)
 
 ### Networking
 
-- arkapi uses `network_mode: host` so it can reach both MySQL (`127.0.0.1:3306`) and barkd (`127.0.0.1:3000`).
+- arkapi uses `network_mode: host` so it can reach host-local MySQL and localhost-bound helper services.
+- arkapi itself is still intended to be reached through Apache and, optionally, Cloudflare.
 - bark exposes port 3000 to `127.0.0.1` only — not accessible from the internet.
 - ComfyUI exposes port 8188 to `127.0.0.1` only — not accessible from the internet.
 - LibreTranslate exposes port 5001 to `127.0.0.1` only — not accessible from the internet.
 - Screenshotter exposes port 9010 to `127.0.0.1` only — not accessible from the internet.
-- In the reference deployment, only the web tier is internet-facing on ports `80` and `443`. Bark, translation, screenshot, and database services stay bound to localhost.
+- In the reference deployment, only the web tier is internet-facing on ports `80` and `443`. Bark, ComfyUI, translation, screenshot, and database services stay bound to localhost.
 - If you want optional traffic reporting, set `ARKAPI_ADMIN_TRAFFIC_LOG_PATH` to a readable web access log path.
 
 ---
