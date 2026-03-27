@@ -590,15 +590,15 @@ sudo docker exec bark-consumer cat /root/.bark/mnemonic
 
 - [ ] Set `ARKAPI_DEFAULT_BALANCE_SATS=0` or `ARKAPI_PAYMENT_MODE=bark` before public launch
 - [ ] Consider restricting CORS origins from `*` to specific domains
-- [ ] Fund the merchant bark wallet from the signet faucet
-- [ ] Test the full Lightning payment flow end-to-end
+- [ ] Fund the merchant Bark wallet from a Signet faucet for test deployments
+- [ ] Test at least one full session activation flow end-to-end using Lightning, Ark funding, or both
 - [ ] Back up merchant wallet seed phrase securely before mainnet
 - [ ] Confirm `.env`, `WALLETS.md`, and `CLOUDFLARE.md` remain untracked before publishing
 
 ### Publishing Hygiene
 
 - Keep live secrets only in local private files such as `.env`, `WALLETS.md`, and `CLOUDFLARE.md`
-- Publish sanitized templates such as `WALLETS.example.md` and `CLOUDFLARE.example.md` instead of the real files
+- Publish sanitized templates such as `.env.example`, `WALLETS.example.md`, and `CLOUDFLARE.example.md` instead of the real files
 - Keep `go.sum` in the repo so builds stay reproducible
 
 ---
