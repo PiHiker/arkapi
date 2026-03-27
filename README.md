@@ -6,7 +6,9 @@ https://arkapi.dev
 
 No accounts. No long-lived API keys. Fund a session, then spend down a balance across security, AI, Bitcoin, and utility endpoints.
 
-ArkAPI proxies security, OSINT, visual, AI, Bitcoin, and utility APIs and meters access via Bitcoin micropayments using Second's Bark wallet and the Ark protocol on Signet testnet.
+ArkAPI proxies security, OSINT, visual, AI, Bitcoin, and utility APIs and meters access via Bitcoin micropayments.
+
+It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/bark) wallet and the [Ark protocol](https://ark-protocol.org/) for session funding on the Signet test network.
 
 ---
 
