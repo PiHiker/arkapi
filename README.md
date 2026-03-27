@@ -8,7 +8,7 @@
 
 **Bitcoin-funded pay-per-call APIs for agents and developers.**
 
-https://arkapi.dev
+[arkapi.dev](https://arkapi.dev)
 
 ⚡ Anonymous sessions • 🤖 Agent-friendly discovery • ₿ Bitcoin-funded API access
 
@@ -51,17 +51,13 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ArkAPI publishes a machine-readable OpenAPI specification for agent and tooling discovery:
 
-```text
-https://arkapi.dev/openapi.json
-```
+- [OpenAPI spec](https://arkapi.dev/openapi.json)
 
 Additional live discovery URLs:
 
-```text
-https://arkapi.dev/.well-known/arkapi.json
-https://arkapi.dev/llms.txt
-https://arkapi.dev/llms-full.txt
-```
+- [Well-known manifest](https://arkapi.dev/.well-known/arkapi.json)
+- [llms.txt](https://arkapi.dev/llms.txt)
+- [llms-full.txt](https://arkapi.dev/llms-full.txt)
 
 This spec is intended for:
 
@@ -157,11 +153,7 @@ Returns a Signet Lightning invoice and Signet Ark address. Pay either one to act
 }
 ```
 
-Current live public funding page:
-
-```text
-https://arkapi.dev/fund/
-```
+Current live public funding page: [Fund a session](https://arkapi.dev/fund/)
 
 This deployment is live on the **Signet test network only**.
 
