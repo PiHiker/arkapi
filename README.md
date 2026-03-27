@@ -16,7 +16,7 @@ No accounts. No long-lived API keys. Fund a session, then spend down a balance a
 
 ArkAPI proxies security, OSINT, visual, AI, Bitcoin, and utility APIs and meters access via Bitcoin micropayments.
 
-It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/bark) wallet and the [Ark protocol](https://ark-protocol.org/) for session funding on the Signet test network.
+It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/bark) wallet and the [Ark protocol](https://ark-protocol.org/) for session funding on the Signet test network. Each session can currently be funded with either a Signet Lightning invoice or a Signet Ark address.
 
 ---
 
@@ -105,29 +105,29 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | Method | Path | Cost | Description |
 |--------|------|------|-------------|
 | GET | `/v1/balance` | free | Check session balance |
-| POST | `/api/dns-lookup` | 3 sats | Full DNS records as structured JSON |
-| POST | `/api/whois` | 5 sats | WHOIS data parsed into clean JSON |
-| POST | `/api/ssl-check` | 5 sats | SSL certificate analysis |
-| POST | `/api/headers` | 3 sats | HTTP security headers audit with score |
-| POST | `/api/weather` | 3 sats | Current weather + 7-day forecast |
-| POST | `/api/ip-lookup` | 3 sats | IP geolocation, ISP, and ASN data |
-| POST | `/api/email-auth-check` | 4 sats | SPF, DKIM, and DMARC posture with A-F grade |
-| POST | `/api/axfr-check` | 12 sats | Check whether a domain allows DNS zone transfer and return exposed AXFR records when available |
-| POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
-| POST | `/api/bitcoin-news` | 2 sats | Aggregated Bitcoin headlines from free RSS feeds |
 | POST | `/api/ai-chat` | 100 sats | Anonymous AI chat with ArkAPI-managed inference |
 | POST | `/api/ai-translate` | 25 sats | Higher-quality AI translation with style control for more natural output |
-| POST | `/api/translate` | 3 sats | Self-hosted text translation with source auto-detection |
-| POST | `/api/image-generate` | 25 sats | AI image generation with short-lived download URL |
-| POST | `/api/screenshot` | 15 sats | Server-side webpage screenshot with download URL |
-| POST | `/api/qr-generate` | 2 sats | Generate QR code PNG from text or URLs |
-| POST | `/api/bitcoin-address` | 3 sats | Validate mainnet Bitcoin addresses and fetch on-chain balance data |
+| POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
 | GET | `/api/btc-price` | 1 sat | Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering |
-| POST | `/api/cve-search` | 4 sats | Search NVD CVEs by keyword |
 | POST | `/api/prediction-market-search` | 4 sats | Search open Polymarket prediction markets |
-| POST | `/api/cve-lookup` | 3 sats | Look up a CVE in NVD with severity, CWE, KEV, and references |
-| POST | `/api/domain-check` | 3 sats | Check domain availability via WHOIS |
+| POST | `/api/translate` | 3 sats | Self-hosted text translation with source auto-detection |
 | POST | `/api/url-to-markdown` | 5 sats | Extract clean Markdown from any public URL |
+| POST | `/api/axfr-check` | 12 sats | Check whether a domain allows DNS zone transfer and return exposed AXFR records when available |
+| POST | `/api/cve-lookup` | 3 sats | Look up a CVE in NVD with severity, CWE, KEV, and references |
+| POST | `/api/dns-lookup` | 3 sats | Full DNS records as structured JSON |
+| POST | `/api/bitcoin-address` | 3 sats | Validate mainnet Bitcoin addresses and fetch on-chain balance data |
+| POST | `/api/bitcoin-news` | 2 sats | Aggregated Bitcoin headlines from free RSS feeds |
+| POST | `/api/cve-search` | 4 sats | Search NVD CVEs by keyword |
+| POST | `/api/domain-check` | 3 sats | Check domain availability via WHOIS |
+| POST | `/api/email-auth-check` | 4 sats | SPF, DKIM, and DMARC posture with A-F grade |
+| POST | `/api/headers` | 3 sats | HTTP security headers audit with score |
+| POST | `/api/image-generate` | 25 sats | AI image generation with short-lived download URL |
+| POST | `/api/ip-lookup` | 3 sats | IP geolocation, ISP, and ASN data |
+| POST | `/api/qr-generate` | 2 sats | Generate QR code PNG from text or URLs |
+| POST | `/api/screenshot` | 15 sats | Server-side webpage screenshot with download URL |
+| POST | `/api/ssl-check` | 5 sats | SSL certificate analysis |
+| POST | `/api/weather` | 3 sats | Current weather + 7-day forecast |
+| POST | `/api/whois` | 5 sats | WHOIS data parsed into clean JSON |
 
 ### Session Creation
 
@@ -137,7 +137,7 @@ curl -X POST -H "Content-Type: application/json" \
      -d '{"amount_sats": 500}' \
      https://arkapi.dev/v1/sessions
 ```
-Returns a Signet Lightning invoice and Signet Ark address. Pay either one to activate the session:
+Returns both a Signet Lightning invoice and a Signet Ark address. Pay either one to activate the session:
 ```json
 {
   "token": "ak_xxx",
@@ -155,9 +155,104 @@ Returns a Signet Lightning invoice and Signet Ark address. Pay either one to act
 
 Current live public funding page: [Fund a session](https://arkapi.dev/fund/)
 
-This deployment is live on the **Signet test network only**.
+This deployment is live on the **Signet test network only**. The same session object supports both funding routes, and ArkAPI activates the balance once either payment settles.
 
 ### Request/Response Examples
+
+**Domain Intel:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"domain":"example.com","ai_summary":true}' \
+     https://arkapi.dev/api/domain-intel
+```
+Returns top-level registration, provider detection, parsed `security_txt` disclosure metadata, parsed `robots_txt` crawl metadata, improved `tech_fingerprint` hints, `http_behavior` redirect/final-page metadata, current light subdomain hints, `ct_subdomains` from certificate history, network summary, findings, recommendations, cache metadata, and an optional AI summary alongside the raw DNS / WHOIS / TLS / header / email-auth blocks.
+
+Public guide: [Domain Intel](https://arkapi.dev/domain-intel/)
+
+**Anonymous AI Chat:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"prompt":"How is Ark different from Lightning?"}' \
+     https://arkapi.dev/api/ai-chat
+```
+
+Public guide: [Anonymous AI Chat](https://arkapi.dev/ai-chat/)
+
+**AI Translate:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"text":"Bonjour tout le monde","target_language":"en","style":"natural"}' \
+     https://arkapi.dev/api/ai-translate
+```
+
+Public guide: [AI Translate](https://arkapi.dev/ai-translate/)
+
+**BTC Price:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     https://arkapi.dev/api/btc-price
+
+curl -H "Authorization: Bearer $TOKEN" \
+     "https://arkapi.dev/api/btc-price?currency=USD"
+
+curl -H "Authorization: Bearer $TOKEN" \
+     "https://arkapi.dev/api/btc-price?currencies=USD,EUR,CAD"
+```
+
+Public guide: [BTC Price](https://arkapi.dev/btc-price/)
+
+**Prediction Market Search:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"query":"bitcoin etf","limit":5}' \
+     https://arkapi.dev/api/prediction-market-search
+```
+
+Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-search/)
+
+**Translate:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"text":"Hola, me llamo ArkAPI.","target_language":"en"}' \
+     https://arkapi.dev/api/translate
+```
+
+Public guide: [Translate](https://arkapi.dev/translate/)
+
+**URL to Markdown:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"url":"https://example.com"}' \
+     https://arkapi.dev/api/url-to-markdown
+```
+
+Public guide: [URL to Markdown](https://arkapi.dev/url-to-markdown/)
+
+**AXFR Check:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"domain":"example.com"}' \
+     https://arkapi.dev/api/axfr-check
+```
+
+Public guide: [AXFR Check](https://arkapi.dev/axfr-check/)
+
+**CVE Lookup:**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"cve":"CVE-2024-3400"}' \
+     https://arkapi.dev/api/cve-lookup
+```
+
+Public guide: [CVE Lookup](https://arkapi.dev/cve-lookup/)
 
 **DNS Lookup:**
 ```bash
@@ -211,101 +306,6 @@ curl -H "Authorization: Bearer $TOKEN" \
      -d '{"ip":"8.8.8.8"}' \
      https://arkapi.dev/api/ip-lookup
 ```
-
-**Translate:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"text":"Hola, me llamo ArkAPI.","target_language":"en"}' \
-     https://arkapi.dev/api/translate
-```
-
-Public guide: [Translate](https://arkapi.dev/translate/)
-
-**Anonymous AI Chat:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"prompt":"How is Ark different from Lightning?"}' \
-     https://arkapi.dev/api/ai-chat
-```
-
-Public guide: [Anonymous AI Chat](https://arkapi.dev/ai-chat/)
-
-**AI Translate:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"text":"Bonjour tout le monde","target_language":"en","style":"natural"}' \
-     https://arkapi.dev/api/ai-translate
-```
-
-Public guide: [AI Translate](https://arkapi.dev/ai-translate/)
-
-**BTC Price:**
-```bash
-  curl -H "Authorization: Bearer $TOKEN" \
-     https://arkapi.dev/api/btc-price
-
-  curl -H "Authorization: Bearer $TOKEN" \
-     "https://arkapi.dev/api/btc-price?currency=USD"
-
-  curl -H "Authorization: Bearer $TOKEN" \
-     "https://arkapi.dev/api/btc-price?currencies=USD,EUR,CAD"
-```
-
-Public guide: [BTC Price](https://arkapi.dev/btc-price/)
-
-**Prediction Market Search:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"query":"bitcoin etf","limit":5}' \
-     https://arkapi.dev/api/prediction-market-search
-```
-
-Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-search/)
-
-**Domain Intel:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"domain":"example.com","ai_summary":true}' \
-     https://arkapi.dev/api/domain-intel
-```
-Returns top-level registration, provider detection, parsed `security_txt` disclosure metadata, parsed `robots_txt` crawl metadata, improved `tech_fingerprint` hints, `http_behavior` redirect/final-page metadata, current light subdomain hints, `ct_subdomains` from certificate history, network summary, findings, recommendations, cache metadata, and an optional AI summary alongside the raw DNS / WHOIS / TLS / header / email-auth blocks.
-
-Public guide: [Domain Intel](https://arkapi.dev/domain-intel/)
-
-**URL to Markdown:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"url":"https://example.com"}' \
-     https://arkapi.dev/api/url-to-markdown
-```
-
-Public guide: [URL to Markdown](https://arkapi.dev/url-to-markdown/)
-
-**AXFR Check:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"domain":"example.com"}' \
-     https://arkapi.dev/api/axfr-check
-```
-
-Public guide: [AXFR Check](https://arkapi.dev/axfr-check/)
-
-**CVE Lookup:**
-```bash
-curl -H "Authorization: Bearer $TOKEN" \
-     -H "Content-Type: application/json" \
-     -d '{"cve":"CVE-2024-3400"}' \
-     https://arkapi.dev/api/cve-lookup
-```
-
-Public guide: [CVE Lookup](https://arkapi.dev/cve-lookup/)
 
 ### Response Format
 
@@ -584,48 +584,43 @@ sudo docker exec bark-consumer cat /root/.bark/mnemonic
 
 ---
 
-## Payment Flow (Bark Mode)
+## Funding Flow (Bark / Ark)
 
 ```
-Consumer                    ArkAPI                      barkd
-   |                          |                           |
-   |  POST /v1/sessions       |                           |
-   |  {"amount_sats": 5000}   |                           |
-   |------------------------->|                           |
-   |                          |  POST /lightning/invoice   |
-   |                          |-------------------------->|
-   |                          |  {"invoice": "lntbs..."}  |
-   |                          |<--------------------------|
-   |  {"token": "ak_...",     |                           |
-   |   "funding": {           |                           |
-   |     "lightning_invoice":  |                           |
-   |     "lntbs..."           |                           |
-   |   },                     |                           |
-   |   "status":              |                           |
-   |   "awaiting_payment"}    |                           |
-   |<-------------------------|                           |
-   |                          |                           |
-   |  Pay invoice with        |                           |
-   |  Lightning wallet -------|-------------------------->|
-   |                          |                           |
-   |                          |  (poller every 5s)        |
-   |                          |  GET /lightning/receives/  |
-   |                          |      {payment_hash}       |
-   |                          |-------------------------->|
-   |                          |  {"finished_at": "..."}   |
-   |                          |<--------------------------|
-   |                          |                           |
-   |                          |  Session activated!       |
-   |                          |  balance_sats = 5000      |
-   |                          |                           |
-   |  POST /api/dns-lookup    |                           |
-   |  (auth: Bearer ak_...)   |                           |
-   |------------------------->|                           |
-   |  {"success": true,       |                           |
-   |   "cost_sats": 3,        |                           |
-   |   "balance_remaining":   |                           |
-   |   4997}                  |                           |
-   |<-------------------------|                           |
+Consumer                        ArkAPI                          barkd
+   |                              |                               |
+   |  POST /v1/sessions           |                               |
+   |  {"amount_sats": 5000}       |                               |
+   |----------------------------->|                               |
+   |                              |  create funding options       |
+   |                              |------------------------------>|
+   |                              |<------------------------------|
+   |  {"token":"ak_...",          |                               |
+   |   "funding": {               |                               |
+   |     "lightning_invoice":     |                               |
+   |     "ark_address":           |                               |
+   |   },                         |                               |
+   |   "status":"awaiting_payment"}                              |
+   |<-----------------------------|                               |
+   |                              |                               |
+   |  Option A: pay Lightning invoice                             |
+   |  Option B: send sats to Ark address                          |
+   |----------------------------->|------------------------------>|
+   |                              |                               |
+   |                              |  poll / wallet state          |
+   |                              |------------------------------>|
+   |                              |<------------------------------|
+   |                              |                               |
+   |                              |  session activated            |
+   |                              |  balance_sats = 5000          |
+   |                              |                               |
+   |  POST /api/domain-intel      |                               |
+   |  Authorization: Bearer ak_...|                               |
+   |----------------------------->|                               |
+   |  {"success": true,           |                               |
+   |   "cost_sats": 25,           |                               |
+   |   "balance_remaining": 4975} |                               |
+   |<-----------------------------|                               |
 ```
 
 ---
