@@ -688,13 +688,19 @@ Consumer                        ArkAPI                          barkd
 
 ## Technology
 
-- **Go 1.25** — API server
-- **MySQL or MariaDB** — Session and billing storage
-- **Docker** — Container runtime
-- **Apache or another reverse proxy** — optional front-end web tier
-- **Cloudflare** — optional TLS/CDN layer
-- **Second Bark v0.1.0-beta.8** — Ark protocol wallet daemon
-- **Bitcoin Signet** — Testnet (ark.signet.2nd.dev)
-- **Open-Meteo** — Free weather API (no key required)
-- **ip-api.com** — Free IP geolocation API
+- **Go 1.25** — core API server and request orchestration
+- **MySQL or MariaDB** — sessions, balances, and billing logs
+- **Docker Compose** — service orchestration for ArkAPI and local helper services
+- **Apache or another reverse proxy** — front-end web tier in the reference deployment
+- **Cloudflare** — DNS, TLS/CDN, and AI inference for chat and AI translation
+- **Second Bark v0.1.0-beta.8** — Ark wallet daemon for session funding detection
+- **Bitcoin Signet** — current live funding network for testing
+- **ComfyUI** — local image generation backend for `/api/image-generate`
+- **LibreTranslate** — local translation backend for `/api/translate`
+- **Playwright** — local screenshot rendering backend for `/api/screenshot`
+- **Open-Meteo** — upstream weather data for `/api/weather`
+- **ip-api.com** — upstream IP geolocation data for `/api/ip-lookup`
+- **NVD API** — upstream CVE data for search and lookup
+- **Polymarket Gamma API** — upstream market discovery data
+- **RDAP / WHOIS / DNS tooling** — registration and domain intelligence inputs
 - **ARM64-friendly deployment** — the sample Bark image currently targets ARM64
