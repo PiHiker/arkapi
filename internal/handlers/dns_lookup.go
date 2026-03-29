@@ -289,6 +289,9 @@ func setCachedDNSLookup(domain string, response *DNSResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(dnsLookupCacheTTL),
 	}
+	pruneTTLCacheEntries(dnsLookupCache.items, maxHandlerCacheEntries, func(entry dnsCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	dnsLookupCache.mu.Unlock()
 }
 

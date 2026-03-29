@@ -508,5 +508,8 @@ func setCachedWhois(domain string, response *WhoisResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(whoisCacheTTL),
 	}
+	pruneTTLCacheEntries(whoisCache.items, maxHandlerCacheEntries, func(entry whoisCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	whoisCache.mu.Unlock()
 }

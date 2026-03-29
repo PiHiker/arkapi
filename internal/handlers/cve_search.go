@@ -184,6 +184,9 @@ func setCachedCVESearch(key string, response *CVESearchResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(cveSearchCacheTTL),
 	}
+	pruneTTLCacheEntries(cveSearchCache.items, maxHandlerCacheEntries, func(entry cveSearchCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	cveSearchCache.mu.Unlock()
 }
 

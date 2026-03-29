@@ -59,17 +59,17 @@ type nvdVulnerability struct {
 }
 
 type nvdCVE struct {
-	ID           string             `json:"id"`
-	Published    string             `json:"published"`
-	LastModified string             `json:"lastModified"`
-	VulnStatus   string             `json:"vulnStatus"`
-	Descriptions []nvdDescription   `json:"descriptions"`
-	Metrics      nvdMetrics         `json:"metrics"`
-	Weaknesses   []nvdWeakness      `json:"weaknesses"`
-	References   []nvdReference     `json:"references"`
-	Configurations []nvdConfiguration `json:"configurations"`
-	CisaExploitAdd   string         `json:"cisaExploitAdd"`
-	CisaRequiredAction string       `json:"cisaRequiredAction"`
+	ID                 string             `json:"id"`
+	Published          string             `json:"published"`
+	LastModified       string             `json:"lastModified"`
+	VulnStatus         string             `json:"vulnStatus"`
+	Descriptions       []nvdDescription   `json:"descriptions"`
+	Metrics            nvdMetrics         `json:"metrics"`
+	Weaknesses         []nvdWeakness      `json:"weaknesses"`
+	References         []nvdReference     `json:"references"`
+	Configurations     []nvdConfiguration `json:"configurations"`
+	CisaExploitAdd     string             `json:"cisaExploitAdd"`
+	CisaRequiredAction string             `json:"cisaRequiredAction"`
 }
 
 type nvdDescription struct {
@@ -330,5 +330,8 @@ func setCachedCVE(cveID string, response *CVELookupResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(cveLookupCacheTTL),
 	}
+	pruneTTLCacheEntries(cveLookupCache.items, maxHandlerCacheEntries, func(entry cveLookupCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	cveLookupCache.mu.Unlock()
 }

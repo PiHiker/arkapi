@@ -220,6 +220,9 @@ func setCachedHeaders(targetURL string, response *HeadersResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(headersCacheTTL),
 	}
+	pruneTTLCacheEntries(headersCache.items, maxHandlerCacheEntries, func(entry headersCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	headersCache.mu.Unlock()
 }
 

@@ -178,5 +178,8 @@ func setCachedDomainCheck(domain string, response *DomainCheckResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(domainCheckCacheTTL),
 	}
+	pruneTTLCacheEntries(domainCheckCache.items, maxHandlerCacheEntries, func(entry domainCheckCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	domainCheckCache.mu.Unlock()
 }

@@ -188,5 +188,8 @@ func setCachedIPLookup(ip string, response *IPResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(ipLookupCacheTTL),
 	}
+	pruneTTLCacheEntries(ipLookupCache.items, maxHandlerCacheEntries, func(entry ipLookupCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	ipLookupCache.mu.Unlock()
 }

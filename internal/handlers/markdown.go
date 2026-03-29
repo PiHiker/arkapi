@@ -1,13 +1,20 @@
 package handlers
 
 import (
+	"bytes"
 	"fmt"
+	"io"
+	"net"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/go-shiori/go-readability"
 )
+
+const markdownMaxBodyBytes = 2 << 20
 
 // MarkdownRequest is what the consumer sends
 type MarkdownRequest struct {
@@ -41,23 +48,24 @@ func (h *Handler) URLToMarkdown(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Re-use SSRF protection from headers handler
-	// validateSafeURL returns (net.IP, error)
-	_, err := validateSafeURL(req.URL)
+	safeURL, pinnedIP, err := parseAndValidateSafeURL(req.URL)
 	if err != nil {
 		sendJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
 	}
 
 	h.executeHandler(w, r, "/api/url-to-markdown", 5, func() (interface{}, error) {
-		return doURLToMarkdown(req.URL)
+		return doURLToMarkdown(safeURL, pinnedIP)
 	})
 }
 
-func doURLToMarkdown(targetURL string) (*MarkdownResponse, error) {
-	// 1. Fetch and Extract using Readability
-	// We use a 10s timeout for the fetch
-	article, err := readability.FromURL(targetURL, 10*time.Second)
+func doURLToMarkdown(targetURL *url.URL, pinnedIP net.IP) (*MarkdownResponse, error) {
+	body, finalURL, err := fetchSafeHTML(targetURL, pinnedIP)
+	if err != nil {
+		return nil, err
+	}
+
+	article, err := readability.FromReader(bytes.NewReader(body), finalURL)
 	if err != nil {
 		return nil, fmt.Errorf("readability extraction failed: %w", err)
 	}
@@ -70,9 +78,81 @@ func doURLToMarkdown(targetURL string) (*MarkdownResponse, error) {
 	}
 
 	return &MarkdownResponse{
-		URL:      targetURL,
+		URL:      finalURL.String(),
 		Title:    article.Title,
 		Markdown: markdown,
 		Excerpt:  article.Excerpt,
 	}, nil
+}
+
+func fetchSafeHTML(targetURL *url.URL, pinnedIP net.IP) ([]byte, *url.URL, error) {
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &safeHTMLRoundTripper{
+			initialURL: targetURL,
+			initialIP:  pinnedIP,
+		},
+	}
+
+	req, err := http.NewRequest(http.MethodGet, targetURL.String(), nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("build markdown request: %w", err)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, nil, fmt.Errorf("markdown fetch failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, nil, fmt.Errorf("markdown fetch returned status %d", resp.StatusCode)
+	}
+	if contentType := resp.Header.Get("Content-Type"); contentType != "" && !strings.Contains(strings.ToLower(contentType), "text/html") {
+		return nil, nil, fmt.Errorf("URL is not an HTML document")
+	}
+
+	limited := io.LimitReader(resp.Body, markdownMaxBodyBytes+1)
+	body, err := io.ReadAll(limited)
+	if err != nil {
+		return nil, nil, fmt.Errorf("read markdown response: %w", err)
+	}
+	if len(body) > markdownMaxBodyBytes {
+		return nil, nil, fmt.Errorf("HTML document too large")
+	}
+
+	finalURL := targetURL
+	if resp.Request != nil && resp.Request.URL != nil {
+		finalURL = cloneURL(resp.Request.URL)
+	}
+	return body, finalURL, nil
+}
+
+type safeHTMLRoundTripper struct {
+	initialURL *url.URL
+	initialIP  net.IP
+}
+
+func (rt *safeHTMLRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	if req == nil || req.URL == nil {
+		return nil, fmt.Errorf("invalid request")
+	}
+
+	safeURL := cloneURL(req.URL)
+	pinnedIP := rt.initialIP
+	if rt.initialURL == nil || req.URL.String() != rt.initialURL.String() {
+		var err error
+		safeURL, pinnedIP, err = parseAndValidateSafeURL(req.URL.String())
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	transport := &http.Transport{
+		DialContext: pinnedDialer(pinnedIP),
+	}
+
+	clonedReq := req.Clone(req.Context())
+	clonedReq.URL = safeURL
+	return transport.RoundTrip(clonedReq)
 }

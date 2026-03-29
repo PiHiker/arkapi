@@ -221,6 +221,9 @@ func setCachedPredictionMarketSearch(key string, response *PredictionMarketSearc
 		response:  &clone,
 		expiresAt: time.Now().Add(predictionMarketSearchCacheTTL),
 	}
+	pruneTTLCacheEntries(predictionMarketSearchCache.items, maxHandlerCacheEntries, func(entry predictionMarketSearchCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	predictionMarketSearchCache.mu.Unlock()
 }
 

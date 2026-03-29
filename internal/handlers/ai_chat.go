@@ -266,5 +266,8 @@ func setCachedAIChat(key string, response *AIChatResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(aiChatCacheTTL),
 	}
+	pruneTTLCacheEntries(aiChatCache.items, maxHandlerCacheEntries, func(entry aiChatCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	aiChatCache.mu.Unlock()
 }

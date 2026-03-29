@@ -78,6 +78,9 @@ func setCachedBtcAddr(address string, resp *BitcoinAddressResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(btcAddrCacheTTL),
 	}
+	pruneTTLCacheEntries(btcAddrCache.items, maxHandlerCacheEntries, func(entry btcAddrCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	btcAddrCache.mu.Unlock()
 }
 

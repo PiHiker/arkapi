@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	publicAITranslateModel       = "arkapi-translate-v1"
-	aiTranslateCacheTTL          = 24 * time.Hour
-	defaultAITranslateStyle      = "natural"
+	publicAITranslateModel         = "arkapi-translate-v1"
+	aiTranslateCacheTTL            = 24 * time.Hour
+	defaultAITranslateStyle        = "natural"
 	defaultAITranslateSystemPrompt = "You are ArkAPI AI Translate. Translate the user's text into the requested target language and return strict JSON only. The JSON object must contain exactly these keys: translated_text and detected_language. translated_text must contain only the translated text with no commentary. detected_language must be the best short language code for the source text, such as en, fr, es, or de. Do not wrap the JSON in markdown fences. Do not add explanations."
 )
 
@@ -237,5 +237,8 @@ func setCachedAITranslate(key string, response *AITranslateResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(aiTranslateCacheTTL),
 	}
+	pruneTTLCacheEntries(aiTranslateCache.items, maxHandlerCacheEntries, func(entry aiTranslateCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	aiTranslateCache.mu.Unlock()
 }

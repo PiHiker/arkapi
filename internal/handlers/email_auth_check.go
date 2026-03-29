@@ -201,6 +201,9 @@ func setCachedEmailAuth(domain, selector string, response *EmailAuthCheckRespons
 		response:  &clone,
 		expiresAt: time.Now().Add(emailAuthCacheTTL),
 	}
+	pruneTTLCacheEntries(emailAuthCache.items, maxHandlerCacheEntries, func(entry emailAuthCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	emailAuthCache.mu.Unlock()
 }
 
@@ -285,6 +288,9 @@ func buildDKIMSelectorList(selector string) []string {
 
 func isValidDKIMSelector(selector string) bool {
 	if len(selector) == 0 || len(selector) > 63 {
+		return false
+	}
+	if selector[0] == '-' {
 		return false
 	}
 	for _, r := range selector {

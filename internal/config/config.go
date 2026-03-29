@@ -140,6 +140,9 @@ func (c Config) Validate() error {
 	if c.ScreenshotServiceToken == "change-me-screenshot-token" {
 		return fmt.Errorf("ARKAPI_SCREENSHOT_SERVICE_TOKEN is still the default — set a real token")
 	}
+	if c.HashCrackServiceToken == "change-me-hash-crack-token" {
+		return fmt.Errorf("ARKAPI_HASH_CRACK_SERVICE_TOKEN is still the default — set a real token")
+	}
 	return nil
 }
 

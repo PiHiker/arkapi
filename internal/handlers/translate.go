@@ -34,9 +34,9 @@ type libreTranslateRequest struct {
 }
 
 type libreTranslateResponse struct {
-	TranslatedText string `json:"translatedText"`
+	TranslatedText   string `json:"translatedText"`
 	DetectedLanguage struct {
-		Language   string `json:"language"`
+		Language   string  `json:"language"`
 		Confidence float64 `json:"confidence"`
 	} `json:"detectedLanguage"`
 	Error string `json:"error"`
@@ -144,10 +144,10 @@ func (h *Handler) doTranslate(text, source, target string) (*TranslateResponse, 
 	}
 
 	result := &TranslateResponse{
-		Text:            text,
-		TranslatedText:  ltResp.TranslatedText,
-		TargetLanguage:  target,
-		SourceLanguage:  source,
+		Text:           text,
+		TranslatedText: ltResp.TranslatedText,
+		TargetLanguage: target,
+		SourceLanguage: source,
 	}
 	if source == "auto" && ltResp.DetectedLanguage.Language != "" {
 		result.DetectedLanguage = ltResp.DetectedLanguage.Language
@@ -197,5 +197,8 @@ func setCachedTranslation(key string, response *TranslateResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(translateCacheTTL),
 	}
+	pruneTTLCacheEntries(translateCache.items, maxHandlerCacheEntries, func(entry translateCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	translateCache.mu.Unlock()
 }

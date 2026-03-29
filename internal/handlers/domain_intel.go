@@ -404,6 +404,9 @@ func setCachedDomainIntel(domain string, withAISummary bool, response *DomainInt
 		response:  clone,
 		expiresAt: time.Now().Add(domainIntelCacheTTL),
 	}
+	pruneTTLCacheEntries(domainIntelCache.items, maxHandlerCacheEntries, func(entry domainIntelCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	domainIntelCache.mu.Unlock()
 }
 

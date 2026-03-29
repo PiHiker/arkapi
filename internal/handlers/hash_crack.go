@@ -66,11 +66,18 @@ var hashCrackFormats = map[string]hashCrackFormat{
 
 var hashCrackHexRegex = regexp.MustCompile(`\A[0-9a-fA-F]+\z`)
 
+const hashCrackCacheTTL = 24 * time.Hour
+
+type hashCrackCacheEntry struct {
+	response  HashCrackResponse
+	expiresAt time.Time
+}
+
 var hashCrackCache = struct {
 	mu    sync.RWMutex
-	items map[string]HashCrackResponse
+	items map[string]hashCrackCacheEntry
 }{
-	items: make(map[string]HashCrackResponse),
+	items: make(map[string]hashCrackCacheEntry),
 }
 
 func (h *Handler) HashCrack(w http.ResponseWriter, r *http.Request) {
@@ -193,10 +200,10 @@ func (h *Handler) doHashCrack(hash, hashType, mode string) (*HashCrackResponse, 
 	}
 	if resp.StatusCode != http.StatusOK {
 		message := strings.TrimSpace(string(bodyBytes))
-		if message == "" {
-			message = fmt.Sprintf("hash crack backend returned status %d", resp.StatusCode)
+		if message != "" {
+			return nil, fmt.Errorf("hash crack backend returned status %d", resp.StatusCode)
 		}
-		return nil, fmt.Errorf("%s", message)
+		return nil, fmt.Errorf("hash crack backend returned status %d", resp.StatusCode)
 	}
 
 	var parsed hashCrackServiceResponse
@@ -234,10 +241,10 @@ func getCachedHashCrack(key string) *HashCrackResponse {
 	hashCrackCache.mu.RLock()
 	defer hashCrackCache.mu.RUnlock()
 	entry, ok := hashCrackCache.items[key]
-	if !ok {
+	if !ok || time.Now().After(entry.expiresAt) {
 		return nil
 	}
-	cloned := entry
+	cloned := entry.response
 	return &cloned
 }
 
@@ -246,6 +253,12 @@ func setCachedHashCrack(key string, value *HashCrackResponse) {
 		return
 	}
 	hashCrackCache.mu.Lock()
-	hashCrackCache.items[key] = *value
+	hashCrackCache.items[key] = hashCrackCacheEntry{
+		response:  *value,
+		expiresAt: time.Now().Add(hashCrackCacheTTL),
+	}
+	pruneTTLCacheEntries(hashCrackCache.items, maxHandlerCacheEntries, func(entry hashCrackCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	hashCrackCache.mu.Unlock()
 }

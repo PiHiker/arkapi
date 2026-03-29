@@ -127,7 +127,7 @@ func lookupNameservers(domain string) []string {
 			continue
 		}
 		host := strings.TrimSuffix(strings.TrimSpace(record.Host), ".")
-		if host == "" {
+		if host == "" || !isValidDomain(host) {
 			continue
 		}
 		if _, ok := seen[host]; ok {
@@ -210,5 +210,8 @@ func setCachedAXFRCheck(domain string, response *AXFRCheckResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(axfrCacheTTL),
 	}
+	pruneTTLCacheEntries(axfrCheckCache.items, maxHandlerCacheEntries, func(entry axfrCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	axfrCheckCache.mu.Unlock()
 }

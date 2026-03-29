@@ -20,10 +20,10 @@ type WeatherRequest struct {
 
 // WeatherResponse is the combined weather data
 type WeatherResponse struct {
-	Location  LocationInfo   `json:"location"`
-	Current   interface{}    `json:"current"`
-	Hourly    interface{}    `json:"hourly,omitempty"`
-	Daily     interface{}    `json:"daily,omitempty"`
+	Location LocationInfo `json:"location"`
+	Current  interface{}  `json:"current"`
+	Hourly   interface{}  `json:"hourly,omitempty"`
+	Daily    interface{}  `json:"daily,omitempty"`
 }
 
 type LocationInfo struct {
@@ -152,6 +152,9 @@ func setCachedWeather(key string, response *WeatherResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(weatherCacheTTL),
 	}
+	pruneTTLCacheEntries(weatherCache.items, maxHandlerCacheEntries, func(entry weatherCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	weatherCache.mu.Unlock()
 }
 

@@ -177,6 +177,9 @@ func setCachedSSLCheck(domain string, port int, response *SSLResponse) {
 		response:  &clone,
 		expiresAt: time.Now().Add(sslCheckCacheTTL),
 	}
+	pruneTTLCacheEntries(sslCheckCache.items, maxHandlerCacheEntries, func(entry sslCacheEntry) time.Time {
+		return entry.expiresAt
+	})
 	sslCheckCache.mu.Unlock()
 }
 
