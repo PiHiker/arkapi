@@ -272,6 +272,9 @@ func selectBitcoinNewsItems(itemsBySource map[string][]bitcoinNewsSortableItem, 
 	if limit <= 0 {
 		limit = 10
 	}
+	if limit > 20 {
+		limit = 20
+	}
 
 	sourceItems := make(map[string][]bitcoinNewsSortableItem, len(itemsBySource))
 	sourceIndex := make(map[string]int, len(itemsBySource))

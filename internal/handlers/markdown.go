@@ -94,9 +94,10 @@ func fetchSafeHTML(targetURL *url.URL, pinnedIP net.IP) ([]byte, *url.URL, error
 		},
 	}
 
-	req, err := http.NewRequest(http.MethodGet, targetURL.String(), nil)
-	if err != nil {
-		return nil, nil, fmt.Errorf("build markdown request: %w", err)
+	req := &http.Request{
+		Method: http.MethodGet,
+		URL:    cloneURL(targetURL),
+		Header: make(http.Header),
 	}
 
 	resp, err := client.Do(req)

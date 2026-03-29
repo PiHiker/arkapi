@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -13,6 +14,13 @@ WORDLIST = "/app/fasttrack.txt"
 MAX_BODY = 16 * 1024
 JOHN_BIN = "/opt/john/run/john"
 JOHN_CWD = "/opt/john/run"
+HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
+HASH_TYPES = {
+    "md5": {"format": "raw-md5", "length": 32},
+    "sha1": {"format": "raw-sha1", "length": 40},
+    "sha256": {"format": "raw-sha256", "length": 64},
+    "ntlm": {"format": "nt", "length": 32},
+}
 
 
 def json_response(handler, status, payload):
@@ -39,10 +47,11 @@ def parse_show_output(output):
     return ""
 
 
-def crack_hash(hash_value, john_format, max_seconds):
+def crack_hash(hash_value, hash_type, max_seconds):
     started = time.time()
     workdir = tempfile.mkdtemp(prefix="arkapi-john-")
     try:
+        john_format = HASH_TYPES[hash_type]["format"]
         hashfile = os.path.join(workdir, "hash.txt")
         potfile = os.path.join(workdir, "john.pot")
 
@@ -129,13 +138,22 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         hash_value = str(payload.get("hash", "")).strip().lower()
-        john_format = str(payload.get("format", "")).strip()
         hash_type = str(payload.get("type", "")).strip().lower()
         mode = str(payload.get("mode", "fasttrack")).strip().lower() or "fasttrack"
         max_seconds = int(payload.get("max_seconds", 10) or 10)
 
-        if not hash_value or not john_format or not hash_type:
-            json_response(self, 400, {"error": "hash, type, and format are required"})
+        if not hash_value or not hash_type:
+            json_response(self, 400, {"error": "hash and type are required"})
+            return
+        type_info = HASH_TYPES.get(hash_type)
+        if type_info is None:
+            json_response(self, 400, {"error": "unsupported hash type"})
+            return
+        if not HEX_RE.fullmatch(hash_value):
+            json_response(self, 400, {"error": "hash must be hexadecimal"})
+            return
+        if len(hash_value) != type_info["length"]:
+            json_response(self, 400, {"error": f"invalid {hash_type} hash length"})
             return
         if mode != "fasttrack":
             json_response(self, 400, {"error": "unsupported mode"})
@@ -145,7 +163,7 @@ class Handler(BaseHTTPRequestHandler):
         if max_seconds > 15:
             max_seconds = 15
 
-        result = crack_hash(hash_value, john_format, max_seconds)
+        result = crack_hash(hash_value, hash_type, max_seconds)
         json_response(
             self,
             200,
