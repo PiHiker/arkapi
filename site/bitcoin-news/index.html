@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin News API | ArkAPI</title>
+<meta name="description" content="Use ArkAPI Bitcoin News to get multi-source Bitcoin headlines with cross-feed dedupe, summaries, source metadata, and AI-assisted per-item sentiment for 2 sats per call.">
+<meta name="keywords" content="Bitcoin news API, crypto news API, Bitcoin headlines API, Bitcoin sentiment API, RSS news API, ArkAPI bitcoin-news">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/bitcoin-news/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/bitcoin-news/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Bitcoin News API | ArkAPI">
+<meta property="og:description" content="Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment for 2 sats per call.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bitcoin News API | ArkAPI">
+<meta name="twitter:description" content="Query deduped Bitcoin headlines with summaries and AI-assisted sentiment through ArkAPI.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Bitcoin News API",
+  "description": "ArkAPI Bitcoin News API for agents and developers, priced per call in sats.",
+  "author": {"@type": "Organization", "name": "ArkAPI"},
+  "publisher": {"@type": "Organization", "name": "ArkAPI", "url": "https://arkapi.dev/"},
+  "mainEntityOfPage": "https://arkapi.dev/bitcoin-news/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does Bitcoin News cost?", "acceptedAnswer": {"@type": "Answer", "text": "Bitcoin News costs 2 sats per call."}},
+    {"@type": "Question", "name": "What does Bitcoin News return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns deduped Bitcoin headlines with source, link, published timestamp, summary, and per-item sentiment."}},
+    {"@type": "Question", "name": "Is sentiment model-based?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. When Cloudflare AI is configured, ArkAPI batches the selected headlines through an AI classifier. A lightweight fallback heuristic is used only if the AI classifier is unavailable."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card h3 { font-size: 15px; margin: 18px 0 8px; color: var(--text); }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Early Access</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Bitcoin News API &bull; Live on Signet test network only</div>
+    <h1>Get Bitcoin headlines with dedupe and sentiment.</h1>
+    <p class="sub">Query recent Bitcoin headlines from multiple publishers in one call. ArkAPI merges the feeds, removes cross-feed duplicates, attaches summaries and source metadata, and labels each item with AI-assisted sentiment.</p>
+    <div class="pill-row">
+      <div class="pill">2 sats / call</div>
+      <div class="pill">POST /api/bitcoin-news</div>
+      <div class="pill">Cached for 1 hour</div>
+    </div>
+  </section>
+
+  <div class="card">
+    <h2>What It Does</h2>
+    <p>ArkAPI Bitcoin News is designed for agents and dashboards that want one clean Bitcoin news payload instead of juggling multiple RSS feeds. It fetches supported feeds, removes duplicate stories, keeps source names attached, and returns a normalized JSON response.</p>
+    <ul>
+      <li>Current feed set includes Bitcoin News, Cointelegraph, Bitcoin Magazine, The Block, and Decrypt</li>
+      <li>Cross-feed dedupe removes duplicate links and near-identical titles</li>
+      <li>Each item includes source, link, published timestamp, summary, and sentiment</li>
+      <li>Default response returns up to 10 items; you can request fewer with <span class="code-inline">limit</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Why It Is Better Than Raw RSS</h2>
+    <p>Raw RSS is cheap, but it usually means duplicate stories, uneven descriptions, and no fast way to tell whether a headline is constructive, hostile, or just neutral context. ArkAPI turns the feed merge into a cleaner decision primitive for bots and lightweight Bitcoin monitoring.</p>
+    <ul>
+      <li>One payload instead of five separate feed pulls</li>
+      <li>AI-assisted sentiment labeling when Cloudflare AI is available</li>
+      <li>Cheap enough for regular polling workflows</li>
+      <li>Good fit for alerts, summarizers, and agent context loading</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Request</h2>
+      <div class="code-block">curl -X POST https://arkapi.dev/api/bitcoin-news \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"limit":5}' | jq</div>
+      <p>Use a funded token from the <a href="/fund/">Fund page</a>. This endpoint is cached for one hour, so repeated calls are usually very fast.</p>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "title": "Morgan Stanley sets spot bitcoin ETF fee at 0.14%",
+        "source": "The Block",
+        "link": "https://www.theblock.co/example",
+        "published_at": "2026-03-29T17:00:00Z",
+        "summary": "A lower ETF fee adds more competitive pressure to the spot Bitcoin market.",
+        "sentiment": "positive"
+      }
+    ]
+  },
+  "cost_sats": 2,
+  "balance_remaining": 8637,
+  "response_ms": 6,
+  "endpoint": "/api/bitcoin-news"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Supported Request Body</h2>
+    <div class="code-block">{
+  "limit": 5
+}</div>
+    <ul>
+      <li><span class="code-inline">limit</span> is optional</li>
+      <li>Default is <span class="code-inline">10</span></li>
+      <li>Maximum is <span class="code-inline">20</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Agent context before Bitcoin market decisions or narrative summaries</li>
+      <li>Dashboards that want deduped headline flow instead of full RSS processing</li>
+      <li>Quick Bitcoin news checks with directional sentiment attached</li>
+      <li>Simple monitoring jobs that need a compact feed snapshot once per hour</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
