@@ -145,6 +145,16 @@
     <p>Use a funded token from the <a href="/fund/">Fund page</a>. The same request shape is documented in <a href="/openapi.json">/openapi.json</a> for agents and wrappers.</p>
   </div>
 
+  <div class="card">
+    <h2>How To Call It</h2>
+    <ul>
+      <li><strong>1.</strong> Open the <a href="/fund/">Fund page</a> and create a Signet session.</li>
+      <li><strong>2.</strong> Copy the bearer token from the session confirmation or <a href="/dashboard/">dashboard</a>.</li>
+      <li><strong>3.</strong> Call <span class="code-inline">POST /api/hash-crack</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
+    </ul>
+    <p style="margin-top:12px;">The landing page is public, but the cracking endpoint itself still requires a funded session token and valid JSON body.</p>
+  </div>
+
   <div class="grid-2">
     <div class="card">
       <h2>Supported Body</h2>
