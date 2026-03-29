@@ -45,6 +45,22 @@ services:
     env_file:
       - .env
 
+  hashcrack:
+    build:
+      context: .
+      dockerfile: hashcrack/Dockerfile
+    container_name: arkapi-hashcrack
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9021:9021"
+    env_file:
+      - .env
+    cpus: 2.0
+    mem_limit: 512m
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+
 volumes:
   arkapi-data:
   bark-data:

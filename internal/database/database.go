@@ -38,6 +38,18 @@ type CallLog struct {
 	StatusCode   int
 }
 
+type HashCrackCacheEntry struct {
+	Hash      string
+	Type      string
+	Mode      string
+	Engine    string
+	Ruleset   string
+	Cracked   bool
+	Plaintext string
+	TimedOut  bool
+	ElapsedMs int
+}
+
 // New creates a new database connection.
 // sql.Open doesn't actually connect - it just prepares the connection pool.
 // The first real query will establish the connection.
@@ -161,6 +173,41 @@ func (db *DB) LogCall(log CallLog) {
 	}()
 }
 
+func (db *DB) GetHashCrackCache(hashType, mode, hash string) (*HashCrackCacheEntry, error) {
+	entry := &HashCrackCacheEntry{}
+	err := db.conn.QueryRow(
+		"SELECT hash_value, hash_type, mode, engine, ruleset, cracked, plaintext, timed_out, elapsed_ms FROM hash_crack_cache WHERE hash_type = ? AND mode = ? AND hash_value = ?",
+		hashType, mode, hash,
+	).Scan(&entry.Hash, &entry.Type, &entry.Mode, &entry.Engine, &entry.Ruleset, &entry.Cracked, &entry.Plaintext, &entry.TimedOut, &entry.ElapsedMs)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get hash crack cache entry: %w", err)
+	}
+	return entry, nil
+}
+
+func (db *DB) PutHashCrackCache(entry HashCrackCacheEntry) error {
+	_, err := db.conn.Exec(
+		`INSERT INTO hash_crack_cache
+			(hash_type, mode, hash_value, engine, ruleset, cracked, plaintext, timed_out, elapsed_ms)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		 ON DUPLICATE KEY UPDATE
+			engine = VALUES(engine),
+			ruleset = VALUES(ruleset),
+			cracked = VALUES(cracked),
+			plaintext = VALUES(plaintext),
+			timed_out = VALUES(timed_out),
+			elapsed_ms = VALUES(elapsed_ms)`,
+		entry.Type, entry.Mode, entry.Hash, entry.Engine, entry.Ruleset, entry.Cracked, entry.Plaintext, entry.TimedOut, entry.ElapsedMs,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to store hash crack cache entry: %w", err)
+	}
+	return nil
+}
+
 // CreateAwaitingSession inserts a session with status "awaiting_payment" and stores invoice details.
 func (db *DB) CreateAwaitingSession(token string, paymentHash, lightningInvoice, arkAddress string, ttlHours int) error {
 	_, err := db.conn.Exec(
@@ -243,55 +290,61 @@ type AdminRecentCall struct {
 }
 
 type AdminStats struct {
-	TotalCallsToday         int64             `json:"total_calls_today"`
-	TotalSatsToday          int64             `json:"total_sats_today"`
-	TotalCallsAllTime       int64             `json:"total_calls_all_time"`
-	TotalSatsAllTime        int64             `json:"total_sats_all_time"`
-	ActiveSessions          int64             `json:"active_sessions"`
-	AwaitingSessions        int64             `json:"awaiting_sessions"`
-	ExpiredSessions         int64             `json:"expired_sessions"`
-	TotalSessions           int64             `json:"total_sessions"`
-	ActiveBalanceSats       int64             `json:"active_balance_sats"`
-	AwaitingBalanceSats     int64             `json:"awaiting_balance_sats"`
-	EndpointBreakdownToday  map[string]int64  `json:"endpoint_breakdown_today"`
-	EndpointBreakdownAllTime map[string]int64 `json:"endpoint_breakdown_all_time"`
-	FundingBreakdown        map[string]int64  `json:"funding_breakdown"`
-	RecentCalls             []AdminRecentCall `json:"recent_calls"`
+	TotalCallsToday          int64             `json:"total_calls_today"`
+	TotalSatsToday           int64             `json:"total_sats_today"`
+	TotalCallsAllTime        int64             `json:"total_calls_all_time"`
+	TotalSatsAllTime         int64             `json:"total_sats_all_time"`
+	ActiveSessions           int64             `json:"active_sessions"`
+	AwaitingSessions         int64             `json:"awaiting_sessions"`
+	ExpiredSessions          int64             `json:"expired_sessions"`
+	TotalSessions            int64             `json:"total_sessions"`
+	ActiveBalanceSats        int64             `json:"active_balance_sats"`
+	AwaitingBalanceSats      int64             `json:"awaiting_balance_sats"`
+	EndpointBreakdownToday   map[string]int64  `json:"endpoint_breakdown_today"`
+	EndpointBreakdownAllTime map[string]int64  `json:"endpoint_breakdown_all_time"`
+	FundingBreakdown         map[string]int64  `json:"funding_breakdown"`
+	RecentCalls              []AdminRecentCall `json:"recent_calls"`
 }
 
 func newEndpointMap() map[string]int64 {
 	return map[string]int64{
-		"dns-lookup":       0,
-		"whois":            0,
-		"ssl-check":        0,
-		"headers":          0,
-		"weather":          0,
-		"ip-lookup":        0,
-		"email-auth-check": 0,
-		"bitcoin-news":     0,
-		"ai-chat":          0,
-		"ai-translate":     0,
-		"translate":        0,
-		"axfr-check":       0,
-		"image-generate":   0,
-		"screenshot":       0,
-		"qr-generate":      0,
-		"bitcoin-address":  0,
-		"cve-search":       0,
+		"dns-lookup":               0,
+		"whois":                    0,
+		"ssl-check":                0,
+		"headers":                  0,
+		"weather":                  0,
+		"ip-lookup":                0,
+		"email-auth-check":         0,
+		"bitcoin-news":             0,
+		"ai-chat":                  0,
+		"ai-translate":             0,
+		"translate":                0,
+		"axfr-check":               0,
+		"image-generate":           0,
+		"screenshot":               0,
+		"qr-generate":              0,
+		"bitcoin-address":          0,
+		"cve-search":               0,
 		"prediction-market-search": 0,
-		"domain-intel":     0,
-		"domain-check":     0,
-		"cve-lookup":       0,
-		"btc-price":        0,
+		"domain-intel":             0,
+		"domain-check":             0,
+		"cve-lookup":               0,
+		"btc-price":                0,
+	}
+}
+
+func hiddenPublicStatsEndpoints() map[string]struct{} {
+	return map[string]struct{}{
+		"hash-crack": {},
 	}
 }
 
 func (db *DB) GetStats() (*Stats, error) {
 	s := &Stats{
 		EndpointBreakdown: newEndpointMap(),
-		HourLabels: make([]string, 24),
-		Calls24h:   make([]int64, 24),
-		Sats24h:    make([]int64, 24),
+		HourLabels:        make([]string, 24),
+		Calls24h:          make([]int64, 24),
+		Sats24h:           make([]int64, 24),
 	}
 
 	startHour := time.Now().UTC().Truncate(time.Hour).Add(-23 * time.Hour)
@@ -325,6 +378,10 @@ func (db *DB) GetStats() (*Stats, error) {
 				s.EndpointBreakdown[endpoint] = count
 			}
 		}
+	}
+
+	for endpoint := range hiddenPublicStatsEndpoints() {
+		delete(s.EndpointBreakdown, endpoint)
 	}
 
 	hourlyRows, err := db.conn.Query(
@@ -362,7 +419,7 @@ func (db *DB) GetAdminStats() (*AdminStats, error) {
 			"lightning": 0,
 			"ark":       0,
 		},
-		RecentCalls:              make([]AdminRecentCall, 0, 15),
+		RecentCalls: make([]AdminRecentCall, 0, 15),
 	}
 
 	db.conn.QueryRow(

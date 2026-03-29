@@ -101,8 +101,8 @@ func main() {
 		hourLabelsJSON, _ := json.Marshal(stats.HourLabels)
 		calls24hJSON, _ := json.Marshal(stats.Calls24h)
 		sats24hJSON, _ := json.Marshal(stats.Sats24h)
-	fmt.Fprintf(w, `{"calls_today":%d,"sats_today":%d,"active_sessions":%d,"endpoint_breakdown":%s,"hour_labels":%s,"calls_24h":%s,"sats_24h":%s}`,
-		stats.TotalCalls, stats.TotalSats, stats.ActiveSessions, breakdownJSON, hourLabelsJSON, calls24hJSON, sats24hJSON)
+		fmt.Fprintf(w, `{"calls_today":%d,"sats_today":%d,"active_sessions":%d,"endpoint_breakdown":%s,"hour_labels":%s,"calls_24h":%s,"sats_24h":%s}`,
+			stats.TotalCalls, stats.TotalSats, stats.ActiveSessions, breakdownJSON, hourLabelsJSON, calls24hJSON, sats24hJSON)
 	})
 
 	// Admin overview — access is restricted at Apache to the management IP.
@@ -185,6 +185,21 @@ func main() {
 			),
 		)
 	}
+	wrapHiddenHashCrack := func(h http.HandlerFunc) http.Handler {
+		return middleware.RateLimit(
+			cfg.APIRateLimit,
+			time.Duration(cfg.APIRateWindowSeconds)*time.Second,
+			middleware.AuthWithBark(
+				db,
+				authCfg,
+				middleware.RateLimitByPath(
+					20,
+					24*time.Hour,
+					middleware.RateLimitByToken(2, time.Hour, h),
+				),
+			),
+		)
+	}
 	mux.Handle("/api/dns-lookup", wrapAuth(h.DNSLookup))
 	mux.Handle("/api/whois", wrapAuth(h.Whois))
 	mux.Handle("/api/ssl-check", wrapAuth(h.SSLCheck))
@@ -205,6 +220,7 @@ func main() {
 	mux.Handle("/api/prediction-market-search", wrapAuth(h.PredictionMarketSearch))
 	mux.Handle("/api/cve-lookup", wrapAuth(h.CVELookup))
 	mux.Handle("/api/domain-intel", wrapAuth(h.DomainIntel))
+	mux.Handle("/api/hash-crack", wrapHiddenHashCrack(h.HashCrack))
 	mux.Handle("/api/domain-check", wrapAuth(h.DomainCheck))
 	mux.Handle("/api/url-to-markdown", wrapAuth(h.URLToMarkdown))
 	mux.Handle("/api/btc-price", wrapAuth(h.BTCPrice))

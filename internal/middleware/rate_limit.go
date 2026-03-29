@@ -144,6 +144,50 @@ func RateLimitByToken(limit int, window time.Duration, next http.Handler) http.H
 	})
 }
 
+func RateLimitByPath(limit int, window time.Duration, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions || limit <= 0 {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		key := "path|" + r.URL.Path
+		now := time.Now()
+
+		rateMu.Lock()
+		entry, ok := rates[key]
+		if !ok || now.After(entry.reset) {
+			entry = &rateEntry{count: 0, reset: now.Add(window)}
+			rates[key] = entry
+		}
+		entry.count++
+		remaining := limit - entry.count
+		resetAt := entry.reset
+		blocked := entry.count > limit
+		rateMu.Unlock()
+
+		w.Header().Set("X-Path-RateLimit-Limit", itoa(limit))
+		if remaining < 0 {
+			remaining = 0
+		}
+		w.Header().Set("X-Path-RateLimit-Remaining", itoa(remaining))
+		w.Header().Set("X-Path-RateLimit-Reset", resetAt.UTC().Format(time.RFC3339))
+
+		if blocked {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusTooManyRequests)
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{
+				"error":   "Too Many Requests",
+				"message": "global endpoint limit exceeded",
+				"code":    http.StatusTooManyRequests,
+			})
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func clientIP(r *http.Request) string {
 	// Extract the direct remote address first
 	var remoteIP net.IP
