@@ -23,6 +23,7 @@ type BitcoinNewsItem struct {
 	Source      string `json:"source"`
 	PublishedAt string `json:"published_at"`
 	Summary     string `json:"summary,omitempty"`
+	Sentiment   string `json:"sentiment,omitempty"`
 }
 
 type BitcoinNewsResponse struct {
@@ -66,6 +67,16 @@ var bitcoinNewsFeeds = []bitcoinNewsFeedSource{
 const bitcoinNewsCacheTTL = time.Hour
 
 var bitcoinNewsTitleNoise = regexp.MustCompile(`[^a-z0-9]+`)
+var bitcoinNewsPositiveTerms = []string{
+	"surge", "rally", "gain", "gains", "rise", "rises", "record", "bull", "bullish",
+	"adoption", "approval", "approved", "inflow", "inflows", "breakout", "beats",
+	"growth", "profit", "profits", "rebound", "recover", "recovery", "upside",
+}
+var bitcoinNewsNegativeTerms = []string{
+	"crash", "drop", "drops", "fall", "falls", "bear", "bearish", "hack", "hacked",
+	"lawsuit", "ban", "banned", "selloff", "liquidation", "liquidations", "fraud",
+	"loss", "losses", "decline", "declines", "fear", "war", "tariff", "tariffs",
+}
 
 var bitcoinNewsCache struct {
 	mu        sync.RWMutex
@@ -202,6 +213,7 @@ func fetchFeedItems(client *http.Client, source bitcoinNewsFeedSource) ([]bitcoi
 				Source:      source.Name,
 				PublishedAt: published.UTC().Format(time.RFC3339),
 				Summary:     summarizeDescription(item.Description),
+				Sentiment:   classifyBitcoinNewsSentiment(title + " " + item.Description),
 			},
 			Published: published,
 		})
@@ -336,6 +348,34 @@ func normalizeBitcoinNewsTitle(title string) string {
 	title = bitcoinNewsTitleNoise.ReplaceAllString(title, " ")
 	title = strings.Join(strings.Fields(title), " ")
 	return title
+}
+
+func classifyBitcoinNewsSentiment(text string) string {
+	normalized := normalizeBitcoinNewsTitle(text)
+	if normalized == "" {
+		return "neutral"
+	}
+
+	score := 0
+	for _, term := range bitcoinNewsPositiveTerms {
+		if strings.Contains(normalized, term) {
+			score++
+		}
+	}
+	for _, term := range bitcoinNewsNegativeTerms {
+		if strings.Contains(normalized, term) {
+			score--
+		}
+	}
+
+	switch {
+	case score > 0:
+		return "positive"
+	case score < 0:
+		return "negative"
+	default:
+		return "neutral"
+	}
 }
 
 func stripHTML(s string) string {
