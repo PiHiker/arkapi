@@ -65,6 +65,8 @@ var bitcoinNewsFeeds = []bitcoinNewsFeedSource{
 }
 
 const bitcoinNewsCacheTTL = time.Hour
+const bitcoinNewsDefaultLimit = 10
+const bitcoinNewsMaxLimit = 20
 
 var bitcoinNewsTitleNoise = regexp.MustCompile(`[^a-z0-9]+`)
 var bitcoinNewsPositiveTerms = []string{
@@ -103,10 +105,10 @@ func (h *Handler) BitcoinNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Limit <= 0 {
-		req.Limit = 10
+		req.Limit = bitcoinNewsDefaultLimit
 	}
-	if req.Limit > 20 {
-		req.Limit = 20
+	if req.Limit > bitcoinNewsMaxLimit {
+		req.Limit = bitcoinNewsMaxLimit
 	}
 
 	h.executeHandler(w, r, "/api/bitcoin-news", h.Cfg.BitcoinNewsCostSats, func() (interface{}, error) {
@@ -116,10 +118,10 @@ func (h *Handler) BitcoinNews(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
 	if limit <= 0 {
-		limit = 10
+		limit = bitcoinNewsDefaultLimit
 	}
-	if limit > 20 {
-		limit = 20
+	if limit > bitcoinNewsMaxLimit {
+		limit = bitcoinNewsMaxLimit
 	}
 
 	if cached := getCachedBitcoinNews(limit); cached != nil {
@@ -270,10 +272,10 @@ func summarizeDescription(desc string) string {
 
 func selectBitcoinNewsItems(itemsBySource map[string][]bitcoinNewsSortableItem, limit int) []BitcoinNewsItem {
 	if limit <= 0 {
-		limit = 10
+		limit = bitcoinNewsDefaultLimit
 	}
-	if limit > 20 {
-		limit = 20
+	if limit > bitcoinNewsMaxLimit {
+		limit = bitcoinNewsMaxLimit
 	}
 
 	sourceItems := make(map[string][]bitcoinNewsSortableItem, len(itemsBySource))
@@ -287,9 +289,9 @@ func selectBitcoinNewsItems(itemsBySource map[string][]bitcoinNewsSortableItem, 
 		sourceIndex[source] = 0
 	}
 
-	selected := make([]bitcoinNewsSortableItem, 0, limit)
-	seenLinks := make(map[string]struct{}, limit)
-	seenTitles := make(map[string]struct{}, limit)
+	selected := make([]bitcoinNewsSortableItem, 0, bitcoinNewsMaxLimit)
+	seenLinks := make(map[string]struct{}, bitcoinNewsMaxLimit)
+	seenTitles := make(map[string]struct{}, bitcoinNewsMaxLimit)
 
 	for len(selected) < limit {
 		progress := false
