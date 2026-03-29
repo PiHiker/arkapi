@@ -12,7 +12,6 @@
     <path d="M32 64h192"/><path d="M32 96h192"/><path d="M32 128h192"/><path d="M32 160h192"/><path d="M32 192h192"/>
   </g>
   <rect x="24" y="24" width="208" height="208" rx="44" fill="none" stroke="#f7931a" stroke-opacity="0.38" stroke-width="5"/>
-  <polygon points="149,34 94,122 126,122 90,214 178,101 140,101" fill="#f7931a" filter="url(#g)" opacity="0.35"/>
-  <polygon points="149,34 94,122 126,122 90,214 178,101 140,101" fill="#f7931a" stroke="#ffb24a" stroke-width="4" stroke-linejoin="round"/>
-  <circle cx="182" cy="72" r="8" fill="#fff6ea"/>
+  <polygon points="156,26 82,125 126,125 79,230 189,94 143,94" fill="#f7931a" filter="url(#g)" opacity="0.35"/>
+  <polygon points="156,26 82,125 126,125 79,230 189,94 143,94" fill="#f7931a" stroke="#ffb24a" stroke-width="4" stroke-linejoin="round"/>
 </svg>

@@ -55,7 +55,7 @@
   line-height: 0 !important;
   text-indent: -9999px !important;
   overflow: hidden !important;
-  background: #0a0a0b url('/favicon-32.png') center / 18px 18px no-repeat !important;
+  background: #0a0a0b url('/favicon.svg') center / 22px 22px no-repeat !important;
   border: 1px solid rgba(247, 147, 26, 0.35) !important;
   box-shadow: 0 0 18px rgba(247, 147, 26, 0.15);
 }
