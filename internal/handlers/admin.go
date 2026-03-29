@@ -338,10 +338,13 @@ func topTrafficSources(aggs map[string]*adminTrafficAgg, limit int) []AdminTraff
 		})
 	}
 	sort.Slice(sources, func(i, j int) bool {
-		if sources[i].Requests == sources[j].Requests {
-			return sources[i].LastSeen > sources[j].LastSeen
+		if sources[i].LastSeen == sources[j].LastSeen {
+			if sources[i].Requests == sources[j].Requests {
+				return sources[i].IP < sources[j].IP
+			}
+			return sources[i].Requests > sources[j].Requests
 		}
-		return sources[i].Requests > sources[j].Requests
+		return sources[i].LastSeen > sources[j].LastSeen
 	})
 	if len(sources) > limit {
 		sources = sources[:limit]
