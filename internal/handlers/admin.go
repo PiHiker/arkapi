@@ -3,8 +3,8 @@ package handlers
 import (
 	"bufio"
 	"bytes"
-	"net/url"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"regexp"
@@ -19,6 +19,7 @@ const (
 	adminTrafficCacheTTL  = time.Minute
 	adminTrafficTailLines = 12000
 	adminTrafficWindow    = 24 * time.Hour
+	adminTopSourcesLimit  = 25
 )
 
 var (
@@ -162,7 +163,7 @@ func loadAdminTrafficReport() (*AdminTrafficReport, error) {
 	report := &AdminTrafficReport{
 		WindowHours: int(adminTrafficWindow / time.Hour),
 		TopPaths:    make([]AdminTrafficPath, 0, 6),
-		TopSources:  make([]AdminTrafficSource, 0, 5),
+		TopSources:  make([]AdminTrafficSource, 0, adminTopSourcesLimit),
 	}
 
 	cutoff := time.Now().UTC().Add(-adminTrafficWindow)
@@ -224,7 +225,7 @@ func loadAdminTrafficReport() (*AdminTrafficReport, error) {
 	report.UniqueIPs = len(seenIPs)
 	report.ExternalIPs = len(externalIPs)
 	report.TopPaths = topTrafficPaths(pathCounts, 6)
-	report.TopSources = topTrafficSources(sourceAggs, 5)
+	report.TopSources = topTrafficSources(sourceAggs, adminTopSourcesLimit)
 
 	if err := scanner.Err(); err != nil {
 		return nil, err

@@ -41,22 +41,29 @@ fi
 
 if ! grep -Fq "$LOG_MOUNT" "$COMPOSE_FILE"; then
   awk -v mount_line="$LOG_MOUNT" '
-    BEGIN { in_arkapi = 0; inserted = 0 }
+    BEGIN { in_arkapi = 0; in_volumes = 0; inserted = 0; saw_volumes = 0 }
     /^  arkapi:$/ { in_arkapi = 1 }
     in_arkapi && /^  [^ ]/ && $0 != "  arkapi:" {
+      in_arkapi = 0
+      in_volumes = 0
+    }
+    in_arkapi && /^    volumes:$/ {
+      saw_volumes = 1
+      in_volumes = 1
+      print
       if (!inserted) {
         print mount_line
         inserted = 1
       }
-      in_arkapi = 0
+      next
+    }
+    in_volumes && /^    [^ ]/ {
+      in_volumes = 0
     }
     { print }
-    in_arkapi && $0 == "      - ./geoip:/geoip:ro" {
-      print mount_line
-      inserted = 1
-    }
     END {
-      if (!inserted) {
+      if (!saw_volumes || !inserted) {
+        print "could not find arkapi volumes block in compose file" > "/dev/stderr"
         exit 2
       }
     }

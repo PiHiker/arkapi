@@ -10,7 +10,10 @@ services:
     volumes:
       - arkapi-data:/data
       - ./geoip:/geoip:ro
-      - /var/log/apache2:/var/log/apache2:ro
+      # Optional: mount your reverse-proxy log directory if you want
+      # /v1/admin/overview traffic reporting from inside the container.
+      # Adjust the path for your environment, or run scripts/ensure-admin-traffic.sh.
+      # - /var/log/apache2:/var/log/apache2:ro
 
   bark:
     build:
