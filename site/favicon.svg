@@ -1,19 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1f170f"/>
+      <stop offset="0%" stop-color="#26160a"/>
       <stop offset="100%" stop-color="#0a0a0b"/>
     </linearGradient>
+    <filter id="g"><feGaussianBlur stdDeviation="8"/></filter>
   </defs>
   <rect x="8" y="8" width="240" height="240" rx="56" fill="url(#bg)"/>
   <g opacity="0.14" stroke="#f7931a" stroke-width="2">
     <path d="M64 32v192"/><path d="M96 32v192"/><path d="M128 32v192"/><path d="M160 32v192"/><path d="M192 32v192"/>
     <path d="M32 64h192"/><path d="M32 96h192"/><path d="M32 128h192"/><path d="M32 160h192"/><path d="M32 192h192"/>
   </g>
-  <rect x="24" y="24" width="208" height="208" rx="44" fill="none" stroke="#f7931a" stroke-opacity="0.35" stroke-width="5"/>
-  <path d="M69 199L110 56h28l-42 143z" fill="#f7931a"/>
-  <path d="M160 199L118 56h28l41 143z" fill="#f5efe7"/>
-  <rect x="95" y="123" width="72" height="14" rx="7" fill="#06b6d4"/>
-  <path d="M119 148L128 118L137 148z" fill="#0a0a0b"/>
-  <circle cx="184" cy="67" r="10" fill="#f7931a"/>
+  <rect x="24" y="24" width="208" height="208" rx="44" fill="none" stroke="#f7931a" stroke-opacity="0.38" stroke-width="5"/>
+  <polygon points="149,34 94,122 126,122 90,214 178,101 140,101" fill="#f7931a" filter="url(#g)" opacity="0.35"/>
+  <polygon points="149,34 94,122 126,122 90,214 178,101 140,101" fill="#f7931a" stroke="#ffb24a" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="182" cy="72" r="8" fill="#fff6ea"/>
 </svg>
