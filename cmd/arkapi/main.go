@@ -195,7 +195,7 @@ func main() {
 				middleware.RateLimitByPath(
 					25,
 					24*time.Hour,
-					middleware.RateLimitByToken(2, time.Hour, h),
+					middleware.RateLimitByToken(25, time.Hour, h),
 				),
 			),
 		)
