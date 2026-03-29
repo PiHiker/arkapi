@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -60,9 +61,12 @@ var bitcoinNewsFeeds = []bitcoinNewsFeedSource{
 	{Name: "CoinDesk", URL: "https://www.coindesk.com/arc/outboundfeeds/rss/", Bitcoin: false},
 	{Name: "Bitcoin Magazine", URL: "https://bitcoinmagazine.com/feed", Bitcoin: true},
 	{Name: "The Block", URL: "https://www.theblock.co/rss.xml", Bitcoin: false},
+	{Name: "Decrypt", URL: "https://decrypt.co/feed", Bitcoin: false},
 }
 
 const bitcoinNewsCacheTTL = time.Hour
+
+var bitcoinNewsTitleNoise = regexp.MustCompile(`[^a-z0-9]+`)
 
 var bitcoinNewsCache struct {
 	mu        sync.RWMutex
@@ -111,36 +115,25 @@ func fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
 	}
 
 	client := &http.Client{Timeout: 12 * time.Second}
-	items := make([]bitcoinNewsSortableItem, 0, len(bitcoinNewsFeeds)*8)
+	itemsBySource := make(map[string][]bitcoinNewsSortableItem, len(bitcoinNewsFeeds))
+	totalItems := 0
 
 	for _, source := range bitcoinNewsFeeds {
 		feedItems, err := fetchFeedItems(client, source)
 		if err != nil {
 			continue
 		}
-		items = append(items, feedItems...)
-	}
-
-	if len(items) == 0 {
-		return nil, fmt.Errorf("unable to fetch any Bitcoin news feeds")
-	}
-
-	sort.Slice(items, func(i, j int) bool {
-		return items[i].Published.After(items[j].Published)
-	})
-
-	seen := map[string]struct{}{}
-	out := make([]BitcoinNewsItem, 0, 20)
-	for _, item := range items {
-		if _, ok := seen[item.Link]; ok {
+		if len(feedItems) == 0 {
 			continue
 		}
-		seen[item.Link] = struct{}{}
-		out = append(out, item.BitcoinNewsItem)
-		if len(out) >= limit {
-			break
-		}
+		itemsBySource[source.Name] = feedItems
+		totalItems += len(feedItems)
 	}
+
+	if totalItems == 0 {
+		return nil, fmt.Errorf("unable to fetch any Bitcoin news feeds")
+	}
+	out := selectBitcoinNewsItems(itemsBySource, limit)
 
 	setCachedBitcoinNews(out)
 	return &BitcoinNewsResponse{Items: out}, nil
@@ -247,6 +240,9 @@ func sanitizeLink(link string) string {
 	if idx := strings.Index(link, "?"); idx >= 0 {
 		return link[:idx]
 	}
+	if idx := strings.Index(link, "#"); idx >= 0 {
+		return link[:idx]
+	}
 	return link
 }
 
@@ -256,6 +252,91 @@ func summarizeDescription(desc string) string {
 		return clean[:177] + "..."
 	}
 	return clean
+}
+
+func selectBitcoinNewsItems(itemsBySource map[string][]bitcoinNewsSortableItem, limit int) []BitcoinNewsItem {
+	if limit <= 0 {
+		limit = 10
+	}
+
+	sourceItems := make(map[string][]bitcoinNewsSortableItem, len(itemsBySource))
+	sourceIndex := make(map[string]int, len(itemsBySource))
+	for source, items := range itemsBySource {
+		sorted := append([]bitcoinNewsSortableItem(nil), items...)
+		sort.Slice(sorted, func(i, j int) bool {
+			return sorted[i].Published.After(sorted[j].Published)
+		})
+		sourceItems[source] = sorted
+		sourceIndex[source] = 0
+	}
+
+	selected := make([]bitcoinNewsSortableItem, 0, limit)
+	seenLinks := make(map[string]struct{}, limit)
+	seenTitles := make(map[string]struct{}, limit)
+
+	for len(selected) < limit {
+		progress := false
+		for _, source := range bitcoinNewsFeeds {
+			items := sourceItems[source.Name]
+			idx := sourceIndex[source.Name]
+			for idx < len(items) {
+				item := items[idx]
+				idx++
+				if !markBitcoinNewsSeen(item, seenLinks, seenTitles) {
+					continue
+				}
+				selected = append(selected, item)
+				sourceIndex[source.Name] = idx
+				progress = true
+				break
+			}
+			sourceIndex[source.Name] = idx
+			if len(selected) >= limit {
+				break
+			}
+		}
+		if !progress {
+			break
+		}
+	}
+
+	sort.Slice(selected, func(i, j int) bool {
+		return selected[i].Published.After(selected[j].Published)
+	})
+
+	out := make([]BitcoinNewsItem, 0, len(selected))
+	for _, item := range selected {
+		out = append(out, item.BitcoinNewsItem)
+	}
+	return out
+}
+
+func markBitcoinNewsSeen(item bitcoinNewsSortableItem, seenLinks, seenTitles map[string]struct{}) bool {
+	linkKey := sanitizeLink(item.Link)
+	if _, ok := seenLinks[linkKey]; ok {
+		return false
+	}
+
+	titleKey := normalizeBitcoinNewsTitle(item.Title)
+	if titleKey != "" {
+		if _, ok := seenTitles[titleKey]; ok {
+			return false
+		}
+		seenTitles[titleKey] = struct{}{}
+	}
+
+	seenLinks[linkKey] = struct{}{}
+	return true
+}
+
+func normalizeBitcoinNewsTitle(title string) string {
+	title = strings.ToLower(strings.TrimSpace(title))
+	if title == "" {
+		return ""
+	}
+	title = bitcoinNewsTitleNoise.ReplaceAllString(title, " ")
+	title = strings.Join(strings.Fields(title), " ")
+	return title
 }
 
 func stripHTML(s string) string {
