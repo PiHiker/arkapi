@@ -358,10 +358,6 @@ Apache (reverse proxy on host)
 |  |   (host net) |    +----------------------+  |
 |  +------+-------+                               |
 |         |            +----------------------+   |
-|         +----------->| ComfyUI              |   |
-|         |            | :8188 (localhost)    |   |
-|         |            +----------------------+   |
-|         |            +----------------------+   |
 |         +----------->| LibreTranslate       |   |
 |         |            | :5001 (localhost)    |   |
 |         |            +----------------------+   |
@@ -373,7 +369,8 @@ Apache (reverse proxy on host)
 |         +-----------> MySQL :3306 (host)        |
 +---------|---------------------------------------+
           |
-          +----> External upstreams
+          +----> External / host-local upstreams
+                 - ComfyUI (:8188 on host in reference deployment)
                  - Cloudflare AI
                  - Open-Meteo
                  - NVD API
@@ -387,12 +384,12 @@ Apache (reverse proxy on host)
 - **Cloudflare** — Optional DNS, TLS, and CDN layer in front of the web tier.
 - **arkapi container** — Go binary running with `network_mode: host`. Serves the API on `127.0.0.1:8080`, handles sessions, auth, rate limiting, billing, and calls both local helper services and external upstream APIs. Installs `dig`, `whois`, and `curl` for command-based handlers.
 - **bark container** — Second's `barkd` daemon on Bitcoin Signet. Exposes a REST API on `127.0.0.1:3000` and handles session funding detection for both Lightning invoices and Ark-address funding. Wallet data is persisted in the `bark-data` Docker volume.
-- **ComfyUI** — Local image generation backend on `127.0.0.1:8188` used by `/api/image-generate`.
 - **translate container** — Self-hosted LibreTranslate service on `127.0.0.1:5001`.
 - **screenshotter container** — Playwright-based screenshot service on `127.0.0.1:9010`.
 - **MySQL** — Host database on `127.0.0.1:3306` for sessions, balances, and call logs. The `arkapi` MySQL user is scoped to the `arkapi` database.
 - **DB-IP Lite MMDB files** — Self-hosted IP geolocation databases read from disk by `/api/ip-lookup`. Not an external service.
-- **External upstreams** — ArkAPI also calls external services where local infrastructure is not the source of truth:
+- **External upstreams** — ArkAPI also calls upstream services where local infrastructure is not the source of truth:
+  - **ComfyUI** on `127.0.0.1:8188` for `/api/image-generate` in the reference deployment
   - **Cloudflare AI** for `/api/ai-chat` and `/api/ai-translate`
   - **Open-Meteo** for `/api/weather`
   - **NVD API** for `/api/cve-search` and `/api/cve-lookup`
@@ -412,7 +409,7 @@ Apache (reverse proxy on host)
 - arkapi uses `network_mode: host` so it can reach host-local MySQL and localhost-bound helper services.
 - arkapi itself is still intended to be reached through Apache and, optionally, Cloudflare.
 - bark exposes port 3000 to `127.0.0.1` only — not accessible from the internet.
-- ComfyUI exposes port 8188 to `127.0.0.1` only — not accessible from the internet.
+- ComfyUI, when used in the reference deployment, listens on `127.0.0.1:8188` only — not accessible from the internet.
 - LibreTranslate exposes port 5001 to `127.0.0.1` only — not accessible from the internet.
 - Screenshotter exposes port 9010 to `127.0.0.1` only — not accessible from the internet.
 - In the reference deployment, only the web tier is internet-facing on ports `80` and `443`. Bark, ComfyUI, translation, screenshot, and database services stay bound to localhost.
@@ -714,7 +711,7 @@ arkapi/
 - **Cloudflare** — DNS, TLS/CDN, and AI inference for chat and AI translation
 - **Second Bark v0.1.0-beta.8** — Ark wallet daemon for session funding detection
 - **Bitcoin Signet** — current live funding network for testing
-- **ComfyUI** — local image generation backend for `/api/image-generate`
+- **ComfyUI** — host-local image generation upstream for `/api/image-generate`
 - **LibreTranslate** — local translation backend for `/api/translate`
 - **Playwright** — local screenshot rendering backend for `/api/screenshot`
 - **Open-Meteo** — upstream weather data for `/api/weather`
