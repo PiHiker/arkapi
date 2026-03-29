@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"net"
 	"net/http"
@@ -101,9 +102,27 @@ func doSSLCheck(domain string, port int) (*SSLResponse, error) {
 
 	// Connect with a timeout
 	dialer := &net.Dialer{Timeout: 10 * time.Second}
+	var verifyErr error
 	conn, err := tls.DialWithDialer(dialer, "tcp", addr, &tls.Config{
-		// We want to inspect the cert even if it's invalid
+		ServerName:         domain,
 		InsecureSkipVerify: true,
+		VerifyConnection: func(cs tls.ConnectionState) error {
+			if len(cs.PeerCertificates) == 0 {
+				verifyErr = fmt.Errorf("no peer certificates")
+				return nil
+			}
+			opts := x509.VerifyOptions{
+				DNSName:       domain,
+				CurrentTime:   time.Now(),
+				Intermediates: x509.NewCertPool(),
+			}
+			for _, cert := range cs.PeerCertificates[1:] {
+				opts.Intermediates.AddCert(cert)
+			}
+			_, err := cs.PeerCertificates[0].Verify(opts)
+			verifyErr = err
+			return nil
+		},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("TLS connection failed: %w", err)
@@ -122,7 +141,7 @@ func doSSLCheck(domain string, port int) (*SSLResponse, error) {
 
 	result := &SSLResponse{
 		Domain:        domain,
-		Valid:         now.After(cert.NotBefore) && now.Before(cert.NotAfter),
+		Valid:         verifyErr == nil && now.After(cert.NotBefore) && now.Before(cert.NotAfter),
 		Issuer:        cert.Issuer.String(),
 		Subject:       cert.Subject.String(),
 		NotBefore:     cert.NotBefore.UTC().Format(time.RFC3339),

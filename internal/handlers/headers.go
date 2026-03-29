@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -27,13 +28,13 @@ type SecurityHeader struct {
 
 // HeadersResponse is the full analysis
 type HeadersResponse struct {
-	URL              string            `json:"url"`
-	StatusCode       int               `json:"status_code"`
-	Server           string            `json:"server,omitempty"`
-	SecurityHeaders  []SecurityHeader  `json:"security_headers"`
-	Score            int               `json:"score"`     // 0-100
-	Grade            string            `json:"grade"`     // A, B, C, D, F
-	AllHeaders       map[string]string `json:"all_headers"`
+	URL             string            `json:"url"`
+	StatusCode      int               `json:"status_code"`
+	Server          string            `json:"server,omitempty"`
+	SecurityHeaders []SecurityHeader  `json:"security_headers"`
+	Score           int               `json:"score"` // 0-100
+	Grade           string            `json:"grade"` // A, B, C, D, F
+	AllHeaders      map[string]string `json:"all_headers"`
 }
 
 const headersCacheTTL = 10 * time.Minute
@@ -72,14 +73,14 @@ func (h *Handler) Headers(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(req.URL, "http://") && !strings.HasPrefix(req.URL, "https://") {
 		req.URL = "https://" + req.URL
 	}
-	pinnedIP, err := validateSafeURL(req.URL)
+	safeURL, pinnedIP, err := parseAndValidateSafeURL(req.URL)
 	if err != nil {
 		sendJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
 	}
 
 	h.executeHandler(w, r, "/api/headers", 3, func() (interface{}, error) {
-		return doHeaders(req.URL, pinnedIP)
+		return doHeaders(safeURL.String(), pinnedIP)
 	})
 }
 
@@ -211,33 +212,51 @@ func setCachedHeaders(targetURL string, response *HeadersResponse) {
 // validateSafeURL resolves the URL's host and returns a validated public IP.
 // Callers must use the returned IP to connect, preventing DNS rebinding.
 func validateSafeURL(rawURL string) (net.IP, error) {
-	parsed, err := url.Parse(rawURL)
+	_, ip, err := parseAndValidateSafeURL(rawURL)
+	return ip, err
+}
+
+func parseAndValidateSafeURL(rawURL string) (*url.URL, net.IP, error) {
+	if len(rawURL) > 2048 {
+		return nil, nil, fmt.Errorf("url too long")
+	}
+	parsed, err := url.Parse(strings.TrimSpace(rawURL))
 	if err != nil {
-		return nil, fmt.Errorf("invalid URL")
+		return nil, nil, fmt.Errorf("invalid URL")
 	}
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
-		return nil, fmt.Errorf("only http and https URLs are allowed")
+		return nil, nil, fmt.Errorf("only http and https URLs are allowed")
 	}
+	if parsed.User != nil {
+		return nil, nil, fmt.Errorf("embedded credentials are not allowed")
+	}
+	parsed.Fragment = ""
 	host := parsed.Hostname()
 	if host == "" {
-		return nil, fmt.Errorf("invalid URL host")
+		return nil, nil, fmt.Errorf("invalid URL host")
 	}
 	if strings.EqualFold(host, "localhost") {
-		return nil, fmt.Errorf("target host is not allowed")
+		return nil, nil, fmt.Errorf("target host is not allowed")
+	}
+	if port := parsed.Port(); port != "" {
+		portNum, err := strconv.Atoi(port)
+		if err != nil || portNum < 1 || portNum > 65535 {
+			return nil, nil, fmt.Errorf("invalid URL port")
+		}
 	}
 	ips, err := net.LookupIP(host)
 	if err != nil {
-		return nil, fmt.Errorf("failed to resolve target host")
+		return nil, nil, fmt.Errorf("failed to resolve target host")
 	}
 	if len(ips) == 0 {
-		return nil, fmt.Errorf("failed to resolve target host")
+		return nil, nil, fmt.Errorf("failed to resolve target host")
 	}
 	for _, ip := range ips {
 		if !isPublicIP(ip) {
-			return nil, fmt.Errorf("target host resolves to a private or reserved address")
+			return nil, nil, fmt.Errorf("target host resolves to a private or reserved address")
 		}
 	}
-	return ips[0], nil
+	return parsed, ips[0], nil
 }
 
 // pinnedDialer returns a DialContext that always connects to pinnedIP,

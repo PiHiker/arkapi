@@ -64,11 +64,11 @@ type DomainProviderSummary struct {
 }
 
 type DomainNetworkSummary struct {
-	IPCount      int      `json:"ip_count"`
-	ASNs         []string `json:"asns,omitempty"`
+	IPCount       int      `json:"ip_count"`
+	ASNs          []string `json:"asns,omitempty"`
 	Organizations []string `json:"organizations,omitempty"`
-	Countries    []string `json:"countries,omitempty"`
-	AnycastOrCDN bool     `json:"anycast_or_cdn,omitempty"`
+	Countries     []string `json:"countries,omitempty"`
+	AnycastOrCDN  bool     `json:"anycast_or_cdn,omitempty"`
 }
 
 type DomainIntelCacheMetadata struct {
@@ -104,13 +104,13 @@ type RobotsTXTResponse struct {
 }
 
 type TechFingerprintResponse struct {
-	CMS        string   `json:"cms,omitempty"`
-	Frontend   string   `json:"frontend,omitempty"`
-	Ecommerce  string   `json:"ecommerce,omitempty"`
-	Generator  string   `json:"generator,omitempty"`
-	Server     string   `json:"server,omitempty"`
-	Detected   []string `json:"detected,omitempty"`
-	FinalURL   string   `json:"final_url,omitempty"`
+	CMS       string   `json:"cms,omitempty"`
+	Frontend  string   `json:"frontend,omitempty"`
+	Ecommerce string   `json:"ecommerce,omitempty"`
+	Generator string   `json:"generator,omitempty"`
+	Server    string   `json:"server,omitempty"`
+	Detected  []string `json:"detected,omitempty"`
+	FinalURL  string   `json:"final_url,omitempty"`
 }
 
 type HTTPBehaviorResponse struct {
@@ -925,15 +925,15 @@ func buildDomainIntelCacheMetadata(cached bool, expiresAt time.Time) *DomainInte
 
 func detectDNSProvider(nameServers []string) string {
 	return detectProviderFromHosts(nameServers, map[string]string{
-		"ns.cloudflare.com":        "Cloudflare",
-		"awsdns-":                  "Amazon Route 53",
-		"dns.google":               "Google Cloud DNS",
-		"domaincontrol.com":        "GoDaddy",
-		"digitalocean.com":         "DigitalOcean",
-		"ultradns":                 "UltraDNS",
-		"azure-dns":                "Azure DNS",
-		"cloudns":                  "ClouDNS",
-		"nsone.net":                "NS1",
+		"ns.cloudflare.com": "Cloudflare",
+		"awsdns-":           "Amazon Route 53",
+		"dns.google":        "Google Cloud DNS",
+		"domaincontrol.com": "GoDaddy",
+		"digitalocean.com":  "DigitalOcean",
+		"ultradns":          "UltraDNS",
+		"azure-dns":         "Azure DNS",
+		"cloudns":           "ClouDNS",
+		"nsone.net":         "NS1",
 	})
 }
 
@@ -953,28 +953,28 @@ func detectMailProvider(resp *DomainIntelResponse) string {
 	}
 
 	if provider := detectProviderFromHosts(mxHosts, map[string]string{
-		"mx.cloudflare.net":             "Cloudflare Email Routing",
-		"google.com":                    "Google Workspace",
-		"googlemail.com":                "Google Workspace",
-		"mail.protection.outlook.com":   "Microsoft 365",
-		"protonmail.ch":                 "Proton Mail",
-		"zoho.com":                      "Zoho Mail",
-		"messagingengine.com":           "Fastmail",
-		"yahoodns.net":                  "Yahoo Mail",
+		"mx.cloudflare.net":           "Cloudflare Email Routing",
+		"google.com":                  "Google Workspace",
+		"googlemail.com":              "Google Workspace",
+		"mail.protection.outlook.com": "Microsoft 365",
+		"protonmail.ch":               "Proton Mail",
+		"zoho.com":                    "Zoho Mail",
+		"messagingengine.com":         "Fastmail",
+		"yahoodns.net":                "Yahoo Mail",
 	}); provider != "" {
 		return provider
 	}
 
 	if resp.EmailAuth != nil && resp.EmailAuth.SPF.Record != "" {
 		return detectProviderFromText(resp.EmailAuth.SPF.Record, map[string]string{
-			"_spf.mx.cloudflare.net":       "Cloudflare Email Routing",
-			"_spf.google.com":              "Google Workspace",
-			"spf.protection.outlook.com":   "Microsoft 365",
-			"_spf.protonmail.ch":           "Proton Mail",
-			"zoho.com":                     "Zoho Mail",
-			"spf.mandrillapp.com":          "Mailchimp Transactional",
-			"sendgrid.net":                 "SendGrid",
-			"mailgun.org":                  "Mailgun",
+			"_spf.mx.cloudflare.net":     "Cloudflare Email Routing",
+			"_spf.google.com":            "Google Workspace",
+			"spf.protection.outlook.com": "Microsoft 365",
+			"_spf.protonmail.ch":         "Proton Mail",
+			"zoho.com":                   "Zoho Mail",
+			"spf.mandrillapp.com":        "Mailchimp Transactional",
+			"sendgrid.net":               "SendGrid",
+			"mailgun.org":                "Mailgun",
 		})
 	}
 
@@ -1093,7 +1093,7 @@ func fetchSecurityTXT(domain string) (*SecurityTXTResponse, error) {
 		"https://" + domain + "/security.txt",
 	}
 	for _, candidate := range candidates {
-		resp, err := fetchSecurityTXTURL(candidate)
+		resp, err := fetchSecurityTXTURL(domain, candidate)
 		if err == nil && resp != nil && resp.Present {
 			return resp, nil
 		}
@@ -1101,10 +1101,10 @@ func fetchSecurityTXT(domain string) (*SecurityTXTResponse, error) {
 	return nil, nil
 }
 
-func fetchSecurityTXTURL(rawURL string) (*SecurityTXTResponse, error) {
+func fetchSecurityTXTURL(allowedHost, rawURL string) (*SecurityTXTResponse, error) {
 	currentURL := rawURL
 	for range 4 {
-		pinnedIP, err := validateSafeURL(currentURL)
+		safeURL, pinnedIP, err := parseAndValidateSafeURL(currentURL)
 		if err != nil {
 			return nil, err
 		}
@@ -1118,7 +1118,7 @@ func fetchSecurityTXTURL(rawURL string) (*SecurityTXTResponse, error) {
 			},
 		}
 
-		req, err := http.NewRequest(http.MethodGet, currentURL, nil)
+		req, err := http.NewRequest(http.MethodGet, safeURL.String(), nil)
 		if err != nil {
 			return nil, err
 		}
@@ -1139,6 +1139,9 @@ func fetchSecurityTXTURL(rawURL string) (*SecurityTXTResponse, error) {
 			nextURL, err := resolveRedirectURL(currentURL, location)
 			if err != nil {
 				return nil, err
+			}
+			if !isAllowedRedirectTarget(allowedHost, nextURL) {
+				return nil, fmt.Errorf("redirect target host is not allowed")
 			}
 			currentURL = nextURL
 			continue
@@ -1176,6 +1179,22 @@ func resolveRedirectURL(baseURL, location string) (string, error) {
 		return "", fmt.Errorf("redirect target uses unsupported scheme")
 	}
 	return next.String(), nil
+}
+
+func isAllowedRedirectTarget(allowedHost, nextURL string) bool {
+	if allowedHost == "" {
+		return false
+	}
+	parsed, err := neturl.Parse(nextURL)
+	if err != nil {
+		return false
+	}
+	nextHost := strings.ToLower(strings.TrimSpace(parsed.Hostname()))
+	allowedHost = strings.ToLower(strings.TrimSpace(allowedHost))
+	if nextHost == "" || allowedHost == "" {
+		return false
+	}
+	return nextHost == allowedHost || strings.HasSuffix(nextHost, "."+allowedHost)
 }
 
 func parseSecurityTXT(sourceURL, raw string) *SecurityTXTResponse {
@@ -1277,7 +1296,7 @@ func appendUniqueEmails(values []string, additions ...string) []string {
 }
 
 func fetchRobotsTXT(domain string) (*RobotsTXTResponse, error) {
-	resp, err := fetchTextResource("https://" + domain + "/robots.txt", "text/plain, text/*;q=0.9, */*;q=0.1", 64*1024)
+	resp, err := fetchTextResource("https://"+domain+"/robots.txt", "text/plain, text/*;q=0.9, */*;q=0.1", 64*1024)
 	if err != nil {
 		return nil, nil
 	}
@@ -1509,7 +1528,7 @@ func extractScheme(rawURL string) string {
 
 type fetchedTextResource struct {
 	InitialURL    string
-	FinalURL string
+	FinalURL      string
 	RedirectChain []string
 	StatusChain   []int
 	Body          string
@@ -1518,10 +1537,14 @@ type fetchedTextResource struct {
 
 func fetchTextResource(rawURL, acceptHeader string, maxBytes int64) (*fetchedTextResource, error) {
 	currentURL := rawURL
+	allowedHost := ""
+	if parsed, err := neturl.Parse(rawURL); err == nil {
+		allowedHost = parsed.Hostname()
+	}
 	redirectChain := []string{}
 	statusChain := []int{}
 	for range 4 {
-		pinnedIP, err := validateSafeURL(currentURL)
+		safeURL, pinnedIP, err := parseAndValidateSafeURL(currentURL)
 		if err != nil {
 			return nil, err
 		}
@@ -1533,7 +1556,7 @@ func fetchTextResource(rawURL, acceptHeader string, maxBytes int64) (*fetchedTex
 				return http.ErrUseLastResponse
 			},
 		}
-		req, err := http.NewRequest(http.MethodGet, currentURL, nil)
+		req, err := http.NewRequest(http.MethodGet, safeURL.String(), nil)
 		if err != nil {
 			return nil, err
 		}
@@ -1553,6 +1576,9 @@ func fetchTextResource(rawURL, acceptHeader string, maxBytes int64) (*fetchedTex
 			nextURL, err := resolveRedirectURL(currentURL, location)
 			if err != nil {
 				return nil, err
+			}
+			if !isAllowedRedirectTarget(allowedHost, nextURL) {
+				return nil, fmt.Errorf("redirect target host is not allowed")
 			}
 			redirectChain = append(redirectChain, nextURL)
 			currentURL = nextURL

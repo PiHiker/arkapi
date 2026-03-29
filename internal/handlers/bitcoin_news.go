@@ -99,6 +99,13 @@ func (h *Handler) BitcoinNews(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
+	if limit <= 0 {
+		limit = 10
+	}
+	if limit > 20 {
+		limit = 20
+	}
+
 	if cached := getCachedBitcoinNews(limit); cached != nil {
 		return cached, nil
 	}

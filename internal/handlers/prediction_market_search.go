@@ -41,9 +41,9 @@ type polymarketSearchEnvelope struct {
 }
 
 type polymarketEvent struct {
-	ID      interface{}       `json:"id"`
-	Slug    string            `json:"slug"`
-	Title   string            `json:"title"`
+	ID      interface{}        `json:"id"`
+	Slug    string             `json:"slug"`
+	Title   string             `json:"title"`
 	Markets []polymarketMarket `json:"markets"`
 }
 
@@ -109,6 +109,13 @@ func (h *Handler) PredictionMarketSearch(w http.ResponseWriter, r *http.Request)
 }
 
 func doPredictionMarketSearch(query string, limit int) (*PredictionMarketSearchResponse, error) {
+	if limit <= 0 {
+		limit = 10
+	}
+	if limit > 20 {
+		limit = 20
+	}
+
 	cacheKey := strings.ToLower(strings.TrimSpace(query)) + "|" + strconv.Itoa(limit)
 	if cached := getCachedPredictionMarketSearch(cacheKey); cached != nil {
 		return cached, nil

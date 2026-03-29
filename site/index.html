@@ -2507,10 +2507,11 @@ footer {
 const terminalDemo = document.getElementById('terminal-demo');
 const terminalTemplate = document.getElementById('terminal-template');
 const terminalLines = terminalTemplate.innerHTML.trim().split('\n');
+const terminalPlainLines = (terminalTemplate.content?.textContent || '').trim().split('\n');
 let terminalLoopTimer;
 
 function terminalDelayFor(line) {
-  const trimmed = line.replace(/<[^>]+>/g, '').trim();
+  const trimmed = line.trim();
   if (!trimmed) return 110;
   if (trimmed.startsWith('#')) return 520;
   if (trimmed.startsWith('curl')) return 900;
@@ -2538,9 +2539,11 @@ function startTerminalLoop() {
   let index = 0;
   const step = () => {
     if (index < terminalLines.length) {
-      const line = terminalLines[index++];
+      const line = terminalLines[index];
+      const plainLine = terminalPlainLines[index] || '';
+      index += 1;
       appendTerminalLine(line);
-      terminalLoopTimer = setTimeout(step, terminalDelayFor(line));
+      terminalLoopTimer = setTimeout(step, terminalDelayFor(plainLine));
       return;
     }
 
