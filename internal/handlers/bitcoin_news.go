@@ -58,7 +58,6 @@ type bitcoinNewsSortableItem struct {
 var bitcoinNewsFeeds = []bitcoinNewsFeedSource{
 	{Name: "Cointelegraph", URL: "https://cointelegraph.com/rss/tag/bitcoin", Bitcoin: true},
 	{Name: "Bitcoin News", URL: "https://news.bitcoin.com/feed/", Bitcoin: true},
-	{Name: "CoinDesk", URL: "https://www.coindesk.com/arc/outboundfeeds/rss/", Bitcoin: false},
 	{Name: "Bitcoin Magazine", URL: "https://bitcoinmagazine.com/feed", Bitcoin: true},
 	{Name: "The Block", URL: "https://www.theblock.co/rss.xml", Bitcoin: false},
 	{Name: "Decrypt", URL: "https://decrypt.co/feed", Bitcoin: false},
