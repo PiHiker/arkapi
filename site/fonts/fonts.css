@@ -47,3 +47,15 @@
   font-display: swap;
   src: url(/fonts/space-grotesk-700.ttf) format('truetype');
 }
+
+/* Global ArkAPI header mark override: replace the legacy "A" tile with the lightning-bolt favicon. */
+.logo-icon {
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px !important;
+  overflow: hidden !important;
+  background: #0a0a0b url('/favicon-32.png') center / 18px 18px no-repeat !important;
+  border: 1px solid rgba(247, 147, 26, 0.35) !important;
+  box-shadow: 0 0 18px rgba(247, 147, 26, 0.15);
+}
