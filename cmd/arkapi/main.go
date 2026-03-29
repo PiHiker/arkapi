@@ -193,7 +193,7 @@ func main() {
 				db,
 				authCfg,
 				middleware.RateLimitByPath(
-					20,
+					25,
 					24*time.Hour,
 					middleware.RateLimitByToken(2, time.Hour, h),
 				),
