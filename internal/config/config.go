@@ -107,7 +107,7 @@ func Load() Config {
 		TranslateCostSats:              getEnvInt("ARKAPI_TRANSLATE_COST_SATS", 3),
 		AITranslateCostSats:            getEnvInt("ARKAPI_AI_TRANSLATE_COST_SATS", 25),
 		AXFRCheckCostSats:              getEnvInt("ARKAPI_AXFR_CHECK_COST_SATS", 12),
-		HashCrackCostSats:              getEnvInt("ARKAPI_HASH_CRACK_COST_SATS", 20),
+		HashCrackCostSats:              getEnvInt("ARKAPI_HASH_CRACK_COST_SATS", 25),
 		DomainCheckCostSats:            getEnvInt("ARKAPI_DOMAIN_CHECK_COST_SATS", 3),
 		ScreenshotMaxWaitSeconds:       getEnvInt("ARKAPI_SCREENSHOT_MAX_WAIT_SECONDS", 15),
 		ScreenshotServiceURL:           getEnv("ARKAPI_SCREENSHOT_SERVICE_URL", "http://127.0.0.1:9010/render"),
