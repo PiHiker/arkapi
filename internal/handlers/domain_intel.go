@@ -232,14 +232,14 @@ func (h *Handler) doDomainIntel(domain string, withAISummary bool) (*DomainIntel
 
 	go func() {
 		defer wg.Done()
-		pinnedIP, err := validateSafeURL(targetURL)
+		safeURL, pinnedIP, err := parseAndValidateSafeURL(targetURL)
 		if err != nil {
 			mu.Lock()
 			resp.Errors["headers"] = err.Error()
 			mu.Unlock()
 			return
 		}
-		data, err := doHeaders(targetURL, pinnedIP)
+		data, err := doHeaders(safeURL, pinnedIP)
 		mu.Lock()
 		defer mu.Unlock()
 		if err != nil {
@@ -1118,9 +1118,10 @@ func fetchSecurityTXTURL(allowedHost, rawURL string) (*SecurityTXTResponse, erro
 			},
 		}
 
-		req, err := http.NewRequest(http.MethodGet, safeURL.String(), nil)
-		if err != nil {
-			return nil, err
+		req := &http.Request{
+			Method: http.MethodGet,
+			URL:    cloneURL(safeURL),
+			Header: make(http.Header),
 		}
 		req.Header.Set("User-Agent", "ArkAPI/1.0 (+https://arkapi.dev)")
 		req.Header.Set("Accept", "text/plain, text/*;q=0.9, */*;q=0.1")
@@ -1556,9 +1557,10 @@ func fetchTextResource(rawURL, acceptHeader string, maxBytes int64) (*fetchedTex
 				return http.ErrUseLastResponse
 			},
 		}
-		req, err := http.NewRequest(http.MethodGet, safeURL.String(), nil)
-		if err != nil {
-			return nil, err
+		req := &http.Request{
+			Method: http.MethodGet,
+			URL:    cloneURL(safeURL),
+			Header: make(http.Header),
 		}
 		req.Header.Set("User-Agent", "ArkAPI/1.0 (+https://arkapi.dev)")
 		req.Header.Set("Accept", acceptHeader)

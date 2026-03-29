@@ -80,12 +80,13 @@ func (h *Handler) Headers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.executeHandler(w, r, "/api/headers", 3, func() (interface{}, error) {
-		return doHeaders(safeURL.String(), pinnedIP)
+		return doHeaders(safeURL, pinnedIP)
 	})
 }
 
-func doHeaders(url string, pinnedIP net.IP) (*HeadersResponse, error) {
-	if cached := getCachedHeaders(url); cached != nil {
+func doHeaders(safeURL *url.URL, pinnedIP net.IP) (*HeadersResponse, error) {
+	normalizedURL := safeURL.String()
+	if cached := getCachedHeaders(normalizedURL); cached != nil {
 		return cached, nil
 	}
 
@@ -102,14 +103,19 @@ func doHeaders(url string, pinnedIP net.IP) (*HeadersResponse, error) {
 		},
 	}
 
-	resp, err := client.Head(url)
+	req := &http.Request{
+		Method: http.MethodHead,
+		URL:    cloneURL(safeURL),
+		Header: make(http.Header),
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("request failed: %w", err)
 	}
 	defer resp.Body.Close()
 
 	result := &HeadersResponse{
-		URL:        url,
+		URL:        normalizedURL,
 		StatusCode: resp.StatusCode,
 		Server:     resp.Header.Get("Server"),
 		AllHeaders: make(map[string]string),
@@ -166,8 +172,16 @@ func doHeaders(url string, pinnedIP net.IP) (*HeadersResponse, error) {
 	result.Score = (score * 100) / maxScore
 	result.Grade = scoreToGrade(result.Score)
 
-	setCachedHeaders(url, result)
+	setCachedHeaders(normalizedURL, result)
 	return result, nil
+}
+
+func cloneURL(u *url.URL) *url.URL {
+	if u == nil {
+		return nil
+	}
+	cloned := *u
+	return &cloned
 }
 
 func getCachedHeaders(targetURL string) *HeadersResponse {

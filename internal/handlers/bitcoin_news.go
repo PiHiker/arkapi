@@ -111,7 +111,7 @@ func fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
 	}
 
 	client := &http.Client{Timeout: 12 * time.Second}
-	items := make([]bitcoinNewsSortableItem, 0, limit*2)
+	items := make([]bitcoinNewsSortableItem, 0, len(bitcoinNewsFeeds)*8)
 
 	for _, source := range bitcoinNewsFeeds {
 		feedItems, err := fetchFeedItems(client, source)
@@ -130,7 +130,7 @@ func fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
 	})
 
 	seen := map[string]struct{}{}
-	out := make([]BitcoinNewsItem, 0, limit)
+	out := make([]BitcoinNewsItem, 0, 20)
 	for _, item := range items {
 		if _, ok := seen[item.Link]; ok {
 			continue

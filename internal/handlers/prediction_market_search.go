@@ -150,7 +150,7 @@ func doPredictionMarketSearch(query string, limit int) (*PredictionMarketSearchR
 		return nil, fmt.Errorf("decode polymarket response: %w", err)
 	}
 
-	results := make([]PredictionMarketSearchResult, 0, limit)
+	results := make([]PredictionMarketSearchResult, 0, 20)
 	for _, event := range envelope.Events {
 		for _, market := range event.Markets {
 			if market.Archived || market.Closed || !market.Active {
