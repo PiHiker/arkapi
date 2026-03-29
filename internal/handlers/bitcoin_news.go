@@ -84,6 +84,8 @@ var bitcoinNewsCache struct {
 	expiresAt time.Time
 }
 
+const bitcoinNewsSentimentSystemPrompt = "You label Bitcoin news items from a Bitcoin market/ecosystem perspective. Return strict JSON only: an array of objects with fields index and sentiment. sentiment must be one of positive, negative, neutral. Positive means clearly constructive for Bitcoin price, adoption, institutional access, mining economics, regulation, or ecosystem growth. Negative means clearly harmful, fearful, risk-off, hostile regulation, hacks, liquidations, war risk, tariff shock, or market stress. Neutral means mixed, unclear, descriptive, product-only, or not directly directional. Do not include explanations or markdown."
+
 func (h *Handler) BitcoinNews(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		sendJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "use POST"})
@@ -108,11 +110,11 @@ func (h *Handler) BitcoinNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.executeHandler(w, r, "/api/bitcoin-news", h.Cfg.BitcoinNewsCostSats, func() (interface{}, error) {
-		return fetchBitcoinNews(req.Limit)
+		return h.fetchBitcoinNews(req.Limit)
 	})
 }
 
-func fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
+func (h *Handler) fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
 	if limit <= 0 {
 		limit = 10
 	}
@@ -144,6 +146,7 @@ func fetchBitcoinNews(limit int) (*BitcoinNewsResponse, error) {
 		return nil, fmt.Errorf("unable to fetch any Bitcoin news feeds")
 	}
 	out := selectBitcoinNewsItems(itemsBySource, limit)
+	h.classifyBitcoinNewsSentiments(out)
 
 	setCachedBitcoinNews(out)
 	return &BitcoinNewsResponse{Items: out}, nil
@@ -376,6 +379,90 @@ func classifyBitcoinNewsSentiment(text string) string {
 	default:
 		return "neutral"
 	}
+}
+
+func (h *Handler) classifyBitcoinNewsSentiments(items []BitcoinNewsItem) {
+	if len(items) == 0 {
+		return
+	}
+	if err := h.classifyBitcoinNewsSentimentsAI(items); err != nil {
+		for i := range items {
+			items[i].Sentiment = classifyBitcoinNewsSentiment(items[i].Title + " " + items[i].Summary)
+		}
+	}
+}
+
+func (h *Handler) classifyBitcoinNewsSentimentsAI(items []BitcoinNewsItem) error {
+	if h == nil || h.Cfg.CloudflareAIAccountID == "" || h.Cfg.CloudflareAIToken == "" || h.Cfg.CloudflareAIModel == "" {
+		return fmt.Errorf("ai sentiment classifier not configured")
+	}
+
+	lines := make([]string, 0, len(items))
+	for i, item := range items {
+		text := strings.TrimSpace(item.Title)
+		if summary := strings.TrimSpace(item.Summary); summary != "" {
+			text += " | " + summary
+		}
+		lines = append(lines, fmt.Sprintf("%d. %s", i, text))
+	}
+
+	resp, err := h.doAIChatWithSystemPrompt([]AIChatMessage{{
+		Role:    "user",
+		Content: strings.Join(lines, "\n"),
+	}}, bitcoinNewsSentimentSystemPrompt)
+	if err != nil {
+		return err
+	}
+
+	labels, err := parseBitcoinNewsSentimentLabels(resp.Answer, len(items))
+	if err != nil {
+		return err
+	}
+
+	for i := range items {
+		if label, ok := labels[i]; ok {
+			items[i].Sentiment = label
+			continue
+		}
+		items[i].Sentiment = classifyBitcoinNewsSentiment(items[i].Title + " " + items[i].Summary)
+	}
+	return nil
+}
+
+type bitcoinNewsSentimentLabel struct {
+	Index     int    `json:"index"`
+	Sentiment string `json:"sentiment"`
+}
+
+func parseBitcoinNewsSentimentLabels(raw string, expected int) (map[int]string, error) {
+	raw = strings.TrimSpace(raw)
+	raw = strings.TrimPrefix(raw, "```json")
+	raw = strings.TrimPrefix(raw, "```")
+	raw = strings.TrimSuffix(raw, "```")
+	raw = strings.TrimSpace(raw)
+
+	var labels []bitcoinNewsSentimentLabel
+	if err := json.Unmarshal([]byte(raw), &labels); err != nil {
+		return nil, err
+	}
+	if len(labels) == 0 {
+		return nil, fmt.Errorf("empty sentiment label set")
+	}
+
+	out := make(map[int]string, expected)
+	for _, label := range labels {
+		if label.Index < 0 || label.Index >= expected {
+			continue
+		}
+		switch strings.ToLower(strings.TrimSpace(label.Sentiment)) {
+		case "positive", "negative", "neutral":
+			out[label.Index] = strings.ToLower(strings.TrimSpace(label.Sentiment))
+		}
+	}
+	if len(out) == 0 {
+		return nil, fmt.Errorf("no valid sentiment labels")
+	}
+	return out, nil
 }
 
 func stripHTML(s string) string {
