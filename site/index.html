@@ -2216,6 +2216,18 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
+        <h3>Hash Crack</h3>
+        <p>Recover weak MD5, SHA1, SHA256, or NTLM hashes using the curated fasttrack wordlist plus John Wordlist rules. Useful for controlled recovery tests, weak-password checks, and agent-driven security workflows.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/hash-crack</div>
+        <div class="api-payload"><span>Body</span><br>{"hash":"482c811da5d5b4bc6d497ffa98491e38","type":"md5","mode":"fasttrack"}</div>
+        <div class="api-meta">
+          <span class="api-price">25 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-security">SECURITY</span>
         <h3>Email Auth Check</h3>
         <p>Check SPF, DKIM, and DMARC posture for a domain and return an email-auth grade from A to F based on policy strength and gaps.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/email-auth-check</div>
@@ -2770,6 +2782,7 @@ const endpointDisplayOrder = [
   'domain-check',
   'domain-intel',
   'email-auth-check',
+  'hash-crack',
   'headers',
   'image-generate',
   'ip-lookup',

@@ -315,6 +315,7 @@ func newEndpointMap() map[string]int64 {
 		"weather":                  0,
 		"ip-lookup":                0,
 		"email-auth-check":         0,
+		"hash-crack":               0,
 		"bitcoin-news":             0,
 		"ai-chat":                  0,
 		"ai-translate":             0,
@@ -333,11 +334,7 @@ func newEndpointMap() map[string]int64 {
 	}
 }
 
-func hiddenPublicStatsEndpoints() map[string]struct{} {
-	return map[string]struct{}{
-		"hash-crack": {},
-	}
-}
+func hiddenPublicStatsEndpoints() map[string]struct{} { return map[string]struct{}{} }
 
 func (db *DB) GetStats() (*Stats, error) {
 	s := &Stats{

@@ -1666,6 +1666,66 @@
         }
       }
     },
+    "/api/hash-crack": {
+      "post": {
+        "tags": [
+          "security"
+        ],
+        "summary": "Weak hash recovery API",
+        "description": "Cost: 25 sats. Attempts to recover weak MD5, SHA1, SHA256, or NTLM hashes using the curated fasttrack wordlist plus John Wordlist rules. Supported type values are md5, sha1, sha256, and ntlm. Supported mode is fasttrack only. Results are cached once recovered or confirmed uncracked. Rate-limited to 25 requests per hour per token and 25 requests per day globally.",
+        "operationId": "hashCrack",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 25,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HashCrackRequest"
+              },
+              "example": {
+                "hash": "389c0aff3d8ad1a0e958525895a8ac4b632ba08058efe05f67d039bcd8a79d0d",
+                "type": "sha256",
+                "mode": "fasttrack"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hash recovery attempt completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "hash": "389c0aff3d8ad1a0e958525895a8ac4b632ba08058efe05f67d039bcd8a79d0d",
+                    "type": "sha256",
+                    "mode": "fasttrack",
+                    "engine": "john",
+                    "ruleset": "fasttrack.txt+wordlist-rules",
+                    "cracked": true,
+                    "plaintext": "secret123!",
+                    "elapsed_ms": 448
+                  },
+                  "cost_sats": 25,
+                  "balance_remaining": 475,
+                  "response_ms": 460,
+                  "endpoint": "/api/hash-crack"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/btc-price": {
       "get": {
         "tags": [
@@ -2066,6 +2126,36 @@
       "required": [
         "domain"
       ]
+      },
+      "HashCrackRequest": {
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "example": "482c811da5d5b4bc6d497ffa98491e38"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "md5",
+              "sha1",
+              "sha256",
+              "ntlm"
+            ],
+            "example": "md5"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "fasttrack"
+            ],
+            "example": "fasttrack"
+          }
+        },
+        "required": [
+          "hash",
+          "type"
+        ]
       },
       "URLRequest": {
         "type": "object",

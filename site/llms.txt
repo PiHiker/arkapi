@@ -23,6 +23,7 @@
 - `POST /api/email-auth-check`
 - `POST /api/axfr-check` for defensive DNS zone-transfer checking and exposed AXFR records when a nameserver is misconfigured
 - `POST /api/domain-intel` for one-call domain intelligence with parsed `security.txt`, parsed `robots.txt`, improved tech fingerprinting, `http_behavior`, CT-log subdomains, and optional `ai_summary`
+- `POST /api/hash-crack` for weak hash recovery using `fasttrack` mode over `md5`, `sha1`, `sha256`, or `ntlm`
 - `POST /api/cve-search`
 - `POST /api/prediction-market-search` for open Polymarket markets
 - `POST /api/cve-lookup`

@@ -105,6 +105,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/bitcoin-address` | 3 sats | Validate mainnet Bitcoin addresses and fetch on-chain balance data |
 | POST | `/api/bitcoin-news` | 2 sats | Aggregated Bitcoin headlines from free RSS feeds |
 | POST | `/api/cve-search` | 4 sats | Search NVD CVEs by keyword |
+| POST | `/api/hash-crack` | 25 sats | Recover weak MD5, SHA1, SHA256, or NTLM hashes using the fasttrack wordlist plus John Wordlist rules |
 | POST | `/api/domain-check` | 3 sats | Check domain availability via WHOIS |
 | POST | `/api/email-auth-check` | 4 sats | SPF, DKIM, and DMARC posture with A-F grade |
 | POST | `/api/headers` | 3 sats | HTTP security headers audit with score |
@@ -249,6 +250,14 @@ curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"cve":"CVE-2024-3400"}' \
      https://arkapi.dev/api/cve-lookup
+```
+
+**Hash Crack (25 sats):**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"hash":"482c811da5d5b4bc6d497ffa98491e38","type":"md5","mode":"fasttrack"}' \
+     https://arkapi.dev/api/hash-crack
 ```
 
 **DNS Lookup (3 sats):**

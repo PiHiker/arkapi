@@ -133,6 +133,19 @@ curl -X POST https://arkapi.dev/api/domain-intel \
   -d '{"domain":"example.com","ai_summary":true}'
 ```
 
+### `/api/hash-crack` - 25 sats
+- Natural-language example: `Try to recover a weak SHA256 hash using the fasttrack wordlist and built-in John wordlist rules.`
+- Request notes:
+  - Supported `type` values: `md5`, `sha1`, `sha256`, `ntlm`
+  - Supported `mode` value: `fasttrack`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/hash-crack \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"hash":"389c0aff3d8ad1a0e958525895a8ac4b632ba08058efe05f67d039bcd8a79d0d","type":"sha256","mode":"fasttrack"}'
+```
+
 ### `/api/bitcoin-news` - 2 sats
 - Natural-language example: `Get the latest 5 Bitcoin headlines.`
 - Curl:
@@ -281,6 +294,7 @@ curl -X POST https://arkapi.dev/api/url-to-markdown \
 - `/api/ai-chat` is limited to 5 requests per day per token
 - `/api/image-generate` is limited to 5 requests per hour per token
 - `/api/screenshot` is limited to 25 requests per hour per token
+- `/api/hash-crack` is limited to 25 requests per hour per token and 25 requests per day globally
 - Cached endpoints still bill per successful request unless noted otherwise
 - Download results from screenshot and image generation are served from short-lived ArkAPI-hosted URLs
 - Public discovery is intentionally machine-readable through the OpenAPI spec and this document

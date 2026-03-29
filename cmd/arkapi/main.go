@@ -133,6 +133,7 @@ func main() {
     {"path": "/api/prediction-market-search", "method": "POST", "cost_sats": %d, "description": "Search live Polymarket prediction markets and return normalized results"},
     {"path": "/api/cve-lookup", "method": "POST", "cost_sats": %d, "description": "Look up a CVE in the official NVD feed and return severity, CWE, KEV, and references"},
     {"path": "/api/domain-intel", "method": "POST", "cost_sats": %d, "description": "Aggregate DNS, WHOIS, TLS, headers, email auth, parsed security.txt and robots.txt metadata, improved tech fingerprints, HTTP behavior, provider detection, CT-log subdomains, and optional ai_summary"},
+    {"path": "/api/hash-crack", "method": "POST", "cost_sats": %d, "description": "Recover weak MD5, SHA1, SHA256, or NTLM hashes using the fasttrack wordlist plus John Wordlist rules"},
     {"path": "/api/domain-check", "method": "POST", "cost_sats": %d, "description": "Check domain name availability via WHOIS lookup"},
     {"path": "/api/btc-price", "method": "GET", "cost_sats": 1, "description": "Live Bitcoin spot price in 10 major fiat currencies with optional currency filtering and a 60-second cache"},
     {"path": "/api/url-to-markdown", "method": "POST", "cost_sats": 5, "description": "Clean Markdown extraction from any public URL"}
@@ -142,7 +143,7 @@ func main() {
     "balance": "GET /v1/balance (requires auth)"
   },
   "auth": "Authorization: Bearer ak_your_token"
-}`, cfg.EmailAuthCostSats, cfg.BitcoinNewsCostSats, cfg.CloudflareAICostSats, cfg.AITranslateCostSats, cfg.TranslateCostSats, cfg.AXFRCheckCostSats, cfg.ComfyImageCostSats, cfg.ScreenshotCostSats, cfg.QRGenerateCostSats, cfg.BitcoinAddressCostSats, cfg.CVESearchCostSats, cfg.PredictionMarketSearchCostSats, cfg.CVELookupCostSats, cfg.DomainIntelCostSats, cfg.DomainCheckCostSats)
+}`, cfg.EmailAuthCostSats, cfg.BitcoinNewsCostSats, cfg.CloudflareAICostSats, cfg.AITranslateCostSats, cfg.TranslateCostSats, cfg.AXFRCheckCostSats, cfg.ComfyImageCostSats, cfg.ScreenshotCostSats, cfg.QRGenerateCostSats, cfg.BitcoinAddressCostSats, cfg.CVESearchCostSats, cfg.PredictionMarketSearchCostSats, cfg.CVELookupCostSats, cfg.DomainIntelCostSats, cfg.HashCrackCostSats, cfg.DomainCheckCostSats)
 	})
 
 	// --- Protected routes (auth required) ---
@@ -255,6 +256,7 @@ func main() {
 	log.Printf("  POST /api/prediction-market-search — %d sats", cfg.PredictionMarketSearchCostSats)
 	log.Printf("  POST /api/cve-lookup — %d sats", cfg.CVELookupCostSats)
 	log.Printf("  POST /api/domain-intel — %d sats (optional ai_summary, security.txt, robots.txt, HTTP behavior, CT logs)", cfg.DomainIntelCostSats)
+	log.Printf("  POST /api/hash-crack — %d sats (md5, sha1, sha256, ntlm; mode=fasttrack)", cfg.HashCrackCostSats)
 	log.Printf("  POST /api/domain-check — %d sats", cfg.DomainCheckCostSats)
 	log.Printf("  POST /api/url-to-markdown — 5 sats")
 	log.Printf("  GET  /api/btc-price       — 1 sat")
