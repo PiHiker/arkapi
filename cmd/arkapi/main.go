@@ -120,7 +120,7 @@ func main() {
     {"path": "/api/weather",     "method": "POST", "cost_sats": 3,  "description": "Current weather + 7-day forecast"},
     {"path": "/api/ip-lookup",   "method": "POST", "cost_sats": 3,  "description": "IP geolocation, ISP, and ASN data"},
     {"path": "/api/email-auth-check", "method": "POST", "cost_sats": %d, "description": "SPF, DKIM, and DMARC posture with A-F grade"},
-    {"path": "/api/bitcoin-news", "method": "POST", "cost_sats": %d, "description": "Aggregated Bitcoin headlines from free RSS feeds"},
+    {"path": "/api/bitcoin-news", "method": "POST", "cost_sats": %d, "description": "Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment"},
     {"path": "/api/ai-chat", "method": "POST", "cost_sats": %d, "description": "Anonymous AI chat with a 5-per-day token limit"},
     {"path": "/api/ai-translate", "method": "POST", "cost_sats": %d, "description": "Higher-quality AI translation with style control for more natural output"},
     {"path": "/api/translate", "method": "POST", "cost_sats": %d, "description": "Translate text with source-language auto-detection and target language selection"},

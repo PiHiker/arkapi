@@ -798,7 +798,7 @@
           "utility"
         ],
         "summary": "Bitcoin news feed",
-        "description": "Cost: 2 sats. Aggregates recent Bitcoin-related headlines from free RSS feeds and adds a lightweight sentiment label per item.",
+        "description": "Cost: 2 sats. Aggregates recent Bitcoin-related headlines from multiple feeds, removes cross-feed duplicates, and adds AI-assisted per-item sentiment labels.",
         "operationId": "bitcoinNews",
         "security": [
           {

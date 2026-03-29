@@ -103,7 +103,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/cve-lookup` | 3 sats | Look up a CVE in NVD with severity, CWE, KEV, and references |
 | POST | `/api/dns-lookup` | 3 sats | Full DNS records as structured JSON |
 | POST | `/api/bitcoin-address` | 3 sats | Validate mainnet Bitcoin addresses and fetch on-chain balance data |
-| POST | `/api/bitcoin-news` | 2 sats | Aggregated Bitcoin headlines from free RSS feeds with lightweight per-item sentiment |
+| POST | `/api/bitcoin-news` | 2 sats | Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted per-item sentiment |
 | POST | `/api/cve-search` | 4 sats | Search NVD CVEs by keyword |
 | POST | `/api/hash-crack` | 25 sats | Recover weak MD5, SHA1, SHA256, or NTLM hashes using the fasttrack wordlist plus John Wordlist rules |
 | POST | `/api/domain-check` | 3 sats | Check domain availability via WHOIS |
