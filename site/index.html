@@ -35,12 +35,6 @@
   "operatingSystem": "Web",
   "url": "https://arkapi.dev/",
   "description": "Anonymous pay-per-call APIs for AI agents and developers. Fund a session with Ark or Lightning and call security, utility, Bitcoin, and AI endpoints without long-lived keys.",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "BTC",
-    "description": "Usage is metered in sats per API call after session funding."
-  },
   "provider": {
     "@type": "Organization",
     "name": "ArkAPI",
@@ -2216,8 +2210,8 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
-        <h3>Hash Crack</h3>
-        <p>Recover weak MD5, SHA1, SHA256, or NTLM hashes using the curated fasttrack wordlist plus John Wordlist rules. Useful for controlled recovery tests, weak-password checks, and agent-driven security workflows.</p>
+        <h3><a href="/hash-crack/">Hash Crack</a></h3>
+        <p>Recover weak MD5, SHA1, SHA256, or NTLM hashes using the curated fasttrack wordlist plus John Wordlist rules. Useful for controlled recovery tests, weak-password checks, and agent-driven security workflows. <a href="/hash-crack/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/hash-crack</div>
         <div class="api-payload"><span>Body</span><br>{"hash":"482c811da5d5b4bc6d497ffa98491e38","type":"md5","mode":"fasttrack"}</div>
         <div class="api-meta">
@@ -2228,8 +2222,8 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
-        <h3>Email Auth Check</h3>
-        <p>Check SPF, DKIM, and DMARC posture for a domain and return an email-auth grade from A to F based on policy strength and gaps.</p>
+        <h3><a href="/email-auth-check/">Email Auth Check</a></h3>
+        <p>Check SPF, DKIM, and DMARC posture for a domain and return an email-auth grade from A to F based on policy strength and gaps. <a href="/email-auth-check/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/email-auth-check</div>
         <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
         <div class="api-meta">
@@ -2803,6 +2797,8 @@ const endpointLandingPages = {
   'btc-price': '/btc-price/',
   'cve-lookup': '/cve-lookup/',
   'domain-intel': '/domain-intel/',
+  'email-auth-check': '/email-auth-check/',
+  'hash-crack': '/hash-crack/',
   'prediction-market-search': '/prediction-market-search/',
   'translate': '/translate/',
   'url-to-markdown': '/url-to-markdown/'
