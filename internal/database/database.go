@@ -353,7 +353,7 @@ func (db *DB) GetStats() (*Stats, error) {
 		s.HourLabels[i] = bucket.Format("15:00")
 	}
 
-	// Total calls today
+	// Total calls today (UTC day)
 	db.conn.QueryRow(
 		"SELECT COUNT(*), COALESCE(SUM(cost_sats), 0) FROM call_log WHERE created_at >= CURDATE()",
 	).Scan(&s.TotalCalls, &s.TotalSats)
@@ -364,7 +364,7 @@ func (db *DB) GetStats() (*Stats, error) {
 	).Scan(&s.ActiveSessions)
 
 	rows, err := db.conn.Query(
-		"SELECT CASE WHEN endpoint LIKE '/api/%' THEN SUBSTRING(endpoint, 6) ELSE endpoint END AS endpoint_name, COUNT(*) FROM call_log WHERE created_at >= CURDATE() GROUP BY endpoint",
+		"SELECT CASE WHEN endpoint LIKE '/api/%' THEN SUBSTRING(endpoint, 6) ELSE endpoint END AS endpoint_name, COUNT(*) FROM call_log WHERE created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 24 HOUR) GROUP BY endpoint",
 	)
 	if err == nil {
 		defer rows.Close()

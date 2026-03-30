@@ -2107,7 +2107,7 @@ footer {
       <!-- Live activity feed -->
       <div class="activity-feed">
         <div class="feed-header">
-          <span class="feed-title">Top endpoints today</span>
+          <span class="feed-title">Top endpoints (24h)</span>
           <span class="feed-badge" id="feed-count">0 events/min</span>
         </div>
         <div class="feed-list" id="feed-list">
@@ -2116,7 +2116,7 @@ footer {
 
       <!-- API breakdown bars -->
       <div class="api-breakdown">
-        <div class="breakdown-header">Traffic by endpoint</div>
+        <div class="breakdown-header">Traffic by endpoint (24h)</div>
         <div class="breakdown-bars" id="breakdown-bars"></div>
       </div>
     </div>
@@ -2642,7 +2642,8 @@ function updateDisplay(callsDelta, satsDelta) {
   document.getElementById('delta-sessions').textContent = state.activeSessions > 0 ? 'open' : 'none';
   document.getElementById('delta-latency').textContent = 'avg cost';
 
-  document.getElementById('feed-count').textContent = state.totalCalls + ' calls today';
+  const breakdownTotal = Object.values(state.endpointBreakdown || {}).reduce((sum, n) => sum + Number(n || 0), 0);
+  document.getElementById('feed-count').textContent = breakdownTotal + ' calls / 24h';
 
   updateStatus();
   updateActivityFeed();
@@ -2833,7 +2834,7 @@ function updateActivityFeed() {
     .slice(0, 5);
 
   if (!entries.length) {
-    list.innerHTML = '<div class="feed-item" style="justify-content:center;color:var(--text-muted);">No endpoint traffic recorded today yet.</div>';
+    list.innerHTML = '<div class="feed-item" style="justify-content:center;color:var(--text-muted);">No endpoint traffic recorded in the last 24 hours.</div>';
     return;
   }
 
