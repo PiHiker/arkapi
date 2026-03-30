@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bitcoin Price API | ArkAPI</title>
-<meta name="description" content="Get the live Bitcoin spot price through ArkAPI. Query USD by default or request a subset of 10 major fiat currencies, with a fear_greed market snapshot when available, for 1 sat per call.">
+<meta name="description" content="Get the live Bitcoin spot price through ArkAPI. Query USD by default or request a subset of 10 major fiat currencies, with market stats and a fear_greed snapshot, for 1 sat per call.">
 <meta name="keywords" content="Bitcoin price API, BTC price API, BTC USD API, Bitcoin exchange rate API, sats API, ArkAPI btc-price">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="ArkAPI">
@@ -17,13 +17,13 @@
 <meta property="og:url" content="https://arkapi.dev/btc-price/">
 <meta property="og:site_name" content="ArkAPI">
 <meta property="og:title" content="Bitcoin Price API | ArkAPI">
-<meta property="og:description" content="Get live Bitcoin spot prices in USD by default or request a subset of 10 major fiat currencies, with a fear_greed snapshot, for 1 sat per call.">
+<meta property="og:description" content="Get live Bitcoin spot prices in USD by default or request a subset of 10 major fiat currencies, with market stats and a fear_greed snapshot, for 1 sat per call.">
 <meta property="og:image" content="https://arkapi.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bitcoin Price API | ArkAPI">
-<meta name="twitter:description" content="Query live Bitcoin spot prices through ArkAPI with optional currency filters and a fear_greed market snapshot.">
+<meta name="twitter:description" content="Query live Bitcoin spot prices through ArkAPI with optional currency filters, market stats, and a fear_greed market snapshot.">
 <meta name="twitter:image" content="https://arkapi.dev/og-image.png">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/css/common.min.css">
@@ -61,22 +61,24 @@
   <section class="hero">
     <div class="eyebrow">Bitcoin Price API &bull; Live on Signet test network only</div>
     <h1>Get the Bitcoin price in one call.</h1>
-    <p class="sub">Query the live Bitcoin spot price in USD by default or request a subset of 10 major fiat currencies. The response also includes a <span class="code-inline">fear_greed</span> market snapshot when the upstream provider is available.</p>
+    <p class="sub">Query the live Bitcoin spot price in USD by default or request a subset of 10 major fiat currencies. The response also includes market stats plus a <span class="code-inline">fear_greed</span> market snapshot when the upstream provider is available.</p>
     <div class="pill-row">
       <div class="pill">1 sat / call</div>
       <div class="pill">GET /api/btc-price</div>
       <div class="pill">Defaults to USD</div>
+      <div class="pill">market stats included</div>
       <div class="pill">fear_greed included</div>
     </div>
   </section>
 
   <div class="card">
     <h2>What It Does</h2>
-    <p>ArkAPI Bitcoin Price returns the live Bitcoin spot price rounded to the nearest cent. By default it returns USD, but you can request one currency or a subset of supported fiat codes through query parameters. When available, it also returns a lightweight <span class="code-inline">fear_greed</span> market sentiment snapshot sourced from Alternative.me.</p>
+    <p>ArkAPI Bitcoin Price returns the live Bitcoin spot price rounded to the nearest cent. By default it returns USD, but you can request one currency or a subset of supported fiat codes through query parameters. It also includes market stats and a lightweight <span class="code-inline">fear_greed</span> market sentiment snapshot sourced from Alternative.me.</p>
     <ul>
       <li>Default response returns <span class="code-inline">btc_usd</span></li>
       <li>Optional single-currency filter with <span class="code-inline">?currency=CAD</span></li>
       <li>Optional subset filter with <span class="code-inline">?currencies=USD,EUR,CAD</span></li>
+      <li>Includes <span class="code-inline">market_stats.rank</span>, <span class="code-inline">change_24h_pct</span>, <span class="code-inline">volume_24h_usd</span>, and <span class="code-inline">market_cap_usd</span></li>
       <li>Includes <span class="code-inline">fear_greed.value</span>, <span class="code-inline">fear_greed.label</span>, and source metadata when the upstream is reachable</li>
       <li>Supported set includes USD, EUR, GBP, CAD, JPY, AUD, CHF, CNY, HKD, and SGD</li>
     </ul>
@@ -89,6 +91,7 @@
       <li>If no filter is passed, the response defaults to <span class="code-inline">USD</span></li>
       <li>Single-currency responses are compact and easy to consume in scripts</li>
       <li>Subset responses work well for dashboards that need only a few fiat pairs</li>
+      <li><span class="code-inline">market_stats</span> gives quick market context without needing a separate coin endpoint</li>
       <li><span class="code-inline">fear_greed</span> is best read as market sentiment, not price prediction</li>
       <li>Values are rounded to the nearest cent for readability</li>
     </ul>
@@ -108,6 +111,15 @@
     "btc_usd": "68406.28",
     "btc_eur": "59345.62",
     "btc_cad": "94738.48",
+    "market_stats": {
+      "rank": 1,
+      "change_1h_pct": -0.42,
+      "change_24h_pct": -3.18,
+      "change_7d_pct": -7.64,
+      "volume_24h_usd": 28123456789.12,
+      "market_cap_usd": 1312345678901.45,
+      "source": "Alternative.me"
+    },
     "fear_greed": {
       "value": 8,
       "label": "extreme_fear",

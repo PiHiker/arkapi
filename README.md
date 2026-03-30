@@ -96,7 +96,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/ai-chat` | 100 sats | Anonymous AI chat with ArkAPI-managed inference |
 | POST | `/api/ai-translate` | 25 sats | Higher-quality AI translation with style control for more natural output |
 | POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
-| GET | `/api/btc-price` | 1 sat | Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering and Alternative.me fear_greed sentiment |
+| GET | `/api/btc-price` | 1 sat | Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering, market stats, and Alternative.me fear_greed sentiment |
 | POST | `/api/prediction-market-search` | 4 sats | Search open Polymarket prediction markets |
 | POST | `/api/translate` | 3 sats | Self-hosted text translation with source auto-detection |
 | POST | `/api/url-to-markdown` | 5 sats | Extract clean Markdown from any public URL |

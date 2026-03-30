@@ -17,20 +17,31 @@ type BTCFearGreed struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+type BTCMarketStats struct {
+	Rank         int     `json:"rank"`
+	Change1hPct  float64 `json:"change_1h_pct"`
+	Change24hPct float64 `json:"change_24h_pct"`
+	Change7dPct  float64 `json:"change_7d_pct"`
+	Volume24hUSD float64 `json:"volume_24h_usd"`
+	MarketCapUSD float64 `json:"market_cap_usd"`
+	Source       string  `json:"source"`
+}
+
 // BTCPriceResponse is what we return
 type BTCPriceResponse struct {
-	BTCUSD    string    `json:"btc_usd"`
-	BTCEUR    string    `json:"btc_eur"`
-	BTCGBP    string    `json:"btc_gbp"`
-	BTCCAD    string    `json:"btc_cad"`
-	BTCJPY    string    `json:"btc_jpy"`
-	BTCAUD    string    `json:"btc_aud"`
-	BTCCHF    string    `json:"btc_chf"`
-	BTCCNY    string    `json:"btc_cny"`
-	BTCHKD    string    `json:"btc_hkd"`
-	BTCSGD    string    `json:"btc_sgd"`
-	FearGreed *BTCFearGreed `json:"fear_greed,omitempty"`
-	UpdatedAt time.Time `json:"updated_at"`
+	BTCUSD      string          `json:"btc_usd"`
+	BTCEUR      string          `json:"btc_eur"`
+	BTCGBP      string          `json:"btc_gbp"`
+	BTCCAD      string          `json:"btc_cad"`
+	BTCJPY      string          `json:"btc_jpy"`
+	BTCAUD      string          `json:"btc_aud"`
+	BTCCHF      string          `json:"btc_chf"`
+	BTCCNY      string          `json:"btc_cny"`
+	BTCHKD      string          `json:"btc_hkd"`
+	BTCSGD      string          `json:"btc_sgd"`
+	MarketStats *BTCMarketStats `json:"market_stats,omitempty"`
+	FearGreed   *BTCFearGreed   `json:"fear_greed,omitempty"`
+	UpdatedAt   time.Time       `json:"updated_at"`
 }
 
 type coinbaseResponse struct {
@@ -51,6 +62,22 @@ type alternativeFearGreedResponse struct {
 	Metadata struct {
 		Error interface{} `json:"error"`
 	} `json:"metadata"`
+}
+
+type alternativeTickerResponse struct {
+	Data map[string]struct {
+		Rank   int `json:"rank"`
+		Quotes struct {
+			USD struct {
+				Price               float64 `json:"price"`
+				Volume24h           float64 `json:"volume_24h"`
+				MarketCap           float64 `json:"market_cap"`
+				PercentageChange1h  float64 `json:"percentage_change_1h"`
+				PercentageChange24h float64 `json:"percentage_change_24h"`
+				PercentageChange7d  float64 `json:"percentage_change_7d"`
+			} `json:"USD"`
+		} `json:"quotes"`
+	} `json:"data"`
 }
 
 var supportedBTCPriceCurrencies = []string{"USD", "EUR", "GBP", "CAD", "JPY", "AUD", "CHF", "CNY", "HKD", "SGD"}
@@ -79,6 +106,9 @@ func (p *BTCPriceResponse) asMap() map[string]interface{} {
 	}
 	if p.FearGreed != nil {
 		out["fear_greed"] = p.FearGreed
+	}
+	if p.MarketStats != nil {
+		out["market_stats"] = p.MarketStats
 	}
 	return out
 }
@@ -135,6 +165,43 @@ func fetchBTCFearGreed(client *http.Client) (*BTCFearGreed, error) {
 		Label:     fearGreedLabel(value),
 		Source:    "Alternative.me",
 		UpdatedAt: updatedAt,
+	}, nil
+}
+
+func fetchBTCMarketStats(client *http.Client) (*BTCMarketStats, error) {
+	req, err := http.NewRequest(http.MethodGet, "https://api.alternative.me/v2/ticker/bitcoin/?structure=dictionary", nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build market-stats request: %w", err)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch market stats: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("market stats provider returned status %d", resp.StatusCode)
+	}
+
+	var ticker alternativeTickerResponse
+	if err := json.NewDecoder(resp.Body).Decode(&ticker); err != nil {
+		return nil, fmt.Errorf("failed to decode market stats: %w", err)
+	}
+
+	bitcoin, ok := ticker.Data["1"]
+	if !ok {
+		return nil, fmt.Errorf("market stats provider returned no bitcoin ticker")
+	}
+
+	return &BTCMarketStats{
+		Rank:         bitcoin.Rank,
+		Change1hPct:  bitcoin.Quotes.USD.PercentageChange1h,
+		Change24hPct: bitcoin.Quotes.USD.PercentageChange24h,
+		Change7dPct:  bitcoin.Quotes.USD.PercentageChange7d,
+		Volume24hUSD: bitcoin.Quotes.USD.Volume24h,
+		MarketCapUSD: bitcoin.Quotes.USD.MarketCap,
+		Source:       "Alternative.me",
 	}, nil
 }
 
@@ -205,6 +272,9 @@ func (h *Handler) BTCPrice(w http.ResponseWriter, r *http.Request) {
 		}
 		if price.FearGreed != nil {
 			filtered["fear_greed"] = price.FearGreed
+		}
+		if price.MarketStats != nil {
+			filtered["market_stats"] = price.MarketStats
 		}
 		for _, code := range requested {
 			filtered["btc_"+strings.ToLower(code)] = all["btc_"+strings.ToLower(code)]
@@ -277,6 +347,9 @@ func getBTCPrice() (*BTCPriceResponse, error) {
 		UpdatedAt: time.Now().UTC(),
 	}
 
+	if marketStats, err := fetchBTCMarketStats(client); err == nil {
+		newPrice.MarketStats = marketStats
+	}
 	if fearGreed, err := fetchBTCFearGreed(client); err == nil {
 		newPrice.FearGreed = fearGreed
 	}

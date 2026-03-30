@@ -135,7 +135,7 @@ func main() {
     {"path": "/api/domain-intel", "method": "POST", "cost_sats": %d, "description": "Aggregate DNS, WHOIS, TLS, headers, email auth, parsed security.txt and robots.txt metadata, improved tech fingerprints, HTTP behavior, provider detection, CT-log subdomains, and optional ai_summary"},
     {"path": "/api/hash-crack", "method": "POST", "cost_sats": %d, "description": "Recover weak MD5, SHA1, SHA256, or NTLM hashes using the fasttrack wordlist plus John Wordlist rules"},
     {"path": "/api/domain-check", "method": "POST", "cost_sats": %d, "description": "Check domain name availability via WHOIS lookup"},
-    {"path": "/api/btc-price", "method": "GET", "cost_sats": 1, "description": "Live Bitcoin spot price in 10 major fiat currencies with optional currency filtering, a 60-second cache, and Alternative.me fear_greed sentiment"},
+    {"path": "/api/btc-price", "method": "GET", "cost_sats": 1, "description": "Live Bitcoin spot price in 10 major fiat currencies with optional currency filtering, market stats, and Alternative.me fear_greed sentiment"},
     {"path": "/api/url-to-markdown", "method": "POST", "cost_sats": 5, "description": "Clean Markdown extraction from any public URL"}
   ],
   "session": {

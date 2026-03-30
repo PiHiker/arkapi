@@ -269,7 +269,7 @@ curl -X POST https://arkapi.dev/api/domain-check \
 ### `/api/btc-price` - 1 sat
 - Natural-language example: `Get the Bitcoin price in USD only.`
 - Natural-language example: `Get Bitcoin prices in USD, EUR, and CAD.`
-- Natural-language example: `Get the Bitcoin price plus the current Alternative.me fear and greed reading.`
+- Natural-language example: `Get the Bitcoin price, 24h change, market cap, and the current Alternative.me fear and greed reading.`
 - Curl:
 ```bash
 curl -H "Authorization: Bearer ak_your_token" \
