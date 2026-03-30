@@ -111,7 +111,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/email-auth-check` | 4 sats | SPF, DKIM, and DMARC posture with A-F grade |
 | POST | `/api/headers` | 3 sats | HTTP security headers audit with score |
 | POST | `/api/image-generate` | 25 sats | AI image generation with short-lived download URL |
-| POST | `/api/ip-lookup` | 3 sats | IP geolocation, ISP, and ASN data |
+| POST | `/api/ip-lookup` | 3 sats | IP geolocation, ISP, ASN, approximate location, and Google Maps link |
 | POST | `/api/qr-generate` | 2 sats | Generate QR code PNG from text or URLs |
 | POST | `/api/screenshot` | 15 sats | Server-side webpage screenshot with download URL |
 | POST | `/api/ssl-check` | 5 sats | SSL certificate analysis |

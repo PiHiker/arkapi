@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -18,16 +19,18 @@ type IPRequest struct {
 
 // IPResponse is the geolocation data
 type IPResponse struct {
-	IP          string  `json:"ip"`
-	Country     string  `json:"country"`
-	CountryCode string  `json:"country_code"`
-	Region      string  `json:"region"`
-	City        string  `json:"city"`
-	Lat         float64 `json:"lat"`
-	Lon         float64 `json:"lon"`
-	ISP         string  `json:"isp"`
-	Org         string  `json:"org"`
-	AS          string  `json:"as"`
+	IP                  string  `json:"ip"`
+	Country             string  `json:"country"`
+	CountryCode         string  `json:"country_code"`
+	Region              string  `json:"region"`
+	City                string  `json:"city"`
+	ApproximateLocation string  `json:"approximate_location,omitempty"`
+	Lat                 float64 `json:"lat"`
+	Lon                 float64 `json:"lon"`
+	GoogleMapsURL       string  `json:"google_maps_url,omitempty"`
+	ISP                 string  `json:"isp"`
+	Org                 string  `json:"org"`
+	AS                  string  `json:"as"`
 }
 
 // GeoReaders holds opened DB-IP Lite/MMDB readers.
@@ -153,6 +156,10 @@ func doIPLookup(geo *GeoReaders, ip string) (*IPResponse, error) {
 	if len(city.Subdivisions) > 0 {
 		result.Region = city.Subdivisions[0].Names["en"]
 	}
+	result.ApproximateLocation = buildApproximateLocation(result.City, result.Region, result.Country)
+	if result.Lat != 0 || result.Lon != 0 {
+		result.GoogleMapsURL = fmt.Sprintf("https://www.google.com/maps?q=%.4f,%.4f", result.Lat, result.Lon)
+	}
 
 	// Add ISP/ASN data if the ASN database is loaded
 	if geo.ASN != nil {
@@ -168,6 +175,17 @@ func doIPLookup(geo *GeoReaders, ip string) (*IPResponse, error) {
 
 	setCachedIPLookup(ip, result)
 	return result, nil
+}
+
+func buildApproximateLocation(city, region, country string) string {
+	parts := make([]string, 0, 3)
+	for _, part := range []string{city, region, country} {
+		part = strings.TrimSpace(part)
+		if part != "" {
+			parts = append(parts, part)
+		}
+	}
+	return strings.Join(parts, ", ")
 }
 
 func getCachedIPLookup(ip string) *IPResponse {

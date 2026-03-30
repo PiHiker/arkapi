@@ -679,7 +679,7 @@
           "osint"
         ],
         "summary": "IP geolocation and ASN lookup",
-        "description": "Cost: 3 sats. Returns country, region, city, ISP, org, and AS data for a public IP.",
+        "description": "Cost: 3 sats. Returns country, region, city, coordinates, approximate location, Google Maps link, ISP, org, and AS data for a public IP.",
         "operationId": "ipLookup",
         "security": [
           {
@@ -713,8 +713,13 @@
                   "data": {
                     "ip": "8.8.8.8",
                     "country": "United States",
+                    "country_code": "US",
+                    "region": "Virginia",
                     "city": "Ashburn",
-                    "timezone": "America/New_York",
+                    "approximate_location": "Ashburn, Virginia, United States",
+                    "lat": 39.0438,
+                    "lon": -77.4874,
+                    "google_maps_url": "https://www.google.com/maps?q=39.0438,-77.4874",
                     "isp": "Google LLC",
                     "org": "Google Public DNS",
                     "as": "AS15169 Google LLC"

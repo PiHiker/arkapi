@@ -93,7 +93,7 @@ curl -X POST https://arkapi.dev/api/weather \
 ```
 
 ### `/api/ip-lookup` - 3 sats
-- Natural-language example: `Look up the geolocation and ASN for 8.8.8.8.`
+- Natural-language example: `Look up the geolocation, approximate location, and ASN for 8.8.8.8.`
 - Curl:
 ```bash
 curl -X POST https://arkapi.dev/api/ip-lookup \

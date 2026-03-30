@@ -19,7 +19,7 @@
 - `POST /api/whois`
 - `POST /api/ssl-check`
 - `POST /api/headers`
-- `POST /api/ip-lookup`
+- `POST /api/ip-lookup` returning geolocation, approximate location, ISP/ASN data, and a Google Maps link
 - `POST /api/email-auth-check`
 - `POST /api/axfr-check` for defensive DNS zone-transfer checking and exposed AXFR records when a nameserver is misconfigured
 - `POST /api/domain-intel` for one-call domain intelligence with parsed `security.txt`, parsed `robots.txt`, improved tech fingerprinting, `http_behavior`, CT-log subdomains, and optional `ai_summary`
