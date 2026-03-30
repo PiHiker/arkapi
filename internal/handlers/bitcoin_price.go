@@ -40,12 +40,17 @@ type coinbaseResponse struct {
 	} `json:"data"`
 }
 
-type coinyBubbleLatestResponse struct {
-	Timestamp          string  `json:"timestamp"`
-	ActualValue        float64 `json:"actual_value"`
-	PreviousValue      float64 `json:"previous_value"`
-	BitcoinPriceUSD    float64 `json:"bitcoin_price_usd"`
-	PreviousBitcoinUSD float64 `json:"previous_bitcoin_price_usd"`
+type alternativeFearGreedResponse struct {
+	Name       string `json:"name"`
+	Data       []struct {
+		Value               string `json:"value"`
+		ValueClassification string `json:"value_classification"`
+		Timestamp           string `json:"timestamp"`
+		TimeUntilUpdate     string `json:"time_until_update"`
+	} `json:"data"`
+	Metadata struct {
+		Error interface{} `json:"error"`
+	} `json:"metadata"`
 }
 
 var supportedBTCPriceCurrencies = []string{"USD", "EUR", "GBP", "CAD", "JPY", "AUD", "CHF", "CNY", "HKD", "SGD"}
@@ -92,7 +97,7 @@ func fearGreedLabel(value float64) string {
 }
 
 func fetchBTCFearGreed(client *http.Client) (*BTCFearGreed, error) {
-	req, err := http.NewRequest(http.MethodGet, "https://api.coinybubble.com/v1/latest", nil)
+	req, err := http.NewRequest(http.MethodGet, "https://api.alternative.me/fng/?limit=1&format=json", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to build fear-greed request: %w", err)
 	}
@@ -107,30 +112,29 @@ func fetchBTCFearGreed(client *http.Client) (*BTCFearGreed, error) {
 		return nil, fmt.Errorf("fear-greed provider returned status %d", resp.StatusCode)
 	}
 
-	var latest coinyBubbleLatestResponse
+	var latest alternativeFearGreedResponse
 	if err := json.NewDecoder(resp.Body).Decode(&latest); err != nil {
 		return nil, fmt.Errorf("failed to decode fear-greed data: %w", err)
 	}
-
-	updatedAt := time.Now().UTC()
-	for _, layout := range []string{
-		time.RFC3339Nano,
-		time.RFC3339,
-		"2006-01-02T15:04:05.999999",
-		"2006-01-02T15:04:05",
-	} {
-		parsed, parseErr := time.Parse(layout, latest.Timestamp)
-		if parseErr == nil {
-			updatedAt = parsed.UTC()
-			break
-		}
+	if len(latest.Data) == 0 {
+		return nil, fmt.Errorf("fear-greed provider returned no data")
 	}
 
+	value, err := strconv.ParseFloat(latest.Data[0].Value, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid fear-greed value %q: %w", latest.Data[0].Value, err)
+	}
+	updatedUnix, err := strconv.ParseInt(latest.Data[0].Timestamp, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid fear-greed timestamp %q: %w", latest.Data[0].Timestamp, err)
+	}
+	updatedAt := time.Unix(updatedUnix, 0).UTC()
+
 	return &BTCFearGreed{
-		Value:     latest.ActualValue,
-		Label:     fearGreedLabel(latest.ActualValue),
-		Source:    "CoinyBubble",
-		UpdatedAt: updatedAt.UTC(),
+		Value:     value,
+		Label:     fearGreedLabel(value),
+		Source:    "Alternative.me",
+		UpdatedAt: updatedAt,
 	}, nil
 }
 

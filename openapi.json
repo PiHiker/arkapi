@@ -1734,7 +1734,7 @@
           "utility"
         ],
         "summary": "Live Bitcoin spot price API",
-        "description": "Cost: 1 sat. Returns current Bitcoin prices in 10 major fiat currencies plus a fear_greed sentiment snapshot when the upstream provider is available. Optional query params: currency=CAD for one rate or currencies=USD,EUR,CAD for a subset. Data is cached for 60 seconds.",
+        "description": "Cost: 1 sat. Returns current Bitcoin prices in 10 major fiat currencies plus a fear_greed sentiment snapshot from Alternative.me when available. Optional query params: currency=CAD for one rate or currencies=USD,EUR,CAD for a subset. Data is cached for 60 seconds.",
         "operationId": "getBTCPrice",
         "security": [
           {
@@ -1784,10 +1784,10 @@
                     "btc_hkd": "534210.67",
                     "btc_sgd": "91543.22",
                     "fear_greed": {
-                      "value": 65.61,
-                      "label": "greed",
-                      "source": "CoinyBubble",
-                      "updated_at": "2026-03-30T00:20:00Z"
+                      "value": 8,
+                      "label": "extreme_fear",
+                      "source": "Alternative.me",
+                      "updated_at": "2026-03-30T00:00:00Z"
                     },
                     "updated_at": "2026-03-26T12:00:00Z"
                   },
