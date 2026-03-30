@@ -308,6 +308,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      -d '{"ip":"8.8.8.8"}' \
      https://arkapi.dev/api/ip-lookup
 ```
+Public guide: [IP Lookup](https://arkapi.dev/ip-lookup/)
 </details>
 
 ### Response Format

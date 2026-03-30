@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Lookup API | ArkAPI</title>
+<meta name="description" content="Look up IP geolocation, ISP, ASN, approximate location, and a Google Maps link through ArkAPI for 3 sats per call.">
+<meta name="keywords" content="IP lookup API, IP geolocation API, ASN lookup API, IP to location API, Google Maps IP lookup, ArkAPI ip-lookup">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/ip-lookup/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/ip-lookup/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="IP Lookup API | ArkAPI">
+<meta property="og:description" content="Look up IP geolocation, ISP, ASN, approximate location, and a Google Maps link in one ArkAPI call for 3 sats.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="IP Lookup API | ArkAPI">
+<meta name="twitter:description" content="Query IP geolocation, ISP, ASN, approximate location, and Google Maps data through ArkAPI.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "IP Lookup API",
+  "description": "ArkAPI IP Lookup API for IP geolocation, ASN data, and map-ready location output, priced per call in sats.",
+  "author": {"@type": "Organization", "name": "ArkAPI"},
+  "publisher": {"@type": "Organization", "name": "ArkAPI", "url": "https://arkapi.dev/"},
+  "mainEntityOfPage": "https://arkapi.dev/ip-lookup/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does IP Lookup cost?", "acceptedAnswer": {"@type": "Answer", "text": "IP Lookup costs 3 sats per call."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns country, region, city, approximate location, latitude, longitude, Google Maps link, ISP, organization, and AS data for the requested IP address."}},
+    {"@type": "Question", "name": "Is the map location exact?", "acceptedAnswer": {"@type": "Answer", "text": "No. The location is approximate GeoIP data and should be treated as city-level or regional guidance, not precise device location."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+    <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open');this.classList.toggle('active')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/#how">How it works</a>
+  <a href="/#apis">APIs</a>
+  <a href="/dashboard/">Dashboard</a>
+  <a href="/fund/">Fund</a>
+  <a href="/marketplace/">Early Access</a>
+  <a href="/contact/">Contact</a>
+  <a href="/docs/">Docs</a>
+  <a href="/fund/" class="btn-mobile-cta">Fund &rarr;</a>
+</div>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">IP Lookup API &bull; Live on Signet test network only</div>
+    <h1>Look up IP geolocation and map-ready context in one call.</h1>
+    <p class="sub">Use a funded Signet session to resolve country, region, city, approximate location, coordinates, ISP, ASN, and a Google Maps link for a public IP address. Built for OSINT, enrichment, and quick operator lookups.</p>
+    <div class="pill-row">
+      <div class="pill">3 sats / call</div>
+      <div class="pill">POST /api/ip-lookup</div>
+      <div class="pill">Google Maps link included</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>What It Does</h2>
+      <p>IP Lookup resolves GeoIP and ASN data into a response that is easier to use directly in dashboards, scripts, and investigations. Instead of just raw coordinates, it now returns an <span class="code-inline">approximate_location</span> string and a ready-to-open <span class="code-inline">google_maps_url</span>.</p>
+      <ul>
+        <li>Returns country, region, city, and coordinates</li>
+        <li>Includes <span class="code-inline">approximate_location</span> for human-friendly output</li>
+        <li>Includes <span class="code-inline">google_maps_url</span> built from the returned coordinates</li>
+        <li>Also returns ISP, organization, and AS metadata</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>What To Expect</h2>
+      <p>This endpoint uses local MMDB GeoIP databases. The results are useful for approximate location and operator context, but they are not exact device location data.</p>
+      <ul>
+        <li>Best read as city-level or regional guidance</li>
+        <li>Useful for enrichment, triage, and map handoff</li>
+        <li>Good fit for agent workflows that need clickable location context</li>
+        <li>Current deployment is <span class="code-inline">Signet only</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="code-block">curl -X POST https://arkapi.dev/api/ip-lookup \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"ip":"8.8.8.8"}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The endpoint is also documented in <a href="/openapi.json">/openapi.json</a> for agents and service wrappers.</p>
+  </div>
+
+  <div class="card">
+    <h2>How To Call It</h2>
+    <ul>
+      <li><strong>1.</strong> Open the <a href="/fund/">Fund page</a> and create a Signet session.</li>
+      <li><strong>2.</strong> Copy the bearer token from the session confirmation or <a href="/dashboard/">dashboard</a>.</li>
+      <li><strong>3.</strong> Call <span class="code-inline">POST /api/ip-lookup</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
+    </ul>
+    <p style="margin-top:12px;">The landing page is public, but the lookup endpoint itself still requires a funded session token and a valid JSON body.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Body</h2>
+      <div class="code-block">{
+  "ip": "8.8.8.8"
+}</div>
+      <ul>
+        <li><span class="code-inline">ip</span> is required</li>
+        <li>Use a valid public IPv4 or IPv6 address</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "ip": "8.8.8.8",
+    "country": "United States",
+    "country_code": "US",
+    "region": "Virginia",
+    "city": "Ashburn",
+    "approximate_location": "Ashburn, Virginia, United States",
+    "lat": 39.0438,
+    "lon": -77.4874,
+    "google_maps_url": "https://www.google.com/maps?q=39.0438,-77.4874",
+    "isp": "Google LLC",
+    "org": "Google Public DNS",
+    "as": "AS15169 Google LLC"
+  },
+  "cost_sats": 3,
+  "balance_remaining": 1497,
+  "response_ms": 7,
+  "endpoint": "/api/ip-lookup"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Enrich logs and alerts with location and ASN context</li>
+      <li>Map suspicious or interesting IPs quickly without leaving your tooling</li>
+      <li>Give agents a cleaner handoff than raw coordinates alone</li>
+      <li>Support OSINT and incident triage workflows</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+const mobileMenu = document.querySelector('.mobile-menu');
+document.querySelectorAll('.mobile-menu a').forEach((link) => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    document.querySelector('.hamburger').classList.remove('active');
+  });
+});
+</script>
+</body>
+</html>
