@@ -364,7 +364,7 @@ func (db *DB) GetStats() (*Stats, error) {
 	).Scan(&s.ActiveSessions)
 
 	rows, err := db.conn.Query(
-		"SELECT TRIM(LEADING '/api/' FROM endpoint) AS endpoint_name, COUNT(*) FROM call_log WHERE created_at >= CURDATE() GROUP BY endpoint",
+		"SELECT CASE WHEN endpoint LIKE '/api/%' THEN SUBSTRING(endpoint, 6) ELSE endpoint END AS endpoint_name, COUNT(*) FROM call_log WHERE created_at >= CURDATE() GROUP BY endpoint",
 	)
 	if err == nil {
 		defer rows.Close()
@@ -455,7 +455,7 @@ func (db *DB) GetAdminStats() (*AdminStats, error) {
 	}
 
 	if rows, err := db.conn.Query(
-		"SELECT TRIM(LEADING '/api/' FROM endpoint) AS endpoint_name, COUNT(*) FROM call_log WHERE created_at >= CURDATE() GROUP BY endpoint",
+		"SELECT CASE WHEN endpoint LIKE '/api/%' THEN SUBSTRING(endpoint, 6) ELSE endpoint END AS endpoint_name, COUNT(*) FROM call_log WHERE created_at >= CURDATE() GROUP BY endpoint",
 	); err == nil {
 		defer rows.Close()
 		for rows.Next() {
@@ -468,7 +468,7 @@ func (db *DB) GetAdminStats() (*AdminStats, error) {
 	}
 
 	if rows, err := db.conn.Query(
-		"SELECT TRIM(LEADING '/api/' FROM endpoint) AS endpoint_name, COUNT(*) FROM call_log GROUP BY endpoint",
+		"SELECT CASE WHEN endpoint LIKE '/api/%' THEN SUBSTRING(endpoint, 6) ELSE endpoint END AS endpoint_name, COUNT(*) FROM call_log GROUP BY endpoint",
 	); err == nil {
 		defer rows.Close()
 		for rows.Next() {
