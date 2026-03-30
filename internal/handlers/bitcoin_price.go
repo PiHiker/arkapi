@@ -4,11 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
+
+type BTCFearGreed struct {
+	Value     float64   `json:"value"`
+	Label     string    `json:"label"`
+	Source    string    `json:"source"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
 
 // BTCPriceResponse is what we return
 type BTCPriceResponse struct {
@@ -22,6 +29,7 @@ type BTCPriceResponse struct {
 	BTCCNY    string    `json:"btc_cny"`
 	BTCHKD    string    `json:"btc_hkd"`
 	BTCSGD    string    `json:"btc_sgd"`
+	FearGreed *BTCFearGreed `json:"fear_greed,omitempty"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
@@ -30,6 +38,14 @@ type coinbaseResponse struct {
 		Currency string            `json:"currency"`
 		Rates    map[string]string `json:"rates"`
 	} `json:"data"`
+}
+
+type coinyBubbleLatestResponse struct {
+	Timestamp          string  `json:"timestamp"`
+	ActualValue        float64 `json:"actual_value"`
+	PreviousValue      float64 `json:"previous_value"`
+	BitcoinPriceUSD    float64 `json:"bitcoin_price_usd"`
+	PreviousBitcoinUSD float64 `json:"previous_bitcoin_price_usd"`
 }
 
 var supportedBTCPriceCurrencies = []string{"USD", "EUR", "GBP", "CAD", "JPY", "AUD", "CHF", "CNY", "HKD", "SGD"}
@@ -43,7 +59,7 @@ func formatFiatRate(raw string) (string, error) {
 }
 
 func (p *BTCPriceResponse) asMap() map[string]interface{} {
-	return map[string]interface{}{
+	out := map[string]interface{}{
 		"btc_usd":    p.BTCUSD,
 		"btc_eur":    p.BTCEUR,
 		"btc_gbp":    p.BTCGBP,
@@ -56,6 +72,66 @@ func (p *BTCPriceResponse) asMap() map[string]interface{} {
 		"btc_sgd":    p.BTCSGD,
 		"updated_at": p.UpdatedAt,
 	}
+	if p.FearGreed != nil {
+		out["fear_greed"] = p.FearGreed
+	}
+	return out
+}
+
+func fearGreedLabel(value float64) string {
+	switch {
+	case value <= 25:
+		return "extreme_fear"
+	case value <= 45:
+		return "fear"
+	case value <= 75:
+		return "greed"
+	default:
+		return "extreme_greed"
+	}
+}
+
+func fetchBTCFearGreed(client *http.Client) (*BTCFearGreed, error) {
+	req, err := http.NewRequest(http.MethodGet, "https://api.coinybubble.com/v1/latest", nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build fear-greed request: %w", err)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch fear-greed data: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("fear-greed provider returned status %d", resp.StatusCode)
+	}
+
+	var latest coinyBubbleLatestResponse
+	if err := json.NewDecoder(resp.Body).Decode(&latest); err != nil {
+		return nil, fmt.Errorf("failed to decode fear-greed data: %w", err)
+	}
+
+	updatedAt := time.Now().UTC()
+	for _, layout := range []string{
+		time.RFC3339Nano,
+		time.RFC3339,
+		"2006-01-02T15:04:05.999999",
+		"2006-01-02T15:04:05",
+	} {
+		parsed, parseErr := time.Parse(layout, latest.Timestamp)
+		if parseErr == nil {
+			updatedAt = parsed.UTC()
+			break
+		}
+	}
+
+	return &BTCFearGreed{
+		Value:     latest.ActualValue,
+		Label:     fearGreedLabel(latest.ActualValue),
+		Source:    "CoinyBubble",
+		UpdatedAt: updatedAt.UTC(),
+	}, nil
 }
 
 func parseRequestedBTCCurrencies(r *http.Request) ([]string, error) {
@@ -122,6 +198,9 @@ func (h *Handler) BTCPrice(w http.ResponseWriter, r *http.Request) {
 		all := price.asMap()
 		filtered := map[string]interface{}{
 			"updated_at": price.UpdatedAt,
+		}
+		if price.FearGreed != nil {
+			filtered["fear_greed"] = price.FearGreed
 		}
 		for _, code := range requested {
 			filtered["btc_"+strings.ToLower(code)] = all["btc_"+strings.ToLower(code)]
@@ -192,6 +271,10 @@ func getBTCPrice() (*BTCPriceResponse, error) {
 		BTCHKD:    formatted["HKD"],
 		BTCSGD:    formatted["SGD"],
 		UpdatedAt: time.Now().UTC(),
+	}
+
+	if fearGreed, err := fetchBTCFearGreed(client); err == nil {
+		newPrice.FearGreed = fearGreed
 	}
 
 	priceCache = newPrice

@@ -27,7 +27,7 @@
 - `POST /api/cve-search`
 - `POST /api/prediction-market-search` for open Polymarket markets
 - `POST /api/cve-lookup`
-- `GET /api/btc-price` with optional `?currency=CAD` or `?currencies=USD,EUR,CAD`
+- `GET /api/btc-price` with optional `?currency=CAD` or `?currencies=USD,EUR,CAD`, returning a `fear_greed` snapshot when available
 - `POST /api/ai-chat`
 - `POST /api/ai-translate`
 - `POST /api/translate`
