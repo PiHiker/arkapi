@@ -876,6 +876,108 @@
         }
       }
     },
+    "/api/remote-job-search": {
+      "get": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Search remote jobs",
+        "description": "Cost: 3 sats. Searches Remotive remote jobs by keyword, category, or company and returns a compact cached response with cleaned descriptions. At least one of search, category, or company_name is required.",
+        "operationId": "remoteJobSearch",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 3,
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Keyword search across job titles and descriptions."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Remotive category slug, such as software-dev."
+          },
+          {
+            "name": "company_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by company name."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25,
+              "default": 10
+            },
+            "description": "Optional result limit. Defaults to 10 and caps at 25."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "search": "golang",
+                    "limit": 3,
+                    "source": "Remotive",
+                    "provider_note": "Remotive public API jobs are delayed by 24 hours and should be fetched sparingly.",
+                    "job_count": 1,
+                    "total_job_count": 1,
+                    "jobs": [
+                      {
+                        "id": 2088644,
+                        "url": "https://remotive.com/remote-jobs/software-development/senior-full-stack-react-developer-2088644",
+                        "title": "Senior Full-stack React Developer",
+                        "company_name": "Lemon.io",
+                        "category": "Software Development",
+                        "tags": [
+                          "golang",
+                          "react",
+                          "python"
+                        ],
+                        "job_type": "full_time",
+                        "publication_date": "2026-03-03T16:33:57Z",
+                        "candidate_required_location": "Americas, Europe",
+                        "description_text": "Senior-level product and marketplace work across multiple stacks..."
+                      }
+                    ]
+                  },
+                  "cost_sats": 3,
+                  "balance_remaining": 497,
+                  "response_ms": 95,
+                  "endpoint": "/api/remote-job-search"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/email-auth-check": {
       "post": {
         "tags": [

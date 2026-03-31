@@ -109,6 +109,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://arkapi.dev/remote-job-search/</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://arkapi.dev/ssl-check/</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>weekly</changefreq>

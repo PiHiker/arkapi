@@ -2434,6 +2434,18 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-utility">UTILITY</span>
+        <h3><a href="/remote-job-search/">Remote Job Search</a></h3>
+        <p>Search remote jobs from Remotive by keyword, category, or company. Returns a compact, agent-friendly job list with cleaned descriptions and a 24-hour cache. <a href="/remote-job-search/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/remote-job-search</div>
+        <div class="api-payload"><span>Query</span><br>?search=golang&amp;limit=10</div>
+        <div class="api-meta">
+          <span class="api-price">3 sats <span>/ call</span></span>
+          <span class="api-method">GET</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
         <h3><a href="/docs/">QR Generate</a></h3>
         <p>Generate a QR code PNG from any text, URL, or Bitcoin address. Returns a base64-encoded image and a ready-to-use data URI. Sizes from 64px to 1024px.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/qr-generate</div>
@@ -2842,6 +2854,7 @@ const endpointDisplayOrder = [
   'ip-intel',
   'ip-lookup',
   'prediction-market-search',
+  'remote-job-search',
   'qr-generate',
   'screenshot',
   'ssl-check',
@@ -2868,6 +2881,7 @@ const endpointLandingPages = {
   'ip-intel': '/ip-intel/',
   'ip-lookup': '/ip-lookup/',
   'prediction-market-search': '/prediction-market-search/',
+  'remote-job-search': '/remote-job-search/',
   'ssl-check': '/ssl-check/',
   'translate': '/translate/',
   'url-to-markdown': '/url-to-markdown/',

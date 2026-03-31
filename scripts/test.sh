@@ -147,6 +147,17 @@ else
     echo "$IPINTEL" | head -1
 fi
 
+# --- Remote Job Search ---
+echo -n "Remote job search (golang)... "
+JOBS=$(curl -s -H "$AUTH" "$BASE/api/remote-job-search?search=golang&limit=3")
+if echo "$JOBS" | grep -q '"success":true'; then
+    COUNT=$(echo "$JOBS" | grep -o '"job_count":[0-9]*' | cut -d: -f2)
+    echo -e "${GREEN}PASS${NC} — jobs returned: ${COUNT}"
+else
+    echo -e "${YELLOW}WARN${NC} — needs outbound HTTPS to remotive.com"
+    echo "$JOBS" | head -1
+fi
+
 # --- WHOIS ---
 echo -n "WHOIS (google.com)... "
 WHOIS=$(curl -s -H "$AUTH" -H "Content-Type: application/json" \

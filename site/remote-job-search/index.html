@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remote Job Search API | ArkAPI</title>
+<meta name="description" content="Search remote jobs from Remotive through ArkAPI. Filter by keyword, category, or company and get a compact cached response for 3 sats per call.">
+<meta name="keywords" content="remote jobs api, remote job search api, remotive api, job search api, remote hiring api, ArkAPI remote-job-search">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/remote-job-search/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/remote-job-search/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Remote Job Search API | ArkAPI">
+<meta property="og:description" content="Search remote jobs from Remotive through ArkAPI with keyword, category, or company filters for 3 sats per call.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Remote Job Search API | ArkAPI">
+<meta name="twitter:description" content="Use ArkAPI to search remote jobs from Remotive with a small cached, agent-friendly response.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Remote Job Search API","description":"ArkAPI remote job search API for agents and automations, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/remote-job-search/"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is the input for Remote Job Search?","acceptedAnswer":{"@type":"Answer","text":"Call GET /api/remote-job-search with at least one of search, category, or company_name. You can also pass limit, which defaults to 10 and caps at 25."}},
+{"@type":"Question","name":"Is the response cached?","acceptedAnswer":{"@type":"Answer","text":"Yes. ArkAPI caches Remote Job Search queries for 24 hours to keep the endpoint cheap and avoid hammering the upstream provider."}},
+{"@type":"Question","name":"What is the upstream source?","acceptedAnswer":{"@type":"Answer","text":"The current upstream is Remotive's public remote jobs API."}}
+]}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+.copy-row { display: flex; justify-content: flex-end; margin: -2px 0 12px; }
+.copy-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.copy-btn-inline:hover {
+  border-color: rgba(247,147,26,0.5);
+  color: var(--accent);
+  background: rgba(247,147,26,0.06);
+}
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+  </div>
+</nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Remote Job Search API &bull; Live on Signet test network only</div>
+    <h1>Search remote jobs without wiring the upstream yourself.</h1>
+    <p class="sub">Query Remotive by keyword, category, or company and get a compact, agent-friendly JSON response with cleaned job descriptions. ArkAPI caches each query for 24 hours to keep the endpoint cheap and stable.</p>
+    <div class="pill-row">
+      <div class="pill">3 sats / call</div>
+      <div class="pill">GET /api/remote-job-search</div>
+      <div class="pill">24h cache</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Input Shape</h2>
+      <p>This endpoint is a <span class="code-inline">GET</span>. Pass at least one filter in the query string, then optionally cap the response size with <span class="code-inline">limit</span>.</p>
+      <ul>
+        <li><span class="code-inline">search</span> for keywords like <span class="code-inline">golang</span> or <span class="code-inline">frontend</span></li>
+        <li><span class="code-inline">category</span> for Remotive category slugs like <span class="code-inline">software-dev</span></li>
+        <li><span class="code-inline">company_name</span> for a specific employer</li>
+        <li><span class="code-inline">limit</span> defaults to <span class="code-inline">10</span> and caps at <span class="code-inline">25</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Why It Helps</h2>
+      <p>Agents often need job data, but the raw provider payload is noisy and the polling etiquette matters. This wrapper keeps the response small, cleans the job description into readable text, and avoids hammering the upstream source.</p>
+      <ul>
+        <li>Good fit for hiring agents and job-monitoring bots</li>
+        <li>Returns cleaned <span class="code-inline">description_text</span> instead of giant raw HTML</li>
+        <li>Caches identical searches for 24 hours</li>
+        <li>Built on Remotive's public API</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-request">Copy curl</button></div>
+    <div id="example-request" class="code-block">curl -H "Authorization: Bearer ak_your_token" \
+  "https://arkapi.dev/api/remote-job-search?search=golang&limit=3" | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. This is a read-only search endpoint, so a query string is a better fit than a JSON body.</p>
+  </div>
+
+  <div class="card">
+    <h2>How To Call It</h2>
+    <ul>
+      <li><strong>1.</strong> Open the <a href="/fund/">Fund page</a> and create a Signet session.</li>
+      <li><strong>2.</strong> Copy the bearer token from the session confirmation or <a href="/dashboard/">dashboard</a>.</li>
+      <li><strong>3.</strong> Call <span class="code-inline">GET /api/remote-job-search</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
+    </ul>
+    <p style="margin-top:12px;">At least one of <span class="code-inline">search</span>, <span class="code-inline">category</span>, or <span class="code-inline">company_name</span> is required.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Good Queries</h2>
+      <ul>
+        <li><span class="code-inline">?search=golang&amp;limit=5</span></li>
+        <li><span class="code-inline">?search=python&amp;company_name=GitLab</span></li>
+        <li><span class="code-inline">?category=software-dev&amp;limit=10</span></li>
+        <li><span class="code-inline">?company_name=Stripe&amp;limit=5</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "search": "golang",
+    "limit": 3,
+    "source": "Remotive",
+    "provider_note": "Remotive public API jobs are delayed by 24 hours and should be fetched sparingly.",
+    "job_count": 1,
+    "total_job_count": 1,
+    "jobs": [
+      {
+        "id": 2088644,
+        "url": "https://remotive.com/remote-jobs/software-development/senior-full-stack-react-developer-2088644",
+        "title": "Senior Full-stack React Developer",
+        "company_name": "Lemon.io",
+        "category": "Software Development",
+        "tags": ["golang", "react", "python"],
+        "job_type": "full_time",
+        "publication_date": "2026-03-03T16:33:57Z",
+        "candidate_required_location": "Americas, Europe",
+        "description_text": "Senior-level product and marketplace work across multiple stacks..."
+      }
+    ]
+  },
+  "cost_sats": 3,
+  "endpoint": "/api/remote-job-search"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('[data-copy-code]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const targetId = button.getAttribute('data-copy-code');
+    const block = document.getElementById(targetId);
+    if (!block) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(block.textContent.trim());
+      button.textContent = 'Copied';
+    } catch (_err) {
+      button.textContent = 'Copy failed';
+    }
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1600);
+  });
+});
+</script>
+</body>
+</html>

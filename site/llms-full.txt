@@ -122,6 +122,18 @@ curl -X POST https://arkapi.dev/api/ip-intel \
   -d '{"ip":"8.8.8.8","max_age_days":30}'
 ```
 
+### `/api/remote-job-search` - 3 sats
+- Natural-language example: `Find recent remote Golang jobs and return a compact list.`
+- Query notes:
+  - Provide at least one of `search`, `category`, or `company_name`
+  - Optional `limit` defaults to `10` and caps at `25`
+  - Results are cached for 24 hours
+- Curl:
+```bash
+curl -H "Authorization: Bearer ak_your_token" \
+  "https://arkapi.dev/api/remote-job-search?search=golang&limit=5"
+```
+
 ### `/api/email-auth-check` - 4 sats
 - Natural-language example: `Check SPF, DKIM, and DMARC posture for proton.me.`
 - Curl:

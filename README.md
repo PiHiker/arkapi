@@ -73,6 +73,7 @@ ArkAPI publishes machine-readable metadata so AI agents and tooling can discover
 | [`headers/`](https://arkapi.dev/headers/) | Dedicated landing page for the Headers Audit API |
 | [`ip-abuse-check/`](https://arkapi.dev/ip-abuse-check/) | Dedicated landing page for the IP Abuse Check API |
 | [`ip-intel/`](https://arkapi.dev/ip-intel/) | Dedicated landing page for the IP Intel API |
+| [`remote-job-search/`](https://arkapi.dev/remote-job-search/) | Dedicated landing page for the Remote Job Search API |
 | [`ssl-check/`](https://arkapi.dev/ssl-check/) | Dedicated landing page for the SSL Check API |
 | [`whois/`](https://arkapi.dev/whois/) | Dedicated landing page for the WHOIS API |
 | [`cve-search/`](https://arkapi.dev/cve-search/) | Dedicated landing page for the CVE Search API |
@@ -104,6 +105,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/ai-translate` | 25 sats | Higher-quality AI translation with style control for more natural output |
 | POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
 | GET | `/api/btc-price` | 1 sat | Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering, market stats, and Alternative.me fear_greed sentiment |
+| GET | `/api/remote-job-search` | 3 sats | Search remote jobs from Remotive by keyword, category, or company with a cached agent-friendly response |
 | POST | `/api/prediction-market-search` | 4 sats | Search open Polymarket prediction markets |
 | POST | `/api/translate` | 3 sats | Self-hosted text translation with source auto-detection |
 | POST | `/api/url-to-markdown` | 5 sats | Extract clean Markdown from any public URL |
@@ -225,6 +227,25 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-search/)
+</details>
+
+<details>
+<summary>Remote Job Search (3 sats)</summary>
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     "https://arkapi.dev/api/remote-job-search?search=golang&limit=5"
+```
+
+Optional query parameters:
+- `search`
+- `category`
+- `company_name`
+- `limit` (default `10`, max `25`)
+
+At least one of `search`, `category`, or `company_name` is required.
+
+Public guide: [Remote Job Search](https://arkapi.dev/remote-job-search/)
 </details>
 
 <details>
@@ -421,6 +442,7 @@ Apache (reverse proxy on host)
   - **ComfyUI** on `127.0.0.1:8188` for `/api/image-generate` in the reference deployment
   - **Cloudflare AI** for `/api/ai-chat` and `/api/ai-translate`
   - **Open-Meteo** for `/api/weather`
+  - **Remotive public API** for `/api/remote-job-search`
   - **NVD API** for `/api/cve-search` and `/api/cve-lookup`
   - **Polymarket Gamma API** for `/api/prediction-market-search`
   - **Public WHOIS, RDAP, and DNS infrastructure** for domain and registration intelligence
