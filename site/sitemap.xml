@@ -67,6 +67,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://arkapi.dev/dns-lookup/</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://arkapi.dev/headers/</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>weekly</changefreq>
@@ -91,6 +97,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://arkapi.dev/ssl-check/</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://arkapi.dev/translate/</loc>
     <lastmod>2026-03-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -104,6 +116,12 @@
   </url>
   <url>
     <loc>https://arkapi.dev/cve-search/</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://arkapi.dev/whois/</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

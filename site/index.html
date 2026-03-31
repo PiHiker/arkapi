@@ -2184,8 +2184,8 @@ footer {
     <div class="api-grid">
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
-        <h3><a href="/docs/">DNS Lookup</a></h3>
-        <p>Full DNS records as structured JSON — A, AAAA, MX, TXT, NS, CNAME, and SOA records for any domain. Clean, parsed output.</p>
+        <h3><a href="/dns-lookup/">DNS Lookup</a></h3>
+        <p>Full DNS records as structured JSON — A, AAAA, MX, TXT, NS, CNAME, and SOA records for any domain. Clean, parsed output. <a href="/dns-lookup/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/dns-lookup</div>
         <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
         <div class="api-meta">
@@ -2208,8 +2208,8 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
-        <h3><a href="/docs/">SSL Check</a></h3>
-        <p>SSL certificate analysis — validity, issuer, expiry, protocol version, cipher suite, certificate chain, and full SAN list.</p>
+        <h3><a href="/ssl-check/">SSL Check</a></h3>
+        <p>SSL certificate analysis — validity, issuer, expiry, protocol version, cipher suite, certificate chain, and full SAN list. <a href="/ssl-check/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/ssl-check</div>
         <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
         <div class="api-meta">
@@ -2295,8 +2295,8 @@ footer {
     <div class="api-grid">
       <div class="api-card">
         <span class="api-tag tag-osint">OSINT</span>
-        <h3><a href="/docs/">WHOIS</a></h3>
-        <p>WHOIS data parsed into clean JSON. Registrar, creation date, expiry, name servers, registrant organization, and domain status.</p>
+        <h3><a href="/whois/">WHOIS</a></h3>
+        <p>WHOIS data parsed into clean JSON. Registrar, creation date, expiry, name servers, registrant organization, and domain status. <a href="/whois/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/whois</div>
         <div class="api-payload"><span>Body</span><br>{"domain":"example.com"}</div>
         <div class="api-meta">
@@ -2833,14 +2833,17 @@ const endpointLandingPages = {
   'btc-price': '/btc-price/',
   'cve-search': '/cve-search/',
   'cve-lookup': '/cve-lookup/',
+  'dns-lookup': '/dns-lookup/',
   'domain-intel': '/domain-intel/',
   'email-auth-check': '/email-auth-check/',
   'hash-crack': '/hash-crack/',
   'headers': '/headers/',
   'ip-lookup': '/ip-lookup/',
   'prediction-market-search': '/prediction-market-search/',
+  'ssl-check': '/ssl-check/',
   'translate': '/translate/',
-  'url-to-markdown': '/url-to-markdown/'
+  'url-to-markdown': '/url-to-markdown/',
+  'whois': '/whois/'
 };
 
 function escapeHTML(value) {

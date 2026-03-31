@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHOIS API | ArkAPI</title>
+<meta name="description" content="Query registrar, status, dates, nameservers, and parsed WHOIS data through ArkAPI for 5 sats per call.">
+<meta name="keywords" content="WHOIS API, domain whois API, registrar lookup API, domain registration API, ArkAPI whois">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/whois/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/whois/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="WHOIS API | ArkAPI">
+<meta property="og:description" content="Look up registrar, dates, nameservers, and parsed WHOIS data in one ArkAPI call for 5 sats.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="WHOIS API | ArkAPI">
+<meta name="twitter:description" content="Query normalized WHOIS data through ArkAPI for domain research, ownership checks, and enrichment workflows.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "WHOIS API",
+  "description": "ArkAPI WHOIS API for normalized domain registration data, priced per call in sats.",
+  "author": {"@type": "Organization", "name": "ArkAPI"},
+  "publisher": {"@type": "Organization", "name": "ArkAPI", "url": "https://arkapi.dev/"},
+  "mainEntityOfPage": "https://arkapi.dev/whois/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does WHOIS cost?", "acceptedAnswer": {"@type": "Answer", "text": "WHOIS costs 5 sats per call."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns parsed WHOIS data including registrar, status, creation and expiry dates, nameservers, and other normalized registration details when available."}},
+    {"@type": "Question", "name": "What is it useful for?", "acceptedAnswer": {"@type": "Answer", "text": "WHOIS is useful for ownership checks, domain research, OSINT enrichment, and defensive security workflows."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+.copy-row { display: flex; justify-content: flex-end; margin: -2px 0 12px; }
+.copy-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.copy-btn-inline:hover {
+  border-color: rgba(247,147,26,0.5);
+  color: var(--accent);
+  background: rgba(247,147,26,0.06);
+}
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+  </div>
+</nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">WHOIS API • Live on Signet test network only</div>
+    <h1>Look up normalized WHOIS data in one call.</h1>
+    <p class="sub">Use a funded Signet session to resolve registrar, dates, nameservers, and parsed WHOIS fields for a domain. Built for ownership checks, enrichment, OSINT, and security workflows that need clean JSON instead of raw WHOIS output.</p>
+    <div class="pill-row">
+      <div class="pill">5 sats / call</div>
+      <div class="pill">POST /api/whois</div>
+      <div class="pill">Normalized registrar data</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>What It Does</h2>
+      <p>WHOIS turns the often-messy raw registration record for a domain into a structured JSON response that is easier to consume in scripts, dashboards, and agent workflows.</p>
+      <ul>
+        <li>Returns registrar, status, creation date, updated date, and expiry date when available</li>
+        <li>Includes nameservers and common parsed registration fields</li>
+        <li>Useful for ownership and lifecycle checks</li>
+        <li>Works well as a domain enrichment step before deeper investigation</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Why It Helps</h2>
+      <p>WHOIS output varies heavily by TLD and registrar. This endpoint gives you a normalized view so you can automate common checks without building parser logic around raw command output.</p>
+      <ul>
+        <li>Useful for OSINT and domain research</li>
+        <li>Good fit for security and inventory workflows</li>
+        <li>Pairs naturally with DNS Lookup and Domain Intel</li>
+        <li>Current deployment is <span class="code-inline">Signet only</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-request">Copy curl</button></div>
+    <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/whois \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"domain":"example.com"}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The endpoint is also documented in <a href="/openapi.json">/openapi.json</a> and listed in the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Body</h2>
+      <div class="code-block">{
+  "domain": "example.com"
+}</div>
+      <ul>
+        <li><span class="code-inline">domain</span> is required</li>
+        <li>Use a valid domain name</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "domain": "example.com",
+    "registrar": "Reserved Domains LLC",
+    "creation_date": "1995-08-14T04:00:00Z",
+    "expiry_date": "2026-08-13T04:00:00Z",
+    "updated_date": "2025-08-14T04:00:00Z",
+    "status": [
+      "clientDeleteProhibited",
+      "clientTransferProhibited"
+    ],
+    "name_servers": [
+      "a.iana-servers.net",
+      "b.iana-servers.net"
+    ]
+  },
+  "cost_sats": 5,
+  "response_ms": 94,
+  "endpoint": "/api/whois"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Check registrar and lifecycle data for a domain</li>
+      <li>Enrich domains before triage or threat-intel work</li>
+      <li>Support inventory and ownership validation workflows</li>
+      <li>Give agents a structured ownership primitive instead of raw WHOIS text</li>
+    </ul>
+    <p>For related domain workflows, see <a href="/dns-lookup/">DNS Lookup</a>, <a href="/axfr-check/">AXFR Check</a>, and <a href="/domain-intel/">Domain Intel</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('[data-copy-code]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const targetId = button.getAttribute('data-copy-code');
+    const block = document.getElementById(targetId);
+    if (!block) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(block.textContent.trim());
+      button.textContent = 'Copied';
+    } catch (_err) {
+      button.textContent = 'Copy failed';
+    }
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1600);
+  });
+});
+</script>
+</body>
+</html>

@@ -224,9 +224,9 @@
     <table class="endpoint-table">
       <thead><tr><th>Endpoint</th><th>Cost</th><th>Description</th></tr></thead>
       <tbody>
-        <tr data-category="security"><td class="mono">/api/dns-lookup</td><td class="cost">3 sats</td><td>Full DNS records as structured JSON</td></tr>
-        <tr data-category="osint"><td class="mono">/api/whois</td><td class="cost">5 sats</td><td>WHOIS data parsed into clean JSON</td></tr>
-        <tr data-category="security"><td class="mono">/api/ssl-check</td><td class="cost">5 sats</td><td>SSL certificate analysis</td></tr>
+        <tr data-category="security"><td class="mono"><a href="/dns-lookup/">/api/dns-lookup</a></td><td class="cost">3 sats</td><td>Full DNS records as structured JSON</td></tr>
+        <tr data-category="osint"><td class="mono"><a href="/whois/">/api/whois</a></td><td class="cost">5 sats</td><td>WHOIS data parsed into clean JSON</td></tr>
+        <tr data-category="security"><td class="mono"><a href="/ssl-check/">/api/ssl-check</a></td><td class="cost">5 sats</td><td>SSL certificate analysis</td></tr>
         <tr data-category="security"><td class="mono"><a href="/headers/">/api/headers</a></td><td class="cost">3 sats</td><td>HTTP security headers audit with score</td></tr>
         <tr data-category="utility"><td class="mono">/api/weather</td><td class="cost">3 sats</td><td>Current weather + 7-day forecast</td></tr>
         <tr data-category="osint"><td class="mono"><a href="/ip-lookup/">/api/ip-lookup</a></td><td class="cost">3 sats</td><td>IP geolocation, ISP, ASN, approximate location, and Google Maps link</td></tr>
@@ -276,7 +276,7 @@
 
   <div class="card">
     <h2>Featured Guide</h2>
-    <p>Focused endpoint guides: <a href="/ai-chat/">Anonymous AI Chat API</a>, <a href="/ai-translate/">AI Translate API</a>, <a href="/domain-intel/">Domain Intel API</a>, <a href="/axfr-check/">AXFR Check API</a>, <a href="/email-auth-check/">Email Auth Check API</a>, <a href="/headers/">Headers Audit API</a>, <a href="/cve-search/">CVE Search API</a>, <a href="/hash-crack/">Hash Crack API</a>, and <a href="/url-to-markdown/">URL to Markdown API</a>.</p>
+    <p>Focused endpoint guides: <a href="/ai-chat/">Anonymous AI Chat API</a>, <a href="/ai-translate/">AI Translate API</a>, <a href="/axfr-check/">AXFR Check API</a>, <a href="/cve-search/">CVE Search API</a>, <a href="/dns-lookup/">DNS Lookup API</a>, <a href="/domain-intel/">Domain Intel API</a>, <a href="/email-auth-check/">Email Auth Check API</a>, <a href="/headers/">Headers Audit API</a>, <a href="/hash-crack/">Hash Crack API</a>, <a href="/ssl-check/">SSL Check API</a>, <a href="/url-to-markdown/">URL to Markdown API</a>, and <a href="/whois/">WHOIS API</a>.</p>
   </div>
 
   <div class="card">
@@ -285,7 +285,7 @@
       <li><span class="code-inline">400</span> &mdash; Bad request (invalid or missing input)</li>
       <li><span class="code-inline">401</span> &mdash; Unauthorized (missing or invalid token)</li>
       <li><span class="code-inline">402</span> &mdash; Payment required (insufficient balance)</li>
-      <li><span class="code-inline">405</span> &mdash; Method not allowed (use POST)</li>
+      <li><span class="code-inline">405</span> &mdash; Method not allowed (use the documented method)</li>
       <li><span class="code-inline">429</span> &mdash; Rate limited (60 requests/minute by default, with tighter limits on some endpoints)</li>
       <li><span class="code-inline">500</span> &mdash; Internal error (sats are refunded)</li>
     </ul>
