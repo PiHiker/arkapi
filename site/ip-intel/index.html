@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Intel API | ArkAPI</title>
+<meta name="description" content="Combine IP geolocation, ASN context, Google Maps link, and AbuseIPDB reputation in one ArkAPI call for 6 sats.">
+<meta name="keywords" content="IP intel API, IP reputation API, AbuseIPDB API, IP geolocation API, ASN API, ArkAPI ip-intel">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/ip-intel/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/ip-intel/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="IP Intel API | ArkAPI">
+<meta property="og:description" content="One ArkAPI call for IP geolocation, ASN context, map link, and AbuseIPDB reputation.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="IP Intel API | ArkAPI">
+<meta name="twitter:description" content="Query combined IP context and abuse reputation through ArkAPI.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "IP Intel API",
+  "description": "ArkAPI IP Intel API for combined geolocation and abuse reputation checks, priced per call in sats.",
+  "author": {"@type": "Organization", "name": "ArkAPI"},
+  "publisher": {"@type": "Organization", "name": "ArkAPI", "url": "https://arkapi.dev/"},
+  "mainEntityOfPage": "https://arkapi.dev/ip-intel/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does IP Intel cost?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel costs 6 sats per call."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, a Google Maps link, and AbuseIPDB reputation data in one response."}},
+    {"@type": "Question", "name": "Why not call two endpoints separately?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel is useful when you want both IP context and abuse reputation together without stitching multiple responses in your client or agent."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+.copy-row { display: flex; justify-content: flex-end; margin: -2px 0 12px; }
+.copy-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.copy-btn-inline:hover {
+  border-color: rgba(247,147,26,0.5);
+  color: var(--accent);
+  background: rgba(247,147,26,0.06);
+}
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+  </div>
+</nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">IP Intel API &bull; Live on Signet test network only</div>
+    <h1>Combine IP context and abuse reputation in one call.</h1>
+    <p class="sub">Use a funded Signet session to resolve geolocation, ASN context, approximate location, Google Maps link, and AbuseIPDB reputation for a public IP address in one response.</p>
+    <div class="pill-row">
+      <div class="pill">6 sats / call</div>
+      <div class="pill">POST /api/ip-intel</div>
+      <div class="pill">GeoIP + AbuseIPDB</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>What It Does</h2>
+      <p>IP Intel combines the two complementary signals you usually want together: where an IP appears to be, and whether it has been reported for abuse. That makes it a better primitive for agents and dashboards than running separate lookups and stitching them together later.</p>
+      <ul>
+        <li>Returns country, region, city, coordinates, and ASN context</li>
+        <li>Includes <span class="code-inline">approximate_location</span> and a <span class="code-inline">google_maps_url</span></li>
+        <li>Includes AbuseIPDB score, report counts, and last reported time</li>
+        <li>Good fit for triage, enrichment, and recon workflows</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Why It Helps</h2>
+      <p><a href="/ip-lookup/">IP Lookup</a> gives you location and ASN context. <a href="/ip-abuse-check/">IP Abuse Check</a> gives you reported abuse context. IP Intel is the combined version when you want both without extra client logic.</p>
+      <ul>
+        <li>Useful in incident review and alert enrichment</li>
+        <li>Good for pentest and OSINT workflows</li>
+        <li>Cheaper and simpler than stitching two responses in the client</li>
+        <li>Current deployment is <span class="code-inline">Signet only</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-request">Copy curl</button></div>
+    <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/ip-intel \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"ip":"8.8.8.8","max_age_days":30}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The endpoint is also documented in <a href="/openapi.json">/openapi.json</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>How To Call It</h2>
+    <ul>
+      <li><strong>1.</strong> Open the <a href="/fund/">Fund page</a> and create a Signet session.</li>
+      <li><strong>2.</strong> Copy the bearer token from the session confirmation or <a href="/dashboard/">dashboard</a>.</li>
+      <li><strong>3.</strong> Call <span class="code-inline">POST /api/ip-intel</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Body</h2>
+      <div class="code-block">{
+  "ip": "8.8.8.8",
+  "max_age_days": 30
+}</div>
+      <ul>
+        <li><span class="code-inline">ip</span> is required</li>
+        <li><span class="code-inline">max_age_days</span> is optional and defaults to <span class="code-inline">30</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "ip": "8.8.8.8",
+    "lookup": {
+      "ip": "8.8.8.8",
+      "country": "United States",
+      "country_code": "US",
+      "region": "Virginia",
+      "city": "Ashburn",
+      "approximate_location": "Ashburn, Virginia, United States",
+      "lat": 39.0438,
+      "lon": -77.4874,
+      "google_maps_url": "https://www.google.com/maps?q=39.0438,-77.4874",
+      "isp": "Google LLC",
+      "org": "Google LLC",
+      "as": "AS15169 Google LLC"
+    },
+    "abuse": {
+      "ip": "8.8.8.8",
+      "abuse_confidence_score": 0,
+      "country_code": "US",
+      "usage_type": "Content Delivery Network",
+      "isp": "Google LLC",
+      "domain": "google.com",
+      "total_reports": 25,
+      "num_distinct_users": 19,
+      "is_whitelisted": true,
+      "source": "AbuseIPDB",
+      "max_age_days": 30
+    }
+  },
+  "cost_sats": 6,
+  "balance_remaining": 1494,
+  "response_ms": 132,
+  "endpoint": "/api/ip-intel"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>One-call enrichment for alerting and SIEM workflows</li>
+      <li>Recon triage when you need both context and reputation</li>
+      <li>Analyst or agent pipelines that want fewer moving parts</li>
+      <li>Quick investigation of suspicious infrastructure</li>
+    </ul>
+    <p>For the individual components, see <a href="/ip-lookup/">IP Lookup</a> and <a href="/ip-abuse-check/">IP Abuse Check</a>.</p>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/marketplace/">Marketplace</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('[data-copy-code]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const codeId = button.getAttribute('data-copy-code');
+    const source = document.getElementById(codeId);
+    if (!source) return;
+    const text = source.textContent.trim();
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = 'Copied';
+      setTimeout(() => { button.textContent = original; }, 1600);
+    } catch (_) {
+      button.textContent = 'Failed';
+      setTimeout(() => { button.textContent = original; }, 1600);
+    }
+  });
+});
+</script>
+</body>
+</html>

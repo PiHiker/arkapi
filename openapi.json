@@ -797,6 +797,85 @@
         }
       }
     },
+    "/api/ip-intel": {
+      "post": {
+        "tags": [
+          "osint"
+        ],
+        "summary": "Combined IP geolocation and abuse reputation",
+        "description": "Cost: 6 sats. Combines local GeoIP location, ASN context, Google Maps link, and AbuseIPDB reputation in one response.",
+        "operationId": "ipIntel",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 6,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IPAbuseCheckRequest"
+              },
+              "example": {
+                "ip": "8.8.8.8",
+                "max_age_days": 30
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "ip": "8.8.8.8",
+                    "lookup": {
+                      "ip": "8.8.8.8",
+                      "country": "United States",
+                      "country_code": "US",
+                      "region": "Virginia",
+                      "city": "Ashburn",
+                      "approximate_location": "Ashburn, Virginia, United States",
+                      "lat": 39.0438,
+                      "lon": -77.4874,
+                      "google_maps_url": "https://www.google.com/maps?q=39.0438,-77.4874",
+                      "isp": "Google LLC",
+                      "org": "Google LLC",
+                      "as": "AS15169 Google LLC"
+                    },
+                    "abuse": {
+                      "ip": "8.8.8.8",
+                      "abuse_confidence_score": 0,
+                      "country_code": "US",
+                      "usage_type": "Content Delivery Network",
+                      "isp": "Google LLC",
+                      "domain": "google.com",
+                      "total_reports": 25,
+                      "num_distinct_users": 19,
+                      "is_whitelisted": true,
+                      "source": "AbuseIPDB",
+                      "max_age_days": 30
+                    }
+                  },
+                  "cost_sats": 6,
+                  "balance_remaining": 491,
+                  "response_ms": 130,
+                  "endpoint": "/api/ip-intel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/email-auth-check": {
       "post": {
         "tags": [

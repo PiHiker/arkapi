@@ -112,6 +112,16 @@ curl -X POST https://arkapi.dev/api/ip-abuse-check \
   -d '{"ip":"8.8.8.8","max_age_days":30}'
 ```
 
+### `/api/ip-intel` - 6 sats
+- Natural-language example: `Combine geolocation and AbuseIPDB reputation for 8.8.8.8 in one response.`
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/ip-intel \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"ip":"8.8.8.8","max_age_days":30}'
+```
+
 ### `/api/email-auth-check` - 4 sats
 - Natural-language example: `Check SPF, DKIM, and DMARC posture for proton.me.`
 - Curl:

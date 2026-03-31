@@ -315,6 +315,7 @@ func newEndpointMap() map[string]int64 {
 		"weather":                  0,
 		"ip-lookup":                0,
 		"ip-abuse-check":           0,
+		"ip-intel":                 0,
 		"email-auth-check":         0,
 		"hash-crack":               0,
 		"bitcoin-news":             0,

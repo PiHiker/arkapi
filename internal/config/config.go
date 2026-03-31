@@ -45,6 +45,7 @@ type Config struct {
 	EmailAuthCostSats              int
 	BitcoinNewsCostSats            int
 	IPAbuseCheckCostSats           int
+	IPIntelCostSats                int
 	TranslateCostSats              int
 	AITranslateCostSats            int
 	AXFRCheckCostSats              int
@@ -107,6 +108,7 @@ func Load() Config {
 		EmailAuthCostSats:              getEnvInt("ARKAPI_EMAIL_AUTH_COST_SATS", 4),
 		BitcoinNewsCostSats:            getEnvInt("ARKAPI_BITCOIN_NEWS_COST_SATS", 2),
 		IPAbuseCheckCostSats:           getEnvInt("ARKAPI_IP_ABUSE_CHECK_COST_SATS", 4),
+		IPIntelCostSats:                getEnvInt("ARKAPI_IP_INTEL_COST_SATS", 6),
 		TranslateCostSats:              getEnvInt("ARKAPI_TRANSLATE_COST_SATS", 3),
 		AITranslateCostSats:            getEnvInt("ARKAPI_AI_TRANSLATE_COST_SATS", 25),
 		AXFRCheckCostSats:              getEnvInt("ARKAPI_AXFR_CHECK_COST_SATS", 12),

@@ -134,6 +134,19 @@ else
     echo "$ABUSE" | head -1
 fi
 
+# --- IP Intel ---
+echo -n "IP intel (8.8.8.8)... "
+IPINTEL=$(curl -s -H "$AUTH" -H "Content-Type: application/json" \
+    -d '{"ip":"8.8.8.8","max_age_days":30}' "$BASE/api/ip-intel")
+if echo "$IPINTEL" | grep -q '"success":true'; then
+    SCORE=$(echo "$IPINTEL" | grep -o '"abuse_confidence_score":[0-9]*' | head -1 | cut -d: -f2)
+    CITY=$(echo "$IPINTEL" | grep -o '"city":"[^"]*"' | head -1 | cut -d'"' -f4)
+    echo -e "${GREEN}PASS${NC} — ${CITY}, abuse score: ${SCORE}"
+else
+    echo -e "${YELLOW}WARN${NC} — needs GeoIP + AbuseIPDB configured"
+    echo "$IPINTEL" | head -1
+fi
+
 # --- WHOIS ---
 echo -n "WHOIS (google.com)... "
 WHOIS=$(curl -s -H "$AUTH" -H "Content-Type: application/json" \

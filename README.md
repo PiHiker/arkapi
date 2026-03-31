@@ -72,6 +72,7 @@ ArkAPI publishes machine-readable metadata so AI agents and tooling can discover
 | [`dns-lookup/`](https://arkapi.dev/dns-lookup/) | Dedicated landing page for the DNS Lookup API |
 | [`headers/`](https://arkapi.dev/headers/) | Dedicated landing page for the Headers Audit API |
 | [`ip-abuse-check/`](https://arkapi.dev/ip-abuse-check/) | Dedicated landing page for the IP Abuse Check API |
+| [`ip-intel/`](https://arkapi.dev/ip-intel/) | Dedicated landing page for the IP Intel API |
 | [`ssl-check/`](https://arkapi.dev/ssl-check/) | Dedicated landing page for the SSL Check API |
 | [`whois/`](https://arkapi.dev/whois/) | Dedicated landing page for the WHOIS API |
 | [`cve-search/`](https://arkapi.dev/cve-search/) | Dedicated landing page for the CVE Search API |
@@ -118,6 +119,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/headers` | 3 sats | HTTP security headers audit with score |
 | POST | `/api/image-generate` | 25 sats | AI image generation with short-lived download URL |
 | POST | `/api/ip-abuse-check` | 4 sats | AbuseIPDB reputation lookup with abuse confidence, report counts, and last reported time |
+| POST | `/api/ip-intel` | 6 sats | Combined IP geolocation, ASN context, Google Maps link, and AbuseIPDB reputation |
 | POST | `/api/ip-lookup` | 3 sats | IP geolocation, ISP, ASN, approximate location, and Google Maps link |
 | POST | `/api/qr-generate` | 2 sats | Generate QR code PNG from text or URLs |
 | POST | `/api/screenshot` | 15 sats | Server-side webpage screenshot with download URL |
@@ -325,6 +327,15 @@ curl -H "Authorization: Bearer $TOKEN" \
      https://arkapi.dev/api/ip-abuse-check
 ```
 Public guide: [IP Abuse Check](https://arkapi.dev/ip-abuse-check/)
+
+**IP Intel (6 sats):**
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"ip":"8.8.8.8","max_age_days":30}' \
+     https://arkapi.dev/api/ip-intel
+```
+Public guide: [IP Intel](https://arkapi.dev/ip-intel/)
 </details>
 
 ### Response Format

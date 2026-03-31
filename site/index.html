@@ -2329,6 +2329,18 @@ footer {
         </div>
       </div>
 
+      <div class="api-card">
+        <span class="api-tag tag-osint">OSINT</span>
+        <h3><a href="/ip-intel/">IP Intel</a></h3>
+        <p>Combine IP geolocation, ASN context, approximate location, Google Maps link, and AbuseIPDB reputation in one response. Built for fast triage and recon workflows. <a href="/ip-intel/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/ip-intel</div>
+        <div class="api-payload"><span>Body</span><br>{"ip":"8.8.8.8","max_age_days":30}</div>
+        <div class="api-meta">
+          <span class="api-price">6 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
     </div>
 
     <div class="section-label" style="margin-top:40px;">Visual + AI</div>
@@ -2827,6 +2839,7 @@ const endpointDisplayOrder = [
   'headers',
   'image-generate',
   'ip-abuse-check',
+  'ip-intel',
   'ip-lookup',
   'prediction-market-search',
   'qr-generate',
@@ -2852,6 +2865,7 @@ const endpointLandingPages = {
   'hash-crack': '/hash-crack/',
   'headers': '/headers/',
   'ip-abuse-check': '/ip-abuse-check/',
+  'ip-intel': '/ip-intel/',
   'ip-lookup': '/ip-lookup/',
   'prediction-market-search': '/prediction-market-search/',
   'ssl-check': '/ssl-check/',
