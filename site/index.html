@@ -2220,8 +2220,8 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
-        <h3>Headers Audit</h3>
-        <p>HTTP security headers audit for any URL. Checks CSP, CORS, HSTS, cookie flags, server version leaks, and scores overall hardening.</p>
+        <h3><a href="/headers/">Headers Audit</a></h3>
+        <p>HTTP security headers audit for any URL. Checks CSP, CORS, HSTS, cookie flags, server version leaks, and scores overall hardening. <a href="/headers/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/headers</div>
         <div class="api-payload"><span>Body</span><br>{"url":"https://example.com"}</div>
         <div class="api-meta">
@@ -2268,8 +2268,8 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-security">SECURITY</span>
-        <h3>CVE Search</h3>
-        <p>Search the official NVD feed by keyword and return matched CVEs with severity, dates, KEV signal, and direct detail URLs.</p>
+        <h3><a href="/cve-search/">CVE Search</a></h3>
+        <p>Search the official NVD feed by keyword and return matched CVEs with severity, dates, KEV signal, and direct detail URLs. <a href="/cve-search/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/cve-search</div>
         <div class="api-payload"><span>Body</span><br>{"query":"wordpress information disclosure","limit":10}</div>
         <div class="api-meta">
@@ -2831,10 +2831,12 @@ const endpointLandingPages = {
   'axfr-check': '/axfr-check/',
   'bitcoin-news': '/bitcoin-news/',
   'btc-price': '/btc-price/',
+  'cve-search': '/cve-search/',
   'cve-lookup': '/cve-lookup/',
   'domain-intel': '/domain-intel/',
   'email-auth-check': '/email-auth-check/',
   'hash-crack': '/hash-crack/',
+  'headers': '/headers/',
   'ip-lookup': '/ip-lookup/',
   'prediction-market-search': '/prediction-market-search/',
   'translate': '/translate/',

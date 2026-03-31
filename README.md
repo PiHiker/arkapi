@@ -69,6 +69,8 @@ ArkAPI publishes machine-readable metadata so AI agents and tooling can discover
 | [`llms-full.txt`](https://arkapi.dev/llms-full.txt) | Extended LLM reference |
 | [`sitemap.xml`](https://arkapi.dev/sitemap.xml) | XML sitemap for crawlers |
 | [`bitcoin-news/`](https://arkapi.dev/bitcoin-news/) | Dedicated landing page for the Bitcoin News API |
+| [`headers/`](https://arkapi.dev/headers/) | Dedicated landing page for the Headers Audit API |
+| [`cve-search/`](https://arkapi.dev/cve-search/) | Dedicated landing page for the CVE Search API |
 
 The OpenAPI spec includes bearer-token auth (`Authorization: Bearer ak_xxx`), request/response schemas, and explicit per-endpoint pricing in satoshis.
 

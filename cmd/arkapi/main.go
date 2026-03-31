@@ -225,6 +225,11 @@ func main() {
 	mux.Handle("/api/domain-check", wrapAuth(h.DomainCheck))
 	mux.Handle("/api/url-to-markdown", wrapAuth(h.URLToMarkdown))
 	mux.Handle("/api/btc-price", wrapAuth(h.BTCPrice))
+	mux.Handle("/api/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(w, `{"success":false,"error":"not found"}`)
+	}))
 	mux.HandleFunc("/v1/downloads/", h.DownloadImage)
 
 	// ---- Add CORS headers for browser/agent access ----
