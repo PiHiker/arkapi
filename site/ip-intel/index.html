@@ -44,7 +44,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     {"@type": "Question", "name": "How much does IP Intel cost?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel costs 6 sats per call."}},
-    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, a Google Maps link, and AbuseIPDB reputation data in one response."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, reverse DNS, normalized network type, a Google Maps link, deterministic risk labeling, and AbuseIPDB reputation data in one response."}},
     {"@type": "Question", "name": "Why not call two endpoints separately?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel is useful when you want both IP context and abuse reputation together without stitching multiple responses in your client or agent."}}
   ]
 }
@@ -122,11 +122,12 @@
   <div class="grid-2">
     <div class="card">
       <h2>What It Does</h2>
-      <p>IP Intel combines the two complementary signals you usually want together: where an IP appears to be, and whether it has been reported for abuse. That makes it a better primitive for agents and dashboards than running separate lookups and stitching them together later.</p>
+      <p>IP Intel combines the two complementary signals you usually want together: where an IP appears to be, and whether it has been reported for abuse. It also adds deterministic enrichment that is useful in practice, including reverse DNS, normalized network type, an ASN number, and a simple risk label.</p>
       <ul>
         <li>Returns country, region, city, coordinates, and ASN context</li>
+        <li>Adds reverse DNS, <span class="code-inline">network_type</span>, and <span class="code-inline">asn_number</span></li>
         <li>Includes <span class="code-inline">approximate_location</span> and a <span class="code-inline">google_maps_url</span></li>
-        <li>Includes AbuseIPDB score, report counts, and last reported time</li>
+        <li>Includes AbuseIPDB score, report counts, last reported time, and a deterministic risk verdict</li>
         <li>Good fit for triage, enrichment, and recon workflows</li>
       </ul>
     </div>
@@ -181,6 +182,14 @@
   "success": true,
   "data": {
     "ip": "8.8.8.8",
+    "reverse_dns": [
+      "dns.google"
+    ],
+    "asn_number": 15169,
+    "network_type": "cdn",
+    "reported_recently": true,
+    "risk_label": "low",
+    "risk_reason": "No meaningful abuse history in the selected window",
     "lookup": {
       "ip": "8.8.8.8",
       "country": "United States",
@@ -223,7 +232,7 @@
       <li>One-call enrichment for alerting and SIEM workflows</li>
       <li>Recon triage when you need both context and reputation</li>
       <li>Analyst or agent pipelines that want fewer moving parts</li>
-      <li>Quick investigation of suspicious infrastructure</li>
+      <li>Quick investigation of suspicious infrastructure with a simple deterministic verdict</li>
     </ul>
     <p>For the individual components, see <a href="/ip-lookup/">IP Lookup</a> and <a href="/ip-abuse-check/">IP Abuse Check</a>. Those pages are useful when you only need one side of the data.</p>
   </div>
