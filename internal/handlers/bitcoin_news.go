@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -89,18 +90,30 @@ var bitcoinNewsCache struct {
 const bitcoinNewsSentimentSystemPrompt = "You label Bitcoin news items from a Bitcoin market/ecosystem perspective. Return strict JSON only: an array of objects with fields index and sentiment. sentiment must be one of positive, negative, neutral. Positive means clearly constructive for Bitcoin price, adoption, institutional access, mining economics, regulation, or ecosystem growth. Negative means clearly harmful, fearful, risk-off, hostile regulation, hacks, liquidations, war risk, tariff shock, or market stress. Neutral means mixed, unclear, descriptive, product-only, or not directly directional. Do not include explanations or markdown."
 
 func (h *Handler) BitcoinNews(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		sendJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "use POST"})
+	if r.Method != http.MethodGet && r.Method != http.MethodPost {
+		sendJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "use GET or POST"})
 		return
 	}
 
-	var req BitcoinNewsRequest
-	body, _ := io.ReadAll(io.LimitReader(r.Body, 1<<20))
-	_ = r.Body.Close()
-	if strings.TrimSpace(string(body)) != "" {
-		if err := json.Unmarshal(body, &req); err != nil {
-			sendJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON — send {} or {\"limit\": 10}"})
-			return
+	req := BitcoinNewsRequest{Limit: bitcoinNewsDefaultLimit}
+
+	if r.Method == http.MethodGet {
+		if rawLimit := strings.TrimSpace(r.URL.Query().Get("limit")); rawLimit != "" {
+			limit, err := strconv.Atoi(rawLimit)
+			if err != nil {
+				sendJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid limit — use ?limit=5"})
+				return
+			}
+			req.Limit = limit
+		}
+	} else {
+		body, _ := io.ReadAll(io.LimitReader(r.Body, 1<<20))
+		_ = r.Body.Close()
+		if strings.TrimSpace(string(body)) != "" {
+			if err := json.Unmarshal(body, &req); err != nil {
+				sendJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON — send {} or {\"limit\": 10}"})
+				return
+			}
 		}
 	}
 

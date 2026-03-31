@@ -150,10 +150,8 @@ curl -X POST https://arkapi.dev/api/hash-crack \
 - Natural-language example: `Get the latest 5 Bitcoin headlines.`
 - Curl:
 ```bash
-curl -X POST https://arkapi.dev/api/bitcoin-news \
-  -H "Authorization: Bearer ak_your_token" \
-  -H "Content-Type: application/json" \
-  -d '{"limit":5}'
+curl -H "Authorization: Bearer ak_your_token" \
+  "https://arkapi.dev/api/bitcoin-news?limit=5"
 ```
 
 ### `/api/ai-chat` - 100 sats

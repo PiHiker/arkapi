@@ -120,7 +120,7 @@ func main() {
     {"path": "/api/weather",     "method": "POST", "cost_sats": 3,  "description": "Current weather + 7-day forecast"},
     {"path": "/api/ip-lookup",   "method": "POST", "cost_sats": 3,  "description": "IP geolocation, ISP, ASN, approximate location, and Google Maps link"},
     {"path": "/api/email-auth-check", "method": "POST", "cost_sats": %d, "description": "SPF, DKIM, and DMARC posture with A-F grade"},
-    {"path": "/api/bitcoin-news", "method": "POST", "cost_sats": %d, "description": "Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment"},
+    {"path": "/api/bitcoin-news", "method": "GET", "cost_sats": %d, "description": "Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment"},
     {"path": "/api/ai-chat", "method": "POST", "cost_sats": %d, "description": "Anonymous AI chat with a 5-per-day token limit"},
     {"path": "/api/ai-translate", "method": "POST", "cost_sats": %d, "description": "Higher-quality AI translation with style control for more natural output"},
     {"path": "/api/translate", "method": "POST", "cost_sats": %d, "description": "Translate text with source-language auto-detection and target language selection"},
@@ -243,7 +243,7 @@ func main() {
 	log.Printf("  POST /api/weather     — 3 sats")
 	log.Printf("  POST /api/ip-lookup   — 3 sats")
 	log.Printf("  POST /api/email-auth-check — %d sats", cfg.EmailAuthCostSats)
-	log.Printf("  POST /api/bitcoin-news — %d sats", cfg.BitcoinNewsCostSats)
+	log.Printf("  GET  /api/bitcoin-news — %d sats", cfg.BitcoinNewsCostSats)
 	log.Printf("  POST /api/ai-chat — %d sats (5/day/token)", cfg.CloudflareAICostSats)
 	log.Printf("  POST /api/ai-translate — %d sats", cfg.AITranslateCostSats)
 	log.Printf("  POST /api/translate — %d sats", cfg.TranslateCostSats)

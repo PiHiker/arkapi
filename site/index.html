@@ -791,6 +791,40 @@ h1 .accent { color: var(--accent); }
   overflow-x: auto;
 }
 
+.api-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.api-action-btn,
+.api-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-decoration: none;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.api-action-btn {
+  cursor: pointer;
+}
+
+.api-action-btn:hover,
+.api-action-link:hover {
+  border-color: rgba(247, 147, 26, 0.5);
+  color: var(--accent);
+  background: rgba(247, 147, 26, 0.06);
+}
+
 .api-auth-note {
   font-family: var(--mono);
   font-size: 12px;
@@ -2418,10 +2452,10 @@ footer {
         <h3><a href="/bitcoin-news/">Bitcoin News</a></h3>
         <p>Multi-source Bitcoin headlines with cross-feed dedupe, summary, source metadata, and AI-assisted per-item sentiment. <a href="/bitcoin-news/">Learn more</a>.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/bitcoin-news</div>
-        <div class="api-payload"><span>Body</span><br>{"limit":10}</div>
+        <div class="api-payload"><span>Query</span><br>?limit=10</div>
         <div class="api-meta">
           <span class="api-price">2 sats <span>/ call</span></span>
-          <span class="api-method">POST</span>
+          <span class="api-method">GET</span>
         </div>
       </div>
 
@@ -2795,11 +2829,13 @@ const endpointLandingPages = {
   'ai-chat': '/ai-chat/',
   'ai-translate': '/ai-translate/',
   'axfr-check': '/axfr-check/',
+  'bitcoin-news': '/bitcoin-news/',
   'btc-price': '/btc-price/',
   'cve-lookup': '/cve-lookup/',
   'domain-intel': '/domain-intel/',
   'email-auth-check': '/email-auth-check/',
   'hash-crack': '/hash-crack/',
+  'ip-lookup': '/ip-lookup/',
   'prediction-market-search': '/prediction-market-search/',
   'translate': '/translate/',
   'url-to-markdown': '/url-to-markdown/'
@@ -2819,6 +2855,75 @@ function renderEndpointName(name) {
   const href = endpointLandingPages[name];
   if (!href) return safeName;
   return `<a href="${href}" style="color:inherit;text-decoration:none;">${safeName}</a>`;
+}
+
+function buildCurlFromCard(card) {
+  const endpoint = (card.querySelector('.api-endpoint')?.textContent || '').replace(/^Endpoint\s*/i, '').trim();
+  const method = (card.querySelector('.api-method')?.textContent || '').trim().toUpperCase();
+  const payloadLabel = (card.querySelector('.api-payload span')?.textContent || '').trim().toLowerCase();
+  const payload = (card.querySelector('.api-payload')?.textContent || '')
+    .replace(/^(Body|Query)\s*/i, '')
+    .trim();
+
+  if (!endpoint) return '';
+
+  if (method === 'GET') {
+    const suffix = payloadLabel === 'query' && payload && payload !== 'none required' ? payload : '';
+    return `curl -H "Authorization: Bearer ak_your_token" "https://arkapi.dev${endpoint}${suffix}"`;
+  }
+
+  if (!payload || payload === 'none required') {
+    return `curl -X POST https://arkapi.dev${endpoint} -H "Authorization: Bearer ak_your_token"`;
+  }
+
+  return `curl -X POST https://arkapi.dev${endpoint} -H "Authorization: Bearer ak_your_token" -H "Content-Type: application/json" -d '${payload}'`;
+}
+
+async function copyApiCurl(button, command) {
+  if (!command) return;
+  const original = button.textContent;
+  try {
+    await navigator.clipboard.writeText(command);
+    button.textContent = 'Copied';
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1600);
+  } catch (_err) {
+    button.textContent = 'Copy failed';
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1600);
+  }
+}
+
+function enhanceApiCards() {
+  apiCards.forEach((card) => {
+    const heading = card.querySelector('h3');
+    if (heading && !heading.querySelector('a')) {
+      const rawName = heading.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+      const href = endpointLandingPages[rawName] || '/docs/';
+      heading.innerHTML = `<a href="${href}">${escapeHTML(heading.textContent.trim())}</a>`;
+    }
+
+    if (card.querySelector('.api-actions')) return;
+
+    const copyButton = document.createElement('button');
+    copyButton.type = 'button';
+    copyButton.className = 'api-action-btn';
+    copyButton.textContent = 'Copy curl';
+    copyButton.addEventListener('click', () => copyApiCurl(copyButton, buildCurlFromCard(card)));
+
+    const actionLink = document.createElement('a');
+    actionLink.className = 'api-action-link';
+    const titleHref = heading?.querySelector('a')?.getAttribute('href') || '/docs/';
+    actionLink.href = titleHref;
+    actionLink.textContent = titleHref === '/docs/' ? 'Docs' : 'Learn more';
+
+    const actions = document.createElement('div');
+    actions.className = 'api-actions';
+    actions.append(copyButton, actionLink);
+    card.append(actions);
+  });
 }
 
 function updateActivityFeed() {
@@ -2921,6 +3026,7 @@ function updateApiSearch() {
 }
 
 if (apiSearchInput) {
+  enhanceApiCards();
   apiSearchInput.addEventListener('input', updateApiSearch);
   apiFilterButtons.forEach((button) => {
     button.addEventListener('click', () => {

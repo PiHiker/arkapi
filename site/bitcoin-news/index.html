@@ -107,7 +107,7 @@
     <p class="sub">Query recent Bitcoin headlines from multiple publishers in one call. ArkAPI merges the feeds, removes cross-feed duplicates, attaches summaries and source metadata, and labels each item with AI-assisted sentiment.</p>
     <div class="pill-row">
       <div class="pill">2 sats / call</div>
-      <div class="pill">POST /api/bitcoin-news</div>
+      <div class="pill">GET /api/bitcoin-news</div>
       <div class="pill">Cached for 1 hour</div>
     </div>
   </section>
@@ -139,7 +139,7 @@
     <ul>
       <li><strong>1.</strong> Open the <a href="/fund/">Fund page</a> and create a Signet session.</li>
       <li><strong>2.</strong> Copy the bearer token from the session confirmation or <a href="/dashboard/">dashboard</a>.</li>
-      <li><strong>3.</strong> Call <span class="code-inline">POST /api/bitcoin-news</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
+      <li><strong>3.</strong> Call <span class="code-inline">GET /api/bitcoin-news</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
     </ul>
     <p style="margin-top:12px;">If you hit the endpoint directly without a funded token, ArkAPI will reject the request even if the landing page itself is public.</p>
   </div>
@@ -147,10 +147,8 @@
   <div class="grid-2">
     <div class="card">
       <h2>Example Request</h2>
-      <div class="code-block">curl -X POST https://arkapi.dev/api/bitcoin-news \
-  -H "Authorization: Bearer ak_your_token" \
-  -H "Content-Type: application/json" \
-  -d '{"limit":5}' | jq</div>
+      <div class="code-block">curl -H "Authorization: Bearer ak_your_token" \
+  "https://arkapi.dev/api/bitcoin-news?limit=5" | jq</div>
       <p>Use a funded token from the <a href="/fund/">Fund page</a>. This endpoint is cached for one hour, so repeated calls are usually very fast.</p>
     </div>
 
@@ -179,10 +177,8 @@
   </div>
 
   <div class="card">
-    <h2>Supported Request Body</h2>
-    <div class="code-block">{
-  "limit": 5
-}</div>
+    <h2>Supported Query Parameters</h2>
+    <div class="code-block">?limit=5</div>
     <ul>
       <li><span class="code-inline">limit</span> is optional</li>
       <li>Default is <span class="code-inline">10</span></li>
