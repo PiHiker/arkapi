@@ -122,6 +122,18 @@ else
     echo "$IP" | head -1
 fi
 
+# --- IP Abuse Check ---
+echo -n "IP abuse check (8.8.8.8)... "
+ABUSE=$(curl -s -H "$AUTH" -H "Content-Type: application/json" \
+    -d '{"ip":"8.8.8.8","max_age_days":30}' "$BASE/api/ip-abuse-check")
+if echo "$ABUSE" | grep -q '"success":true'; then
+    SCORE=$(echo "$ABUSE" | grep -o '"abuse_confidence_score":[0-9]*' | cut -d: -f2)
+    echo -e "${GREEN}PASS${NC} — abuse score: ${SCORE}"
+else
+    echo -e "${YELLOW}WARN${NC} — needs AbuseIPDB API key and outbound HTTPS"
+    echo "$ABUSE" | head -1
+fi
+
 # --- WHOIS ---
 echo -n "WHOIS (google.com)... "
 WHOIS=$(curl -s -H "$AUTH" -H "Content-Type: application/json" \

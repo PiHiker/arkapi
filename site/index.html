@@ -2317,6 +2317,18 @@ footer {
         </div>
       </div>
 
+      <div class="api-card">
+        <span class="api-tag tag-osint">OSINT</span>
+        <h3><a href="/ip-abuse-check/">IP Abuse Check</a></h3>
+        <p>Query AbuseIPDB for abuse confidence, report counts, usage type, and last reported time for a public IP. Good for triage, enrichment, and recon workflows. <a href="/ip-abuse-check/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/ip-abuse-check</div>
+        <div class="api-payload"><span>Body</span><br>{"ip":"8.8.8.8","max_age_days":30}</div>
+        <div class="api-meta">
+          <span class="api-price">4 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
     </div>
 
     <div class="section-label" style="margin-top:40px;">Visual + AI</div>
@@ -2814,6 +2826,7 @@ const endpointDisplayOrder = [
   'hash-crack',
   'headers',
   'image-generate',
+  'ip-abuse-check',
   'ip-lookup',
   'prediction-market-search',
   'qr-generate',
@@ -2838,6 +2851,7 @@ const endpointLandingPages = {
   'email-auth-check': '/email-auth-check/',
   'hash-crack': '/hash-crack/',
   'headers': '/headers/',
+  'ip-abuse-check': '/ip-abuse-check/',
   'ip-lookup': '/ip-lookup/',
   'prediction-market-search': '/prediction-market-search/',
   'ssl-check': '/ssl-check/',

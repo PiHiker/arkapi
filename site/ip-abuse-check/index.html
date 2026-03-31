@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Abuse Check API | ArkAPI</title>
+<meta name="description" content="Query AbuseIPDB reputation for a public IP through ArkAPI. Returns abuse confidence, report counts, usage type, ISP, and last reported time for 4 sats per call.">
+<meta name="keywords" content="AbuseIPDB API, IP abuse API, IP reputation API, abuse confidence API, ArkAPI ip-abuse-check">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/ip-abuse-check/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/ip-abuse-check/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="IP Abuse Check API | ArkAPI">
+<meta property="og:description" content="Check AbuseIPDB reputation for a public IP in one ArkAPI call for 4 sats.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="IP Abuse Check API | ArkAPI">
+<meta name="twitter:description" content="Use ArkAPI to query AbuseIPDB reputation, abuse confidence, and report history for a public IP.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "IP Abuse Check API",
+  "description": "ArkAPI IP Abuse Check API for AbuseIPDB reputation lookups, priced per call in sats.",
+  "author": {"@type": "Organization", "name": "ArkAPI"},
+  "publisher": {"@type": "Organization", "name": "ArkAPI", "url": "https://arkapi.dev/"},
+  "mainEntityOfPage": "https://arkapi.dev/ip-abuse-check/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How much does IP Abuse Check cost?", "acceptedAnswer": {"@type": "Answer", "text": "IP Abuse Check costs 4 sats per call."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns abuse confidence score, report counts, usage type, ISP, domain, and last reported time for the requested public IP using AbuseIPDB data."}},
+    {"@type": "Question", "name": "Does it support max age filtering?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. You can pass max_age_days to control the AbuseIPDB report window used for the lookup."}}
+  ]
+}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+.copy-row { display: flex; justify-content: flex-end; margin: -2px 0 12px; }
+.copy-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.copy-btn-inline:hover {
+  border-color: rgba(247,147,26,0.5);
+  color: var(--accent);
+  background: rgba(247,147,26,0.06);
+}
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+  </div>
+</nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">IP Abuse Check API &bull; Live on Signet test network only</div>
+    <h1>Check AbuseIPDB reputation for a public IP in one call.</h1>
+    <p class="sub">Use a funded Signet session to query abuse confidence, report counts, usage type, ISP, domain, and last reported time for a public IP address. Built for triage, enrichment, recon, and alert context.</p>
+    <div class="pill-row">
+      <div class="pill">4 sats / call</div>
+      <div class="pill">POST /api/ip-abuse-check</div>
+      <div class="pill">AbuseIPDB-backed</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>What It Does</h2>
+      <p>IP Abuse Check wraps AbuseIPDB into a small, agent-friendly response. Instead of raw provider JSON, you get the fields that matter most for triage and enrichment in a consistent ArkAPI response wrapper.</p>
+      <ul>
+        <li>Returns <span class="code-inline">abuse_confidence_score</span> and report counts</li>
+        <li>Includes usage type, ISP, and domain context when available</li>
+        <li>Returns the most recent report timestamp when AbuseIPDB has one</li>
+        <li>Supports an optional <span class="code-inline">max_age_days</span> filter</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Why It Helps</h2>
+      <p>GeoIP tells you where an IP might be. AbuseIPDB tells you whether the address has already been reported for bad behavior. That makes this endpoint a good companion to <a href="/ip-lookup/">IP Lookup</a> when you need both context and reputation.</p>
+      <ul>
+        <li>Useful for alert triage and log enrichment</li>
+        <li>Good fit for recon pipelines and pentest prep</li>
+        <li>Helps agents prioritize suspicious IPs quickly</li>
+        <li>Current deployment is <span class="code-inline">Signet only</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-request">Copy curl</button></div>
+    <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/ip-abuse-check \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"ip":"8.8.8.8","max_age_days":30}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The endpoint is also described in <a href="/openapi.json">/openapi.json</a> for service wrappers and agent tooling.</p>
+  </div>
+
+  <div class="card">
+    <h2>How To Call It</h2>
+    <ul>
+      <li><strong>1.</strong> Open the <a href="/fund/">Fund page</a> and create a Signet session.</li>
+      <li><strong>2.</strong> Copy the bearer token from the session confirmation or <a href="/dashboard/">dashboard</a>.</li>
+      <li><strong>3.</strong> Call <span class="code-inline">POST /api/ip-abuse-check</span> with that token in the <span class="code-inline">Authorization</span> header.</li>
+    </ul>
+    <p style="margin-top:12px;">The landing page is public, but the reputation lookup itself still requires a funded session token and a valid JSON body.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Body</h2>
+      <div class="code-block">{
+  "ip": "8.8.8.8",
+  "max_age_days": 30
+}</div>
+      <ul>
+        <li><span class="code-inline">ip</span> is required</li>
+        <li><span class="code-inline">max_age_days</span> is optional and defaults to <span class="code-inline">30</span></li>
+        <li>Use a public IPv4 or IPv6 address</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Example Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "ip": "8.8.8.8",
+    "abuse_confidence_score": 0,
+    "country_code": "US",
+    "usage_type": "Content Delivery Network",
+    "isp": "Google LLC",
+    "domain": "google.com",
+    "total_reports": 0,
+    "num_distinct_users": 0,
+    "is_whitelisted": true,
+    "source": "AbuseIPDB",
+    "max_age_days": 30
+  },
+  "cost_sats": 4,
+  "balance_remaining": 1496,
+  "response_ms": 124,
+  "endpoint": "/api/ip-abuse-check"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Adding reputation context to alerts and incident triage</li>
+      <li>Checking whether a target IP is already heavily reported</li>
+      <li>Enriching recon outputs with public abuse history</li>
+      <li>Prioritizing IPs for deeper review in agent workflows</li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/marketplace/">Marketplace</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('[data-copy-code]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const codeId = button.getAttribute('data-copy-code');
+    const source = document.getElementById(codeId);
+    if (!source) return;
+    const text = source.textContent.trim();
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      button.textContent = 'Copied';
+      setTimeout(() => { button.textContent = original; }, 1600);
+    } catch (_) {
+      button.textContent = 'Failed';
+      setTimeout(() => { button.textContent = original; }, 1600);
+    }
+  });
+});
+</script>
+</body>
+</html>

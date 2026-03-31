@@ -44,6 +44,7 @@ type Config struct {
 	PredictionMarketSearchCostSats int
 	EmailAuthCostSats              int
 	BitcoinNewsCostSats            int
+	IPAbuseCheckCostSats           int
 	TranslateCostSats              int
 	AITranslateCostSats            int
 	AXFRCheckCostSats              int
@@ -62,6 +63,7 @@ type Config struct {
 	CloudflareAITimeoutSeconds     int
 	PublicBaseURL                  string
 	ImageDownloadTTLSeconds        int
+	AbuseIPDBAPIKey                string
 
 	DomainIntelCostSats int
 	DomainCheckCostSats int
@@ -104,6 +106,7 @@ func Load() Config {
 		PredictionMarketSearchCostSats: getEnvInt("ARKAPI_PREDICTION_MARKET_SEARCH_COST_SATS", 4),
 		EmailAuthCostSats:              getEnvInt("ARKAPI_EMAIL_AUTH_COST_SATS", 4),
 		BitcoinNewsCostSats:            getEnvInt("ARKAPI_BITCOIN_NEWS_COST_SATS", 2),
+		IPAbuseCheckCostSats:           getEnvInt("ARKAPI_IP_ABUSE_CHECK_COST_SATS", 4),
 		TranslateCostSats:              getEnvInt("ARKAPI_TRANSLATE_COST_SATS", 3),
 		AITranslateCostSats:            getEnvInt("ARKAPI_AI_TRANSLATE_COST_SATS", 25),
 		AXFRCheckCostSats:              getEnvInt("ARKAPI_AXFR_CHECK_COST_SATS", 12),
@@ -123,6 +126,7 @@ func Load() Config {
 		CloudflareAITimeoutSeconds:     getEnvInt("ARKAPI_CLOUDFLARE_AI_TIMEOUT_SECONDS", 45),
 		PublicBaseURL:                  getEnv("ARKAPI_PUBLIC_BASE_URL", "https://arkapi.dev"),
 		ImageDownloadTTLSeconds:        getEnvInt("ARKAPI_IMAGE_DOWNLOAD_TTL_SECONDS", 600),
+		AbuseIPDBAPIKey:                getEnv("ARKAPI_ABUSEIPDB_API_KEY", ""),
 		DomainIntelCostSats:            getEnvInt("ARKAPI_DOMAIN_INTEL_COST_SATS", 25),
 		GeoLite2CityPath:               getEnv("ARKAPI_GEOLITE2_CITY_PATH", "/geoip/GeoLite2-City.mmdb"),
 		GeoLite2ASNPath:                getEnv("ARKAPI_GEOLITE2_ASN_PATH", "/geoip/GeoLite2-ASN.mmdb"),

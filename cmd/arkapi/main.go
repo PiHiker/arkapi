@@ -119,6 +119,7 @@ func main() {
     {"path": "/api/headers",     "method": "POST", "cost_sats": 3,  "description": "HTTP security headers audit with score"},
     {"path": "/api/weather",     "method": "POST", "cost_sats": 3,  "description": "Current weather + 7-day forecast"},
     {"path": "/api/ip-lookup",   "method": "POST", "cost_sats": 3,  "description": "IP geolocation, ISP, ASN, approximate location, and Google Maps link"},
+    {"path": "/api/ip-abuse-check", "method": "POST", "cost_sats": %d, "description": "AbuseIPDB reputation lookup with abuse confidence, total reports, and last reported time"},
     {"path": "/api/email-auth-check", "method": "POST", "cost_sats": %d, "description": "SPF, DKIM, and DMARC posture with A-F grade"},
     {"path": "/api/bitcoin-news", "method": "GET", "cost_sats": %d, "description": "Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment"},
     {"path": "/api/ai-chat", "method": "POST", "cost_sats": %d, "description": "Anonymous AI chat with a 5-per-day token limit"},
@@ -143,7 +144,7 @@ func main() {
     "balance": "GET /v1/balance (requires auth)"
   },
   "auth": "Authorization: Bearer ak_your_token"
-}`, cfg.EmailAuthCostSats, cfg.BitcoinNewsCostSats, cfg.CloudflareAICostSats, cfg.AITranslateCostSats, cfg.TranslateCostSats, cfg.AXFRCheckCostSats, cfg.ComfyImageCostSats, cfg.ScreenshotCostSats, cfg.QRGenerateCostSats, cfg.BitcoinAddressCostSats, cfg.CVESearchCostSats, cfg.PredictionMarketSearchCostSats, cfg.CVELookupCostSats, cfg.DomainIntelCostSats, cfg.HashCrackCostSats, cfg.DomainCheckCostSats)
+}`, cfg.IPAbuseCheckCostSats, cfg.EmailAuthCostSats, cfg.BitcoinNewsCostSats, cfg.CloudflareAICostSats, cfg.AITranslateCostSats, cfg.TranslateCostSats, cfg.AXFRCheckCostSats, cfg.ComfyImageCostSats, cfg.ScreenshotCostSats, cfg.QRGenerateCostSats, cfg.BitcoinAddressCostSats, cfg.CVESearchCostSats, cfg.PredictionMarketSearchCostSats, cfg.CVELookupCostSats, cfg.DomainIntelCostSats, cfg.HashCrackCostSats, cfg.DomainCheckCostSats)
 	})
 
 	// --- Protected routes (auth required) ---
@@ -207,6 +208,7 @@ func main() {
 	mux.Handle("/api/headers", wrapAuth(h.Headers))
 	mux.Handle("/api/weather", wrapAuth(h.Weather))
 	mux.Handle("/api/ip-lookup", wrapAuth(h.IPLookup))
+	mux.Handle("/api/ip-abuse-check", wrapAuth(h.IPAbuseCheck))
 	mux.Handle("/api/email-auth-check", wrapAuth(h.EmailAuthCheck))
 	mux.Handle("/api/bitcoin-news", wrapAuth(h.BitcoinNews))
 	mux.Handle("/api/ai-chat", wrapDaily(5, h.AIChat))
@@ -247,6 +249,7 @@ func main() {
 	log.Printf("  POST /api/headers     — 3 sats")
 	log.Printf("  POST /api/weather     — 3 sats")
 	log.Printf("  POST /api/ip-lookup   — 3 sats")
+	log.Printf("  POST /api/ip-abuse-check — %d sats", cfg.IPAbuseCheckCostSats)
 	log.Printf("  POST /api/email-auth-check — %d sats", cfg.EmailAuthCostSats)
 	log.Printf("  GET  /api/bitcoin-news — %d sats", cfg.BitcoinNewsCostSats)
 	log.Printf("  POST /api/ai-chat — %d sats (5/day/token)", cfg.CloudflareAICostSats)

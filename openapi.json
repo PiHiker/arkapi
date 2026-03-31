@@ -735,6 +735,68 @@
         }
       }
     },
+    "/api/ip-abuse-check": {
+      "post": {
+        "tags": [
+          "osint"
+        ],
+        "summary": "IP abuse reputation lookup",
+        "description": "Cost: 4 sats. Queries AbuseIPDB for abuse confidence, report counts, usage type, ISP, and last reported time for a public IP address.",
+        "operationId": "ipAbuseCheck",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 4,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IPAbuseCheckRequest"
+              },
+              "example": {
+                "ip": "8.8.8.8",
+                "max_age_days": 30
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful paid response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "ip": "8.8.8.8",
+                    "abuse_confidence_score": 0,
+                    "country_code": "US",
+                    "usage_type": "Content Delivery Network",
+                    "isp": "Google LLC",
+                    "domain": "google.com",
+                    "total_reports": 0,
+                    "num_distinct_users": 0,
+                    "is_whitelisted": true,
+                    "source": "AbuseIPDB",
+                    "max_age_days": 30
+                  },
+                  "cost_sats": 4,
+                  "balance_remaining": 493,
+                  "response_ms": 120,
+                  "endpoint": "/api/ip-abuse-check"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/email-auth-check": {
       "post": {
         "tags": [
@@ -2198,6 +2260,24 @@
           "ip": {
             "type": "string",
             "example": "8.8.8.8"
+          }
+        },
+        "required": [
+          "ip"
+        ]
+      },
+      "IPAbuseCheckRequest": {
+        "type": "object",
+        "properties": {
+          "ip": {
+            "type": "string",
+            "example": "8.8.8.8"
+          },
+          "max_age_days": {
+            "type": "integer",
+            "example": 30,
+            "minimum": 1,
+            "maximum": 365
           }
         },
         "required": [
