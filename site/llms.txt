@@ -20,7 +20,7 @@
 - `POST /api/ssl-check`
 - `POST /api/headers`
 - `POST /api/ip-abuse-check` returning AbuseIPDB abuse confidence, report counts, and last reported time for a public IP
-- `POST /api/ip-intel` returning combined IP geolocation, ASN context, RDAP abuse contact, Google Maps link, and AbuseIPDB reputation
+- `POST /api/ip-intel` returning combined IP geolocation, ASN context, abuse-desk RDAP contact data when published, a Google Maps link, and AbuseIPDB reputation
 - `POST /api/ip-lookup` returning geolocation, approximate location, ISP/ASN data, and a Google Maps link
 - `GET /api/remote-job-search` returning cached remote job results from Remotive filtered by `search`, `category`, or `company_name`
 - `POST /api/email-auth-check`

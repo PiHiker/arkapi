@@ -761,6 +761,9 @@ func normalizeDomainHosts(hosts []string) []string {
 		if host == "" {
 			continue
 		}
+		if !isValidDomain(host) {
+			continue
+		}
 		if _, ok := seen[host]; ok {
 			continue
 		}

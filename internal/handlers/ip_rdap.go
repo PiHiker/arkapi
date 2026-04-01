@@ -91,7 +91,7 @@ func lookupIPAbuseContact(ip string) (*ipRDAPLookupResult, error) {
 	}
 
 	source := formatRDAPSource(resp.Request.URL.Host)
-	best := pickBestRDAPEntity(flattenRDAPEntities(upstream.Entities))
+	best := pickBestAbuseRDAPEntity(flattenRDAPEntities(upstream.Entities))
 	result := &ipRDAPLookupResult{
 		ReportingNote: extractRDAPReportingNote(upstream.Remarks),
 	}
@@ -179,10 +179,13 @@ func parseRDAPEntityContact(entity rdapEntity) rdapEntityContact {
 	return contact
 }
 
-func pickBestRDAPEntity(entities []rdapEntityContact) *rdapEntityContact {
+func pickBestAbuseRDAPEntity(entities []rdapEntityContact) *rdapEntityContact {
 	bestScore := 999
 	var best *rdapEntityContact
 	for i := range entities {
+		if !hasRDAPRole(entities[i].Roles, "abuse") {
+			continue
+		}
 		score := rdapRoleScore(entities[i].Roles)
 		if score < bestScore {
 			bestScore = score

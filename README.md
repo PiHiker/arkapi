@@ -121,7 +121,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/headers` | 3 sats | HTTP security headers audit with score |
 | POST | `/api/image-generate` | 25 sats | AI image generation with short-lived download URL |
 | POST | `/api/ip-abuse-check` | 4 sats | AbuseIPDB reputation lookup with abuse confidence, report counts, and last reported time |
-| POST | `/api/ip-intel` | 6 sats | Combined IP geolocation, ASN context, RDAP abuse contact, Google Maps link, and AbuseIPDB reputation |
+| POST | `/api/ip-intel` | 6 sats | Combined IP geolocation, ASN context, abuse-desk RDAP contact when published, Google Maps link, and AbuseIPDB reputation |
 | POST | `/api/ip-lookup` | 3 sats | IP geolocation, ISP, ASN, approximate location, and Google Maps link |
 | POST | `/api/qr-generate` | 2 sats | Generate QR code PNG from text or URLs |
 | POST | `/api/screenshot` | 15 sats | Server-side webpage screenshot with download URL |
