@@ -135,7 +135,7 @@ func main() {
     {"path": "/api/cve-search", "method": "POST", "cost_sats": %d, "description": "Search the official NVD feed for CVEs by keyword and return ranked matches"},
     {"path": "/api/prediction-market-search", "method": "POST", "cost_sats": %d, "description": "Search live Polymarket prediction markets and return normalized results"},
     {"path": "/api/cve-lookup", "method": "POST", "cost_sats": %d, "description": "Look up a CVE in the official NVD feed and return severity, CWE, KEV, and references"},
-    {"path": "/api/domain-intel", "method": "POST", "cost_sats": %d, "description": "Aggregate DNS, WHOIS, TLS, headers, email auth, parsed security.txt and robots.txt metadata, improved tech fingerprints, HTTP behavior, provider detection, CT-log subdomains, and optional ai_summary"},
+    {"path": "/api/domain-intel", "method": "POST", "cost_sats": %d, "description": "Aggregate DNS, WHOIS, TLS, headers, email auth, nameserver and mail host intel, parsed security.txt and robots.txt metadata, improved tech fingerprints, HTTP behavior, provider detection, CT-log subdomains, and optional ai_summary"},
     {"path": "/api/hash-crack", "method": "POST", "cost_sats": %d, "description": "Recover weak MD5, SHA1, SHA256, or NTLM hashes using the fasttrack wordlist plus John Wordlist rules"},
     {"path": "/api/domain-check", "method": "POST", "cost_sats": %d, "description": "Check domain name availability via WHOIS lookup"},
     {"path": "/api/btc-price", "method": "GET", "cost_sats": 1, "description": "Live Bitcoin spot price in 10 major fiat currencies with optional currency filtering, market stats, and Alternative.me fear_greed sentiment"},

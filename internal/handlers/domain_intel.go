@@ -27,6 +27,9 @@ type DomainIntelResponse struct {
 	Registration    *DomainRegistrationInfo   `json:"registration,omitempty"`
 	Providers       *DomainProviderSummary    `json:"providers,omitempty"`
 	Network         *DomainNetworkSummary     `json:"network,omitempty"`
+	NameServerIntel []DomainHostIntel         `json:"nameserver_intel,omitempty"`
+	MailHostIntel   []DomainHostIntel         `json:"mail_host_intel,omitempty"`
+	Infrastructure  []string                  `json:"infrastructure_observations,omitempty"`
 	SecurityTXT     *SecurityTXTResponse      `json:"security_txt,omitempty"`
 	RobotsTXT       *RobotsTXTResponse        `json:"robots_txt,omitempty"`
 	TechFingerprint *TechFingerprintResponse  `json:"tech_fingerprint,omitempty"`
@@ -69,6 +72,12 @@ type DomainNetworkSummary struct {
 	Organizations []string `json:"organizations,omitempty"`
 	Countries     []string `json:"countries,omitempty"`
 	AnycastOrCDN  bool     `json:"anycast_or_cdn,omitempty"`
+}
+
+type DomainHostIntel struct {
+	Hostname    string       `json:"hostname"`
+	IPs         []string     `json:"ips,omitempty"`
+	ResolvedIPs []IPResponse `json:"resolved_ips,omitempty"`
 }
 
 type DomainIntelCacheMetadata struct {
@@ -124,7 +133,7 @@ type HTTPBehaviorResponse struct {
 	WWWRedirect   bool     `json:"www_redirect,omitempty"`
 }
 
-const domainIntelCacheTTL = time.Hour
+const domainIntelCacheTTL = 24 * time.Hour
 
 type domainIntelCacheEntry struct {
 	response  *DomainIntelResponse
@@ -316,11 +325,14 @@ func (h *Handler) doDomainIntel(domain string, withAISummary bool) (*DomainIntel
 		if len(resp.ResolvedIPs) == 0 && h.Geo != nil && h.Geo.City != nil {
 			resp.Errors["resolved_ips"] = "no geolocated public IPs found"
 		}
+		resp.NameServerIntel = h.lookupDomainHostIntel(extractNameServerHosts(resp))
+		resp.MailHostIntel = h.lookupDomainHostIntel(extractMailHosts(resp.DNS))
 	}
 
 	resp.Registration = buildDomainRegistrationInfo(resp)
 	resp.Providers = buildDomainProviderSummary(resp)
 	resp.Network = buildDomainNetworkSummary(resp.ResolvedIPs, resp.Providers)
+	resp.Infrastructure = buildDomainInfrastructureObservations(resp)
 	resp.Subdomains = discoverLightSubdomains(domain, resp)
 	resp.Findings, resp.Recommendations = buildDomainIntelInsights(resp)
 	if withAISummary {
@@ -430,6 +442,15 @@ func cloneDomainIntelResponse(resp *DomainIntelResponse) *DomainIntelResponse {
 	if resp.ResolvedIPs != nil {
 		clone.ResolvedIPs = append([]IPResponse(nil), resp.ResolvedIPs...)
 	}
+	if resp.NameServerIntel != nil {
+		clone.NameServerIntel = cloneDomainHostIntel(resp.NameServerIntel)
+	}
+	if resp.MailHostIntel != nil {
+		clone.MailHostIntel = cloneDomainHostIntel(resp.MailHostIntel)
+	}
+	if resp.Infrastructure != nil {
+		clone.Infrastructure = append([]string(nil), resp.Infrastructure...)
+	}
 	if resp.AISummary != nil {
 		aiSummary := *resp.AISummary
 		if resp.AISummary.Usage != nil {
@@ -501,6 +522,21 @@ func cloneDomainIntelResponse(resp *DomainIntelResponse) *DomainIntelResponse {
 		clone.Cache = &cache
 	}
 	return &clone
+}
+
+func cloneDomainHostIntel(values []DomainHostIntel) []DomainHostIntel {
+	cloned := make([]DomainHostIntel, 0, len(values))
+	for _, value := range values {
+		item := value
+		if value.IPs != nil {
+			item.IPs = append([]string(nil), value.IPs...)
+		}
+		if value.ResolvedIPs != nil {
+			item.ResolvedIPs = append([]IPResponse(nil), value.ResolvedIPs...)
+		}
+		cloned = append(cloned, item)
+	}
+	return cloned
 }
 
 func buildDomainRegistrationInfo(resp *DomainIntelResponse) *DomainRegistrationInfo {
@@ -685,6 +721,172 @@ func discoverLightSubdomains(domain string, resp *DomainIntelResponse) []string 
 	return values
 }
 
+func extractNameServerHosts(resp *DomainIntelResponse) []string {
+	if resp == nil {
+		return nil
+	}
+	if resp.Registration != nil && len(resp.Registration.NameServers) > 0 {
+		return normalizeDomainHosts(resp.Registration.NameServers)
+	}
+	if resp.DNS == nil {
+		return nil
+	}
+	return normalizeDomainHosts(recordValues(resp.DNS.Records["NS"]))
+}
+
+func extractMailHosts(dnsResp *DNSResponse) []string {
+	if dnsResp == nil {
+		return nil
+	}
+	hosts := make([]string, 0, len(dnsResp.Records["MX"]))
+	for _, record := range dnsResp.Records["MX"] {
+		fields := strings.Fields(strings.TrimSpace(record.Value))
+		if len(fields) == 0 {
+			continue
+		}
+		host := fields[len(fields)-1]
+		if host == "." {
+			continue
+		}
+		hosts = append(hosts, host)
+	}
+	return normalizeDomainHosts(hosts)
+}
+
+func normalizeDomainHosts(hosts []string) []string {
+	seen := map[string]struct{}{}
+	out := make([]string, 0, len(hosts))
+	for _, host := range hosts {
+		host = strings.ToLower(strings.TrimSpace(strings.TrimSuffix(host, ".")))
+		if host == "" {
+			continue
+		}
+		if _, ok := seen[host]; ok {
+			continue
+		}
+		seen[host] = struct{}{}
+		out = append(out, host)
+	}
+	sort.Strings(out)
+	return out
+}
+
+func (h *Handler) lookupDomainHostIntel(hosts []string) []DomainHostIntel {
+	hosts = normalizeDomainHosts(hosts)
+	if len(hosts) == 0 {
+		return nil
+	}
+	if len(hosts) > 8 {
+		hosts = hosts[:8]
+	}
+
+	results := make([]DomainHostIntel, 0, len(hosts))
+	for _, host := range hosts {
+		ips := resolvePublicHostIPs(host)
+		if len(ips) == 0 {
+			continue
+		}
+		item := DomainHostIntel{
+			Hostname: host,
+			IPs:      append([]string(nil), ips...),
+		}
+		if h.Geo != nil && h.Geo.City != nil {
+			for _, ip := range ips {
+				data, err := doIPLookup(h.Geo, ip)
+				if err != nil || data == nil {
+					continue
+				}
+				item.ResolvedIPs = append(item.ResolvedIPs, *data)
+			}
+		}
+		results = append(results, item)
+	}
+	return results
+}
+
+func resolvePublicHostIPs(host string) []string {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	addrs, err := net.DefaultResolver.LookupIPAddr(ctx, host)
+	if err != nil || len(addrs) == 0 {
+		return nil
+	}
+
+	seen := map[string]struct{}{}
+	ips := make([]string, 0, len(addrs))
+	for _, addr := range addrs {
+		if !isPublicRoutableIP(addr.IP) {
+			continue
+		}
+		value := addr.IP.String()
+		if _, ok := seen[value]; ok {
+			continue
+		}
+		seen[value] = struct{}{}
+		ips = append(ips, value)
+	}
+	sort.Strings(ips)
+	if len(ips) > 4 {
+		ips = ips[:4]
+	}
+	return ips
+}
+
+func buildDomainInfrastructureObservations(resp *DomainIntelResponse) []string {
+	if resp == nil {
+		return nil
+	}
+
+	observations := []string{}
+	nsOrgs := hostIntelOrganizations(resp.NameServerIntel)
+	mailOrgs := hostIntelOrganizations(resp.MailHostIntel)
+	hostingProvider := ""
+	if resp.Providers != nil {
+		hostingProvider = strings.TrimSpace(strings.ToLower(resp.Providers.HostingProvider))
+	}
+
+	if len(nsOrgs) > 1 {
+		observations = append(observations, "Authoritative DNS appears split across multiple providers.")
+	}
+	if len(mailOrgs) > 1 {
+		observations = append(observations, "Mail hosts resolve to multiple providers or networks.")
+	}
+	if hostingProvider != "" && len(nsOrgs) > 0 && !orgSetContainsApprox(nsOrgs, hostingProvider) {
+		observations = append(observations, "Website hosting and authoritative DNS appear to use different providers.")
+	}
+	if hostingProvider != "" && len(mailOrgs) > 0 && !orgSetContainsApprox(mailOrgs, hostingProvider) {
+		observations = append(observations, "Website hosting and mail infrastructure appear to use different providers.")
+	}
+
+	return observations
+}
+
+func hostIntelOrganizations(values []DomainHostIntel) []string {
+	set := map[string]struct{}{}
+	for _, host := range values {
+		for _, resolved := range host.ResolvedIPs {
+			value := strings.TrimSpace(firstNonEmptyDomainIntel(resolved.Org, resolved.ISP))
+			if value == "" {
+				continue
+			}
+			set[value] = struct{}{}
+		}
+	}
+	return sortedKeys(set)
+}
+
+func orgSetContainsApprox(values []string, target string) bool {
+	target = strings.ToLower(strings.TrimSpace(target))
+	for _, value := range values {
+		lower := strings.ToLower(strings.TrimSpace(value))
+		if lower == target || strings.Contains(lower, target) || strings.Contains(target, lower) {
+			return true
+		}
+	}
+	return false
+}
+
 func buildDomainIntelInsights(resp *DomainIntelResponse) ([]string, []string) {
 	if resp == nil {
 		return nil, nil
@@ -847,6 +1049,24 @@ func (h *Handler) buildDomainIntelAISummary(resp *DomainIntelResponse) (*AIChatR
 	}
 	if resp.Network != nil {
 		lines = append(lines, fmt.Sprintf("Network footprint: %d resolved IPs across %s", resp.Network.IPCount, strings.Join(resp.Network.Countries, ", ")))
+	}
+	if len(resp.NameServerIntel) > 0 {
+		lines = append(lines, "Nameserver intel:")
+		for _, host := range resp.NameServerIntel {
+			lines = append(lines, fmt.Sprintf("- %s => %s", host.Hostname, strings.Join(host.IPs, ", ")))
+		}
+	}
+	if len(resp.MailHostIntel) > 0 {
+		lines = append(lines, "Mail host intel:")
+		for _, host := range resp.MailHostIntel {
+			lines = append(lines, fmt.Sprintf("- %s => %s", host.Hostname, strings.Join(host.IPs, ", ")))
+		}
+	}
+	if len(resp.Infrastructure) > 0 {
+		lines = append(lines, "Infrastructure observations:")
+		for _, observation := range resp.Infrastructure {
+			lines = append(lines, "- "+observation)
+		}
 	}
 	if resp.SecurityTXT != nil && resp.SecurityTXT.Present {
 		if len(resp.SecurityTXT.Emails) > 0 {

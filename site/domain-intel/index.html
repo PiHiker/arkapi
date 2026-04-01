@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Domain Intel API | ArkAPI</title>
-<meta name="description" content="Use ArkAPI Domain Intel to combine DNS, WHOIS, TLS, headers, email auth, security.txt metadata, robots.txt metadata, improved tech fingerprinting, HTTP redirect behavior, CT-log subdomains, provider detection, and optional AI summary in one response for 25 sats per call.">
+<meta name="description" content="Use ArkAPI Domain Intel to combine DNS, WHOIS, TLS, headers, email auth, nameserver and mail host intel, security.txt metadata, robots.txt metadata, improved tech fingerprinting, HTTP redirect behavior, CT-log subdomains, provider detection, and optional AI summary in one response for 25 sats per call.">
 <meta name="keywords" content="domain intelligence API, domain intel API, DNS WHOIS TLS API, attack surface API, domain security API, email auth API, AI domain summary, ArkAPI domain-intel">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="ArkAPI">
@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://arkapi.dev/domain-intel/">
 <meta property="og:site_name" content="ArkAPI">
 <meta property="og:title" content="Domain Intel API | ArkAPI">
-<meta property="og:description" content="One-call domain intelligence for agents and defenders. Query DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, CT-log subdomains, providers, findings, and optional AI summary for 25 sats.">
+<meta property="og:description" content="One-call domain intelligence for agents and defenders. Query DNS, WHOIS, TLS, headers, email auth, nameserver and mail host intel, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, CT-log subdomains, providers, findings, and optional AI summary for 25 sats.">
 <meta property="og:image" content="https://arkapi.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -51,7 +51,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     {"@type": "Question", "name": "How much does Domain Intel cost?", "acceptedAnswer": {"@type": "Answer", "text": "Domain Intel costs 25 sats per call."}},
-    {"@type": "Question", "name": "What does Domain Intel return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns DNS, WHOIS, TLS, headers, email-auth posture, parsed security.txt metadata, parsed robots.txt metadata, improved tech fingerprinting, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, network summary, light subdomain hints, findings, recommendations, and optional AI summary."}},
+    {"@type": "Question", "name": "What does Domain Intel return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns DNS, WHOIS, TLS, headers, email-auth posture, nameserver and mail host infrastructure intel, parsed security.txt metadata, parsed robots.txt metadata, improved tech fingerprinting, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, network summary, light subdomain hints, findings, recommendations, and optional AI summary."}},
     {"@type": "Question", "name": "Can I request an AI summary?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Send ai_summary=true in the request body to append a concise ArkAPI-managed AI summary to the report."}}
   ]
 }
@@ -111,7 +111,7 @@
   <section class="hero">
     <div class="eyebrow">Domain Intelligence API &bull; Live on Signet test network only</div>
     <h1>Get a full domain report in one call.</h1>
-    <p class="sub">Query DNS, WHOIS, TLS, headers, email auth, parsed security.txt disclosure metadata, parsed robots.txt crawl metadata, improved tech fingerprints, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, network summary, light subdomain hints, findings, recommendations, and an optional AI summary. Built for agents, security review, and fast attack-surface checks.</p>
+    <p class="sub">Query DNS, WHOIS, TLS, headers, email auth, nameserver and mail host intel, parsed security.txt disclosure metadata, parsed robots.txt crawl metadata, improved tech fingerprints, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, network summary, light subdomain hints, findings, recommendations, and an optional AI summary. Built for agents, security review, and fast attack-surface checks.</p>
     <div class="pill-row">
       <div class="pill">25 sats / call</div>
       <div class="pill">Optional AI summary</div>
@@ -125,6 +125,7 @@
       <ul>
         <li>Registration and nameserver summary</li>
         <li>Provider detection for DNS, CDN, mail, and hosting context</li>
+        <li>Resolved nameserver and MX host intelligence with provider and location context</li>
         <li>Network footprint with ASN and country summary</li>
         <li>security.txt contacts, emails, policy links, and disclosure metadata</li>
         <li>robots.txt sitemap, user-agent, and crawl metadata</li>
@@ -141,7 +142,7 @@
       <ul>
         <li>Same endpoint, no separate route</li>
         <li>Returns <span class="code-inline">data.ai_summary.answer</span></li>
-        <li>Cached with the rest of the report</li>
+        <li>Cached with the rest of the report for 24 hours</li>
         <li>Good for dashboards, briefings, and agent outputs</li>
       </ul>
   </div>
@@ -166,7 +167,7 @@
       <ul>
         <li><span class="code-inline">domain</span> is required</li>
         <li><span class="code-inline">ai_summary</span> is optional</li>
-        <li>Reports are cached for one hour</li>
+        <li>Reports are cached for 24 hours</li>
       </ul>
     </div>
 
@@ -174,7 +175,7 @@
       <h2>Example Response</h2>
       <p>The full sample response is published as plain text so this page stays readable.</p>
       <div class="code-block"><a href="/domain-intel/example.txt">View full example.com sample response</a></div>
-      <p>The sample was generated from a live <span class="code-inline">example.com</span> run with <span class="code-inline">ai_summary=true</span>.</p>
+      <p>The sample uses neutral <span class="code-inline">example.com</span>-based data and shows the response shape, including nameserver and mail-host intel.</p>
     </div>
   </div>
 

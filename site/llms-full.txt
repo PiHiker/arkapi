@@ -156,7 +156,7 @@ curl -X POST https://arkapi.dev/api/axfr-check \
 ```
 
 ### `/api/domain-intel` - 25 sats
-- Natural-language example: `Give me a one-call domain intelligence summary for example.com, include security.txt contacts, robots.txt sitemap info, tech fingerprints, HTTP behavior, CT-log subdomains, and add an AI summary at the end.`
+- Natural-language example: `Give me a one-call domain intelligence summary for example.com, include nameserver and mail host intel, security.txt contacts, robots.txt sitemap info, tech fingerprints, HTTP behavior, CT-log subdomains, and add an AI summary at the end.`
 - Curl:
 ```bash
 curl -X POST https://arkapi.dev/api/domain-intel \

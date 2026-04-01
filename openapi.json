@@ -1751,7 +1751,7 @@
           "security"
         ],
         "summary": "Aggregate domain intelligence",
-        "description": "Cost: 25 sats. Returns an aggregated view of a domain including DNS, WHOIS, TLS certificate details, security headers, email authentication posture, parsed security.txt disclosure metadata, parsed robots.txt crawl metadata, improved tech fingerprinting, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, light subdomain hints, findings, recommendations, resolved IP intelligence, and an optional AI summary when ai_summary is true. Cached for 1 hour.",
+        "description": "Cost: 25 sats. Returns an aggregated view of a domain including DNS, WHOIS, TLS certificate details, security headers, email authentication posture, nameserver and mail host infrastructure intel, parsed security.txt disclosure metadata, parsed robots.txt crawl metadata, improved tech fingerprinting, HTTP redirect and final-page behavior, CT-log subdomains, provider detection, light subdomain hints, findings, recommendations, resolved IP intelligence, and an optional AI summary when ai_summary is true. Cached for 24 hours.",
         "operationId": "domainIntel",
         "security": [
           {
@@ -1866,6 +1866,36 @@
                         "United States"
                       ]
                     },
+                    "nameserver_intel": [
+                      {
+                        "hostname": "a.iana-servers.net",
+                        "ips": [
+                          "199.43.135.53"
+                        ],
+                        "resolved_ips": [
+                          {
+                            "ip": "199.43.135.53",
+                            "country": "United States",
+                            "country_code": "US",
+                            "isp": "ICANN"
+                          }
+                        ]
+                      },
+                      {
+                        "hostname": "b.iana-servers.net",
+                        "ips": [
+                          "199.43.133.53"
+                        ],
+                        "resolved_ips": [
+                          {
+                            "ip": "199.43.133.53",
+                            "country": "United States",
+                            "country_code": "US",
+                            "isp": "ICANN"
+                          }
+                        ]
+                      }
+                    ],
                     "subdomains": [
                       "www.example.com"
                     ],
@@ -1875,8 +1905,8 @@
                     "recommendations": [],
                     "cache": {
                       "cached": false,
-                      "ttl_seconds": 3600,
-                      "expires_at": "2026-03-26T23:00:00Z"
+                      "ttl_seconds": 86400,
+                      "expires_at": "2026-03-27T22:00:00Z"
                     },
                     "ai_summary": {
                       "answer": "Example.com has a straightforward footprint with limited exposed infrastructure and no major issues detected in the sampled DNS, TLS, header, and mail-auth checks.",

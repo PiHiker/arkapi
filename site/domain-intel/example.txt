@@ -73,10 +73,54 @@
       "Publish /.well-known/security.txt with at least a Contact field for security disclosures.",
       "Publish a robots.txt file with at least a sitemap reference if the site should be indexed."
     ],
+    "nameserver_intel": [
+      {
+        "hostname": "elliott.ns.cloudflare.com",
+        "ips": [
+          "108.162.193.161",
+          "172.64.33.161"
+        ],
+        "resolved_ips": [
+          {
+            "ip": "108.162.193.161",
+            "country": "Canada",
+            "country_code": "CA",
+            "isp": "Cloudflare, Inc."
+          },
+          {
+            "ip": "172.64.33.161",
+            "country": "Canada",
+            "country_code": "CA",
+            "isp": "Cloudflare, Inc."
+          }
+        ]
+      },
+      {
+        "hostname": "hera.ns.cloudflare.com",
+        "ips": [
+          "108.162.192.176",
+          "172.64.32.176"
+        ],
+        "resolved_ips": [
+          {
+            "ip": "108.162.192.176",
+            "country": "Canada",
+            "country_code": "CA",
+            "isp": "Cloudflare, Inc."
+          },
+          {
+            "ip": "172.64.32.176",
+            "country": "Canada",
+            "country_code": "CA",
+            "isp": "Cloudflare, Inc."
+          }
+        ]
+      }
+    ],
     "cache": {
       "cached": false,
-      "ttl_seconds": 3599,
-      "expires_at": "2026-03-27T01:07:02Z"
+      "ttl_seconds": 86400,
+      "expires_at": "2026-03-28T00:07:02Z"
     },
     "dns": {
       "domain": "example.com",

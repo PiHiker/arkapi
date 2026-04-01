@@ -103,7 +103,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | GET | `/v1/balance` | free | Check session balance |
 | POST | `/api/ai-chat` | 100 sats | Anonymous AI chat with ArkAPI-managed inference |
 | POST | `/api/ai-translate` | 25 sats | Higher-quality AI translation with style control for more natural output |
-| POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
+| POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, nameserver and mail host intel, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
 | GET | `/api/btc-price` | 1 sat | Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering, market stats, and Alternative.me fear_greed sentiment |
 | GET | `/api/remote-job-search` | 3 sats | Search remote jobs from Remotive by keyword, category, or company with a cached agent-friendly response |
 | POST | `/api/prediction-market-search` | 4 sats | Search open Polymarket prediction markets |
@@ -168,7 +168,7 @@ curl -H "Authorization: Bearer $TOKEN" \
      -d '{"domain":"example.com","ai_summary":true}' \
      https://arkapi.dev/api/domain-intel
 ```
-Returns DNS, WHOIS, TLS, headers, email auth, security.txt, robots.txt, tech fingerprints, HTTP behavior, subdomain hints, CT subdomains, network summary, findings, recommendations, and an optional AI summary.
+Returns DNS, WHOIS, TLS, headers, email auth, nameserver and mail host infrastructure intel, security.txt, robots.txt, tech fingerprints, HTTP behavior, subdomain hints, CT subdomains, network summary, findings, recommendations, and an optional AI summary. Cached for 24 hours.
 
 Public guide: [Domain Intel](https://arkapi.dev/domain-intel/)
 </details>
