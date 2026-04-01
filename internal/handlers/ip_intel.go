@@ -22,10 +22,10 @@ type IPIntelResponse struct {
 	ReportedRecently bool                  `json:"reported_recently"`
 	RiskLabel        string                `json:"risk_label"`
 	RiskReason       string                `json:"risk_reason"`
+	Abuse            *IPAbuseCheckResponse `json:"abuse"`
+	URLhausHost      *IPURLhausHostSummary `json:"urlhaus_host,omitempty"`
 	AbuseContact     *IPAbuseContact       `json:"abuse_contact,omitempty"`
 	AbuseReportNote  string                `json:"abuse_reporting_note,omitempty"`
-	URLhausHost      *IPURLhausHostSummary `json:"urlhaus_host,omitempty"`
-	Abuse            *IPAbuseCheckResponse `json:"abuse"`
 }
 
 func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
@@ -100,10 +100,10 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 			ReportedRecently: reportedRecently,
 			RiskLabel:        riskLabel,
 			RiskReason:       riskReason,
+			Abuse:            abuse,
+			URLhausHost:      urlhausHost,
 			AbuseContact:     abuseContact,
 			AbuseReportNote:  abuseReportNote,
-			URLhausHost:      urlhausHost,
-			Abuse:            abuse,
 		}, nil
 	})
 }

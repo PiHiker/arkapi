@@ -859,22 +859,6 @@
                     "reported_recently": true,
                     "risk_label": "low",
                     "risk_reason": "Provider is whitelisted and has no abuse score despite historical reports",
-                    "abuse_contact": {
-                      "name": "Abuse",
-                      "org": "Abuse",
-                      "email": "network-abuse@google.com",
-                      "phone": "+1-650-253-0000",
-                      "roles": [
-                        "abuse"
-                      ],
-                      "source": "ARIN RDAP",
-                      "is_abuse_specific": true
-                    },
-                    "abuse_reporting_note": "Please note that the recommended way to file abuse complaints are located in the following links. To report abuse and illegal activity: https://www.google.com/contact/ For legal requests: http://support.google.com/legal Regards, The Google Team",
-                    "urlhaus_host": {
-                      "listed": false,
-                      "source": "URLhaus"
-                    },
                     "abuse": {
                       "ip": "8.8.8.8",
                       "abuse_confidence_score": 0,
@@ -887,7 +871,23 @@
                       "is_whitelisted": true,
                       "source": "AbuseIPDB",
                       "max_age_days": 30
-                    }
+                    },
+                    "urlhaus_host": {
+                      "listed": false,
+                      "source": "URLhaus"
+                    },
+                    "abuse_contact": {
+                      "name": "Abuse",
+                      "org": "Abuse",
+                      "email": "network-abuse@google.com",
+                      "phone": "+1-650-253-0000",
+                      "roles": [
+                        "abuse"
+                      ],
+                      "source": "ARIN RDAP",
+                      "is_abuse_specific": true
+                    },
+                    "abuse_reporting_note": "Please note that the recommended way to file abuse complaints are located in the following links. To report abuse and illegal activity: https://www.google.com/contact/ For legal requests: http://support.google.com/legal Regards, The Google Team"
                   },
                   "cost_sats": 6,
                   "balance_remaining": 491,
