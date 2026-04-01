@@ -154,6 +154,11 @@
   font-size: 11px;
   color: var(--text-muted);
 }
+.referral-stack {
+  display: grid;
+  gap: 22px;
+  margin-top: 48px;
+}
 @media (max-width: 768px) {
   .contact-grid { grid-template-columns: 1fr; }
   .referral { flex-direction: column; text-align: center; }
@@ -224,12 +229,24 @@
     </div>
   </div>
 
-  <div class="referral">
-    <div class="referral-icon">&#x20bf;</div>
-    <div class="referral-body">
-      <h2>Buy real Bitcoin. <span>Earn free sats.</span></h2>
-      <p>ArkAPI runs on Bitcoin. If you don't have any yet, Bitcoin Well is a non-custodial exchange — you buy, they send directly to your wallet. Use our referral link and you'll be supporting ArkAPI's development while stacking your own sats.</p>
-      <div class="referral-note">Non-custodial. KYC required. Available in Canada and the US.</div>
+  <div class="referral-stack">
+    <div class="referral">
+      <div class="referral-icon">&#x20bf;</div>
+      <div class="referral-body">
+        <h2>Buy real Bitcoin. <span>Earn free sats.</span></h2>
+        <p>ArkAPI runs on Bitcoin. If you don't have any yet, Bitcoin Well is a non-custodial exchange — you buy, they send directly to your wallet. Use our referral link and you'll be supporting ArkAPI's development while stacking your own sats.</p>
+        <div class="referral-note">Non-custodial. KYC required. Available in Canada and the US.</div>
+      </div>
+    </div>
+
+    <div class="referral">
+      <div class="referral-icon">&#9889;</div>
+      <div class="referral-body">
+        <h2>Prefer Strike? <span>Get your first fees waived.</span></h2>
+        <p>Join Strike with my referral code and get fees waived on your first $500 of trades after you buy bitcoin.</p>
+        <a class="referral-cta" href="https://invite.strike.me/D5KEXB" target="_blank" rel="noopener noreferrer">Join Strike</a>
+        <div class="referral-note">Code: D5KEXB</div>
+      </div>
     </div>
   </div>
 </div>
