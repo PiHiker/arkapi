@@ -803,7 +803,7 @@
           "osint"
         ],
         "summary": "Combined IP geolocation and abuse reputation",
-        "description": "Cost: 6 sats. Combines local GeoIP location, ASN context, Google Maps link, and AbuseIPDB reputation in one response.",
+        "description": "Cost: 6 sats. Combines local GeoIP location, ASN context, best-effort RDAP abuse contact data, Google Maps link, and AbuseIPDB reputation in one response.",
         "operationId": "ipIntel",
         "security": [
           {
@@ -837,16 +837,36 @@
                   "success": true,
                   "data": {
                     "ip": "8.8.8.8",
+                    "reverse_dns": [
+                      "dns.google"
+                    ],
+                    "asn_number": 15169,
+                    "network_type": "cdn",
+                    "reported_recently": true,
+                    "risk_label": "low",
+                    "risk_reason": "Provider is whitelisted and has no abuse score despite historical reports",
+                    "abuse_contact": {
+                      "name": "Abuse",
+                      "org": "Abuse",
+                      "email": "network-abuse@google.com",
+                      "phone": "+1-650-253-0000",
+                      "roles": [
+                        "abuse"
+                      ],
+                      "source": "ARIN RDAP",
+                      "is_abuse_specific": true
+                    },
+                    "abuse_reporting_note": "Please note that the recommended way to file abuse complaints are located in the following links. To report abuse and illegal activity: https://www.google.com/contact/ For legal requests: http://support.google.com/legal Regards, The Google Team",
                     "lookup": {
                       "ip": "8.8.8.8",
                       "country": "United States",
                       "country_code": "US",
-                      "region": "Virginia",
-                      "city": "Ashburn",
-                      "approximate_location": "Ashburn, Virginia, United States",
-                      "lat": 39.0438,
-                      "lon": -77.4874,
-                      "google_maps_url": "https://www.google.com/maps?q=39.0438,-77.4874",
+                      "region": "California",
+                      "city": "Mountain View",
+                      "approximate_location": "Mountain View, California, United States",
+                      "lat": 37.422,
+                      "lon": -122.085,
+                      "google_maps_url": "https://www.google.com/maps?q=37.4220,-122.0850",
                       "isp": "Google LLC",
                       "org": "Google LLC",
                       "as": "AS15169 Google LLC"

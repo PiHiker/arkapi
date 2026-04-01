@@ -21,6 +21,8 @@ type IPIntelResponse struct {
 	ReportedRecently bool                  `json:"reported_recently"`
 	RiskLabel        string                `json:"risk_label"`
 	RiskReason       string                `json:"risk_reason"`
+	AbuseContact     *IPAbuseContact       `json:"abuse_contact,omitempty"`
+	AbuseReportNote  string                `json:"abuse_reporting_note,omitempty"`
 	Lookup           *IPResponse           `json:"lookup"`
 	Abuse            *IPAbuseCheckResponse `json:"abuse"`
 }
@@ -77,6 +79,12 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 		networkType := normalizeNetworkType(abuse.UsageType)
 		reportedRecently := wasReportedRecently(abuse.LastReportedAt)
 		riskLabel, riskReason := deriveIPRisk(abuse, networkType, reportedRecently)
+		var abuseContact *IPAbuseContact
+		var abuseReportNote string
+		if rdap, err := lookupIPAbuseContact(req.IP); err == nil && rdap != nil {
+			abuseContact = rdap.Contact
+			abuseReportNote = rdap.ReportingNote
+		}
 
 		return &IPIntelResponse{
 			IP:               req.IP,
@@ -86,6 +94,8 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 			ReportedRecently: reportedRecently,
 			RiskLabel:        riskLabel,
 			RiskReason:       riskReason,
+			AbuseContact:     abuseContact,
+			AbuseReportNote:  abuseReportNote,
 			Lookup:           lookup,
 			Abuse:            abuse,
 		}, nil

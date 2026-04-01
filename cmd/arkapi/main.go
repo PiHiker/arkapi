@@ -120,7 +120,7 @@ func main() {
     {"path": "/api/weather",     "method": "POST", "cost_sats": 3,  "description": "Current weather + 7-day forecast"},
     {"path": "/api/ip-lookup",   "method": "POST", "cost_sats": 3,  "description": "IP geolocation, ISP, ASN, approximate location, and Google Maps link"},
     {"path": "/api/ip-abuse-check", "method": "POST", "cost_sats": %d, "description": "AbuseIPDB reputation lookup with abuse confidence, total reports, and last reported time"},
-    {"path": "/api/ip-intel", "method": "POST", "cost_sats": %d, "description": "Combined IP geolocation, ASN, map link, and AbuseIPDB reputation in one response"},
+    {"path": "/api/ip-intel", "method": "POST", "cost_sats": %d, "description": "Combined IP geolocation, ASN, abuse contact, map link, and AbuseIPDB reputation in one response"},
     {"path": "/api/remote-job-search", "method": "GET", "cost_sats": %d, "description": "Search remote jobs from Remotive by keyword, category, or company with a cached agent-friendly response"},
     {"path": "/api/email-auth-check", "method": "POST", "cost_sats": %d, "description": "SPF, DKIM, and DMARC posture with A-F grade"},
     {"path": "/api/bitcoin-news", "method": "GET", "cost_sats": %d, "description": "Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment"},

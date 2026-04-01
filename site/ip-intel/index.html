@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IP Intel API | ArkAPI</title>
-<meta name="description" content="Combine IP geolocation, ASN context, Google Maps link, and AbuseIPDB reputation in one ArkAPI call for 6 sats.">
-<meta name="keywords" content="IP intel API, IP reputation API, AbuseIPDB API, IP geolocation API, ASN API, ArkAPI ip-intel">
+<meta name="description" content="Combine IP geolocation, ASN context, RDAP abuse contact, Google Maps link, and AbuseIPDB reputation in one ArkAPI call for 6 sats.">
+<meta name="keywords" content="IP intel API, IP reputation API, AbuseIPDB API, IP geolocation API, ASN API, abuse contact API, ArkAPI ip-intel">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="ArkAPI">
 <meta name="theme-color" content="#0a0a0b">
@@ -17,13 +17,13 @@
 <meta property="og:url" content="https://arkapi.dev/ip-intel/">
 <meta property="og:site_name" content="ArkAPI">
 <meta property="og:title" content="IP Intel API | ArkAPI">
-<meta property="og:description" content="One ArkAPI call for IP geolocation, ASN context, map link, and AbuseIPDB reputation.">
+<meta property="og:description" content="One ArkAPI call for IP geolocation, ASN context, RDAP abuse contact, map link, and AbuseIPDB reputation.">
 <meta property="og:image" content="https://arkapi.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="IP Intel API | ArkAPI">
-<meta name="twitter:description" content="Query combined IP context and abuse reputation through ArkAPI.">
+<meta name="twitter:description" content="Query combined IP context, RDAP abuse contact, and abuse reputation through ArkAPI.">
 <meta name="twitter:image" content="https://arkapi.dev/og-image.png">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/css/common.min.css">
@@ -44,7 +44,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     {"@type": "Question", "name": "How much does IP Intel cost?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel costs 6 sats per call."}},
-    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, reverse DNS, normalized network type, a Google Maps link, deterministic risk labeling, and AbuseIPDB reputation data in one response."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, reverse DNS, best-effort RDAP abuse contact data, a Google Maps link, deterministic risk labeling, and AbuseIPDB reputation data in one response."}},
     {"@type": "Question", "name": "Why not call two endpoints separately?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel is useful when you want both IP context and abuse reputation together without stitching multiple responses in your client or agent."}}
   ]
 }
@@ -111,21 +111,22 @@
   <section class="hero">
     <div class="eyebrow">IP Intel API &bull; Live on Signet test network only</div>
     <h1>Combine IP context and abuse reputation in one call.</h1>
-    <p class="sub">Use a funded Signet session to resolve geolocation, ASN context, approximate location, Google Maps link, and AbuseIPDB reputation for a public IP address in one response.</p>
+    <p class="sub">Use a funded Signet session to resolve geolocation, ASN context, best-effort RDAP abuse contact data, approximate location, Google Maps link, and AbuseIPDB reputation for a public IP address in one response.</p>
     <div class="pill-row">
       <div class="pill">6 sats / call</div>
       <div class="pill">POST /api/ip-intel</div>
-      <div class="pill">GeoIP + AbuseIPDB</div>
+      <div class="pill">GeoIP + RDAP + AbuseIPDB</div>
     </div>
   </section>
 
   <div class="grid-2">
     <div class="card">
       <h2>What It Does</h2>
-      <p>IP Intel combines the two complementary signals you usually want together: where an IP appears to be, and whether it has been reported for abuse. It also adds deterministic enrichment that is useful in practice, including reverse DNS, normalized network type, an ASN number, and a simple risk label.</p>
+      <p>IP Intel combines the signals you usually want together: where an IP appears to be, whether it has been reported for abuse, and who owns the public contact point for reporting. It also adds deterministic enrichment that is useful in practice, including reverse DNS, normalized network type, an ASN number, and a simple risk label.</p>
       <ul>
         <li>Returns country, region, city, coordinates, and ASN context</li>
         <li>Adds reverse DNS, <span class="code-inline">network_type</span>, and <span class="code-inline">asn_number</span></li>
+        <li>Adds best-effort <span class="code-inline">abuse_contact</span> data from public RDAP when available</li>
         <li>Includes <span class="code-inline">approximate_location</span> and a <span class="code-inline">google_maps_url</span></li>
         <li>Includes AbuseIPDB score, report counts, last reported time, and a deterministic risk verdict</li>
         <li>Good fit for triage, enrichment, and recon workflows</li>
@@ -134,7 +135,7 @@
 
     <div class="card">
       <h2>Why It Helps</h2>
-      <p><a href="/ip-lookup/">IP Lookup</a> gives you location and ASN context. <a href="/ip-abuse-check/">IP Abuse Check</a> gives you reported abuse context. IP Intel is the combined version when you want both without extra client logic.</p>
+      <p><a href="/ip-lookup/">IP Lookup</a> gives you location and ASN context. <a href="/ip-abuse-check/">IP Abuse Check</a> gives you reported abuse context. IP Intel is the combined version when you want both, plus a best-effort reporting contact, without extra client logic.</p>
       <ul>
         <li>Useful in incident review and alert enrichment</li>
         <li>Good for pentest and OSINT workflows</li>
@@ -189,17 +190,27 @@
     "network_type": "cdn",
     "reported_recently": true,
     "risk_label": "low",
-    "risk_reason": "No meaningful abuse history in the selected window",
+    "risk_reason": "Provider is whitelisted and has no abuse score despite historical reports",
+    "abuse_contact": {
+      "name": "Abuse",
+      "org": "Abuse",
+      "email": "network-abuse@google.com",
+      "phone": "+1-650-253-0000",
+      "roles": ["abuse"],
+      "source": "ARIN RDAP",
+      "is_abuse_specific": true
+    },
+    "abuse_reporting_note": "Please note that the recommended way to file abuse complaints are located in the following links. To report abuse and illegal activity: https://www.google.com/contact/ For legal requests: http://support.google.com/legal Regards, The Google Team",
     "lookup": {
       "ip": "8.8.8.8",
       "country": "United States",
       "country_code": "US",
-      "region": "Virginia",
-      "city": "Ashburn",
-      "approximate_location": "Ashburn, Virginia, United States",
-      "lat": 39.0438,
-      "lon": -77.4874,
-      "google_maps_url": "https://www.google.com/maps?q=39.0438,-77.4874",
+      "region": "California",
+      "city": "Mountain View",
+      "approximate_location": "Mountain View, California, United States",
+      "lat": 37.422,
+      "lon": -122.085,
+      "google_maps_url": "https://www.google.com/maps?q=37.4220,-122.0850",
       "isp": "Google LLC",
       "org": "Google LLC",
       "as": "AS15169 Google LLC"
