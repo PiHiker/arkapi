@@ -59,6 +59,33 @@
   background: rgba(247, 147, 26, 0.08);
 }
 .email:hover { background: rgba(247, 147, 26, 0.12); }
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+.contact-link {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.02);
+}
+.contact-link:hover {
+  border-color: rgba(247, 147, 26, 0.35);
+  background: rgba(247, 147, 26, 0.08);
+}
+.contact-note {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
 .list {
   list-style: none;
   display: grid;
@@ -177,9 +204,14 @@
 
   <div class="contact-grid">
     <div class="card">
-      <h2>Email</h2>
-      <p>The fastest current contact path is email.</p>
+      <h2>Contact</h2>
+      <p>The fastest current contact path is still email, but you can also use the public GitHub repo or tip the project directly with Strike.</p>
       <a class="email" href="mailto:support@arkapi.dev">support@arkapi.dev</a>
+      <div class="contact-actions">
+        <a class="contact-link" href="https://github.com/PiHiker/arkapi" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="contact-link" href="https://strike.me/pihiker" target="_blank" rel="noopener noreferrer">Tip with Strike</a>
+      </div>
+      <div class="contact-note">Tips support ArkAPI development and do not fund API sessions.</div>
     </div>
 
     <div class="card">
