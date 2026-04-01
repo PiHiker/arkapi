@@ -23,6 +23,7 @@ type IPIntelResponse struct {
 	RiskReason       string                `json:"risk_reason"`
 	AbuseContact     *IPAbuseContact       `json:"abuse_contact,omitempty"`
 	AbuseReportNote  string                `json:"abuse_reporting_note,omitempty"`
+	URLhausHost      *IPURLhausHostSummary `json:"urlhaus_host,omitempty"`
 	Lookup           *IPResponse           `json:"lookup"`
 	Abuse            *IPAbuseCheckResponse `json:"abuse"`
 }
@@ -78,7 +79,11 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 		asnNumber := parseASNNumber(lookup.AS)
 		networkType := normalizeNetworkType(abuse.UsageType)
 		reportedRecently := wasReportedRecently(abuse.LastReportedAt)
-		riskLabel, riskReason := deriveIPRisk(abuse, networkType, reportedRecently)
+		urlhausHost, err := h.lookupIPURLhausHost(req.IP)
+		if err != nil {
+			return nil, err
+		}
+		riskLabel, riskReason := deriveIPRisk(abuse, urlhausHost, networkType, reportedRecently)
 		var abuseContact *IPAbuseContact
 		var abuseReportNote string
 		if rdap, err := lookupIPAbuseContact(req.IP); err == nil && rdap != nil {
@@ -96,6 +101,7 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 			RiskReason:       riskReason,
 			AbuseContact:     abuseContact,
 			AbuseReportNote:  abuseReportNote,
+			URLhausHost:      urlhausHost,
 			Lookup:           lookup,
 			Abuse:            abuse,
 		}, nil
@@ -165,7 +171,13 @@ func wasReportedRecently(lastReportedAt *time.Time) bool {
 	return time.Since(lastReportedAt.UTC()) <= 7*24*time.Hour
 }
 
-func deriveIPRisk(abuse *IPAbuseCheckResponse, networkType string, reportedRecently bool) (string, string) {
+func deriveIPRisk(abuse *IPAbuseCheckResponse, urlhausHost *IPURLhausHostSummary, networkType string, reportedRecently bool) (string, string) {
+	if urlhausHost != nil && urlhausHost.Listed {
+		if len(urlhausHost.SampleThreats) > 0 {
+			return "high", fmt.Sprintf("Listed in URLhaus for %s activity", strings.Join(urlhausHost.SampleThreats, ", "))
+		}
+		return "high", "Listed in URLhaus as malware-linked host infrastructure"
+	}
 	if abuse == nil {
 		return "unknown", "No abuse data available"
 	}

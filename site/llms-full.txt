@@ -113,7 +113,7 @@ curl -X POST https://arkapi.dev/api/ip-abuse-check \
 ```
 
 ### `/api/ip-intel` - 6 sats
-- Natural-language example: `Combine geolocation, abuse-desk contact data, and AbuseIPDB reputation for 8.8.8.8 in one response.`
+- Natural-language example: `Combine geolocation, abuse-desk contact data, AbuseIPDB reputation, and URLhaus host context for 8.8.8.8 in one response.`
 - Curl:
 ```bash
 curl -X POST https://arkapi.dev/api/ip-intel \

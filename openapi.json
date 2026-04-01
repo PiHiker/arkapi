@@ -803,7 +803,7 @@
           "osint"
         ],
         "summary": "Combined IP geolocation and abuse reputation",
-        "description": "Cost: 6 sats. Combines local GeoIP location, ASN context, best-effort abuse-desk RDAP contact data when the registry publishes an abuse role, a Google Maps link, and AbuseIPDB reputation in one response.",
+        "description": "Cost: 6 sats. Combines local GeoIP location, ASN context, best-effort abuse-desk RDAP contact data when the registry publishes an abuse role, a Google Maps link, AbuseIPDB reputation, and a cached URLhaus host summary in one response.",
         "operationId": "ipIntel",
         "security": [
           {
@@ -857,6 +857,10 @@
                       "is_abuse_specific": true
                     },
                     "abuse_reporting_note": "Please note that the recommended way to file abuse complaints are located in the following links. To report abuse and illegal activity: https://www.google.com/contact/ For legal requests: http://support.google.com/legal Regards, The Google Team",
+                    "urlhaus_host": {
+                      "listed": false,
+                      "source": "URLhaus"
+                    },
                     "lookup": {
                       "ip": "8.8.8.8",
                       "country": "United States",

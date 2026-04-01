@@ -66,6 +66,7 @@ type Config struct {
 	PublicBaseURL                  string
 	ImageDownloadTTLSeconds        int
 	AbuseIPDBAPIKey                string
+	URLhausAuthKey                 string
 
 	DomainIntelCostSats int
 	DomainCheckCostSats int
@@ -131,6 +132,7 @@ func Load() Config {
 		PublicBaseURL:                  getEnv("ARKAPI_PUBLIC_BASE_URL", "https://arkapi.dev"),
 		ImageDownloadTTLSeconds:        getEnvInt("ARKAPI_IMAGE_DOWNLOAD_TTL_SECONDS", 600),
 		AbuseIPDBAPIKey:                getEnv("ARKAPI_ABUSEIPDB_API_KEY", ""),
+		URLhausAuthKey:                 getEnv("ARKAPI_URLHAUS_AUTH_KEY", ""),
 		DomainIntelCostSats:            getEnvInt("ARKAPI_DOMAIN_INTEL_COST_SATS", 25),
 		GeoLite2CityPath:               getEnv("ARKAPI_GEOLITE2_CITY_PATH", "/geoip/GeoLite2-City.mmdb"),
 		GeoLite2ASNPath:                getEnv("ARKAPI_GEOLITE2_ASN_PATH", "/geoip/GeoLite2-ASN.mmdb"),

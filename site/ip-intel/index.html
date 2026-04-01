@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IP Intel API | ArkAPI</title>
-<meta name="description" content="Combine IP geolocation, ASN context, abuse-desk RDAP contact data when published, a Google Maps link, and AbuseIPDB reputation in one ArkAPI call for 6 sats.">
+<meta name="description" content="Combine IP geolocation, ASN context, abuse-desk RDAP contact data when published, a Google Maps link, AbuseIPDB reputation, and URLhaus host context in one ArkAPI call for 6 sats.">
 <meta name="keywords" content="IP intel API, IP reputation API, AbuseIPDB API, IP geolocation API, ASN API, abuse contact API, ArkAPI ip-intel">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="ArkAPI">
@@ -17,13 +17,13 @@
 <meta property="og:url" content="https://arkapi.dev/ip-intel/">
 <meta property="og:site_name" content="ArkAPI">
 <meta property="og:title" content="IP Intel API | ArkAPI">
-<meta property="og:description" content="One ArkAPI call for IP geolocation, ASN context, abuse-desk RDAP contact data when published, a map link, and AbuseIPDB reputation.">
+<meta property="og:description" content="One ArkAPI call for IP geolocation, ASN context, abuse-desk RDAP contact data when published, a map link, AbuseIPDB reputation, and URLhaus host context.">
 <meta property="og:image" content="https://arkapi.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="IP Intel API | ArkAPI">
-<meta name="twitter:description" content="Query combined IP context, abuse-desk RDAP contact data when published, and abuse reputation through ArkAPI.">
+<meta name="twitter:description" content="Query combined IP context, abuse-desk RDAP contact data when published, abuse reputation, and URLhaus host context through ArkAPI.">
 <meta name="twitter:image" content="https://arkapi.dev/og-image.png">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/css/common.min.css">
@@ -44,7 +44,7 @@
   "@type": "FAQPage",
   "mainEntity": [
     {"@type": "Question", "name": "How much does IP Intel cost?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel costs 6 sats per call."}},
-    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, reverse DNS, best-effort abuse-desk RDAP contact data when the registry publishes an abuse role, a Google Maps link, deterministic risk labeling, and AbuseIPDB reputation data in one response."}},
+    {"@type": "Question", "name": "What does it return?", "acceptedAnswer": {"@type": "Answer", "text": "The endpoint returns local GeoIP location, ASN context, reverse DNS, best-effort abuse-desk RDAP contact data when the registry publishes an abuse role, a Google Maps link, deterministic risk labeling, AbuseIPDB reputation data, and a cached URLhaus host summary in one response."}},
     {"@type": "Question", "name": "Why not call two endpoints separately?", "acceptedAnswer": {"@type": "Answer", "text": "IP Intel is useful when you want both IP context and abuse reputation together without stitching multiple responses in your client or agent."}}
   ]
 }
@@ -111,31 +111,31 @@
   <section class="hero">
     <div class="eyebrow">IP Intel API &bull; Live on Signet test network only</div>
     <h1>Combine IP context and abuse reputation in one call.</h1>
-    <p class="sub">Use a funded Signet session to resolve geolocation, ASN context, best-effort abuse-desk RDAP contact data when the registry publishes an abuse role, approximate location, Google Maps link, and AbuseIPDB reputation for a public IP address in one response.</p>
+    <p class="sub">Use a funded Signet session to resolve geolocation, ASN context, best-effort abuse-desk RDAP contact data when the registry publishes an abuse role, approximate location, Google Maps link, AbuseIPDB reputation, and URLhaus host context for a public IP address in one response.</p>
     <div class="pill-row">
       <div class="pill">6 sats / call</div>
       <div class="pill">POST /api/ip-intel</div>
-      <div class="pill">GeoIP + RDAP + AbuseIPDB</div>
+      <div class="pill">GeoIP + RDAP + AbuseIPDB + URLhaus</div>
     </div>
   </section>
 
   <div class="grid-2">
     <div class="card">
       <h2>What It Does</h2>
-      <p>IP Intel combines the signals you usually want together: where an IP appears to be, whether it has been reported for abuse, and whether the registry publishes an abuse-desk contact point for reporting. It also adds deterministic enrichment that is useful in practice, including reverse DNS, normalized network type, an ASN number, and a simple risk label.</p>
+      <p>IP Intel combines the signals you usually want together: where an IP appears to be, whether it has been reported for abuse, whether the registry publishes an abuse-desk contact point for reporting, and whether URLhaus has seen malware-linked host activity on that IP. It also adds deterministic enrichment that is useful in practice, including reverse DNS, normalized network type, an ASN number, and a simple risk label.</p>
       <ul>
         <li>Returns country, region, city, coordinates, and ASN context</li>
         <li>Adds reverse DNS, <span class="code-inline">network_type</span>, and <span class="code-inline">asn_number</span></li>
         <li>Adds best-effort <span class="code-inline">abuse_contact</span> data from public RDAP when an abuse-role contact is published</li>
         <li>Includes <span class="code-inline">approximate_location</span> and a <span class="code-inline">google_maps_url</span></li>
-        <li>Includes AbuseIPDB score, report counts, last reported time, and a deterministic risk verdict</li>
+        <li>Includes AbuseIPDB score, report counts, last reported time, URLhaus host summary, and a deterministic risk verdict</li>
         <li>Good fit for triage, enrichment, and recon workflows</li>
       </ul>
     </div>
 
     <div class="card">
       <h2>Why It Helps</h2>
-      <p><a href="/ip-lookup/">IP Lookup</a> gives you location and ASN context. <a href="/ip-abuse-check/">IP Abuse Check</a> gives you reported abuse context. IP Intel is the combined version when you want both, plus a best-effort abuse-desk contact when published, without extra client logic.</p>
+      <p><a href="/ip-lookup/">IP Lookup</a> gives you location and ASN context. <a href="/ip-abuse-check/">IP Abuse Check</a> gives you reported abuse context. IP Intel is the combined version when you want both, plus a best-effort abuse-desk contact when published and a lightweight URLhaus host summary, without extra client logic.</p>
       <ul>
         <li>Useful in incident review and alert enrichment</li>
         <li>Good for pentest and OSINT workflows</li>
@@ -201,6 +201,10 @@
       "is_abuse_specific": true
     },
     "abuse_reporting_note": "Please note that the recommended way to file abuse complaints are located in the following links. To report abuse and illegal activity: https://www.google.com/contact/ For legal requests: http://support.google.com/legal Regards, The Google Team",
+    "urlhaus_host": {
+      "listed": false,
+      "source": "URLhaus"
+    },
     "lookup": {
       "ip": "8.8.8.8",
       "country": "United States",
