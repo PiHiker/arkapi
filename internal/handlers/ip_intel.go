@@ -14,6 +14,7 @@ type IPIntelRequest struct {
 }
 
 type IPIntelResponse struct {
+	Lookup           *IPResponse           `json:"lookup"`
 	IP               string                `json:"ip"`
 	ReverseDNS       []string              `json:"reverse_dns,omitempty"`
 	ASNNumber        int                   `json:"asn_number,omitempty"`
@@ -24,7 +25,6 @@ type IPIntelResponse struct {
 	AbuseContact     *IPAbuseContact       `json:"abuse_contact,omitempty"`
 	AbuseReportNote  string                `json:"abuse_reporting_note,omitempty"`
 	URLhausHost      *IPURLhausHostSummary `json:"urlhaus_host,omitempty"`
-	Lookup           *IPResponse           `json:"lookup"`
 	Abuse            *IPAbuseCheckResponse `json:"abuse"`
 }
 
@@ -92,6 +92,7 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 		}
 
 		return &IPIntelResponse{
+			Lookup:           lookup,
 			IP:               req.IP,
 			ReverseDNS:       reverseDNS,
 			ASNNumber:        asnNumber,
@@ -102,7 +103,6 @@ func (h *Handler) IPIntel(w http.ResponseWriter, r *http.Request) {
 			AbuseContact:     abuseContact,
 			AbuseReportNote:  abuseReportNote,
 			URLhausHost:      urlhausHost,
-			Lookup:           lookup,
 			Abuse:            abuse,
 		}, nil
 	})
