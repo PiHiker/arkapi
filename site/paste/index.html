@@ -33,7 +33,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"What can I store?","acceptedAnswer":{"@type":"Answer","text":"You can store UTF-8 text with content or structured JSON with the json field. Send exactly one of those fields per request."}},
-{"@type":"Question","name":"How long does a paste last?","acceptedAnswer":{"@type":"Answer","text":"TTL is configurable with ttl_seconds. The default is 24 hours, and the response includes the exact expires_at timestamp."}},
+{"@type":"Question","name":"How long does a paste last?","acceptedAnswer":{"@type":"Answer","text":"TTL is configurable with ttl_seconds. The minimum is 60 seconds, the default is 24 hours, and the maximum is 7 days. The response includes the exact expires_at timestamp."}},
 {"@type":"Question","name":"Can a paste render HTML or act like a hosted script?","acceptedAnswer":{"@type":"Answer","text":"No. Retrieval is JSON-only, includes noindex headers, and does not offer raw executable download behavior."}}
 ]}
 </script>
@@ -104,6 +104,7 @@
       <div class="pill">2 sats / call</div>
       <div class="pill">POST /api/paste</div>
       <div class="pill">GET /v1/p/{id}</div>
+      <div class="pill">TTL: 60s to 7d</div>
       <div class="pill">Default TTL: 24h</div>
     </div>
   </section>
@@ -115,7 +116,7 @@
       <ul>
         <li>Use <span class="code-inline">content</span> for plain UTF-8 text</li>
         <li>Use <span class="code-inline">json</span> for structured JSON</li>
-        <li>Use <span class="code-inline">ttl_seconds</span> to shorten or extend retention</li>
+        <li>Use <span class="code-inline">ttl_seconds</span> to shorten or extend retention from <span class="code-inline">60</span> seconds up to <span class="code-inline">7</span> days</li>
         <li>The response includes a short <span class="code-inline">id</span>, a public <span class="code-inline">url</span>, and the exact <span class="code-inline">expires_at</span> time</li>
         <li>Each funded session can keep up to <span class="code-inline">100</span> active pastes at once</li>
       </ul>
