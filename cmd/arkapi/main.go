@@ -105,6 +105,13 @@ func main() {
 			stats.TotalCalls, stats.TotalSats, stats.ActiveSessions, breakdownJSON, hourLabelsJSON, calls24hJSON, sats24hJSON)
 	})
 
+	// Public paste retrieval by short ID
+	mux.Handle("/v1/p/", middleware.RateLimit(
+		cfg.APIRateLimit,
+		time.Duration(cfg.APIRateWindowSeconds)*time.Second,
+		http.HandlerFunc(h.PasteGet),
+	))
+
 	// Admin overview — access is restricted at Apache to the management IP.
 	mux.HandleFunc("/v1/admin/overview", h.AdminOverview)
 
@@ -122,6 +129,7 @@ func main() {
     {"path": "/api/ip-abuse-check", "method": "POST", "cost_sats": %d, "description": "AbuseIPDB reputation lookup with abuse confidence, total reports, and last reported time"},
     {"path": "/api/ip-intel", "method": "POST", "cost_sats": %d, "description": "Combined IP geolocation, ASN, abuse-desk contact when published via RDAP, map link, AbuseIPDB reputation, and URLhaus host summary in one response"},
     {"path": "/api/remote-job-search", "method": "GET", "cost_sats": %d, "description": "Search remote jobs from Remotive by keyword, category, or company with a cached agent-friendly response"},
+    {"path": "/api/paste", "method": "POST", "cost_sats": %d, "description": "Store short-lived text or JSON in an inert scratchpad and get back a short share URL"},
     {"path": "/api/email-auth-check", "method": "POST", "cost_sats": %d, "description": "SPF, DKIM, and DMARC posture with A-F grade"},
     {"path": "/api/bitcoin-news", "method": "GET", "cost_sats": %d, "description": "Multi-source Bitcoin headlines with cross-feed dedupe and AI-assisted sentiment"},
     {"path": "/api/ai-chat", "method": "POST", "cost_sats": %d, "description": "Anonymous AI chat with a 5-per-day token limit"},
@@ -146,7 +154,7 @@ func main() {
     "balance": "GET /v1/balance (requires auth)"
   },
   "auth": "Authorization: Bearer ak_your_token"
-}`, cfg.IPAbuseCheckCostSats, cfg.IPIntelCostSats, cfg.RemoteJobSearchCostSats, cfg.EmailAuthCostSats, cfg.BitcoinNewsCostSats, cfg.CloudflareAICostSats, cfg.AITranslateCostSats, cfg.TranslateCostSats, cfg.AXFRCheckCostSats, cfg.ComfyImageCostSats, cfg.ScreenshotCostSats, cfg.QRGenerateCostSats, cfg.BitcoinAddressCostSats, cfg.CVESearchCostSats, cfg.PredictionMarketSearchCostSats, cfg.CVELookupCostSats, cfg.DomainIntelCostSats, cfg.HashCrackCostSats, cfg.DomainCheckCostSats)
+}`, cfg.IPAbuseCheckCostSats, cfg.IPIntelCostSats, cfg.RemoteJobSearchCostSats, cfg.PasteCostSats, cfg.EmailAuthCostSats, cfg.BitcoinNewsCostSats, cfg.CloudflareAICostSats, cfg.AITranslateCostSats, cfg.TranslateCostSats, cfg.AXFRCheckCostSats, cfg.ComfyImageCostSats, cfg.ScreenshotCostSats, cfg.QRGenerateCostSats, cfg.BitcoinAddressCostSats, cfg.CVESearchCostSats, cfg.PredictionMarketSearchCostSats, cfg.CVELookupCostSats, cfg.DomainIntelCostSats, cfg.HashCrackCostSats, cfg.DomainCheckCostSats)
 	})
 
 	// --- Protected routes (auth required) ---
@@ -213,6 +221,7 @@ func main() {
 	mux.Handle("/api/ip-abuse-check", wrapAuth(h.IPAbuseCheck))
 	mux.Handle("/api/ip-intel", wrapAuth(h.IPIntel))
 	mux.Handle("/api/remote-job-search", wrapAuth(h.RemoteJobSearch))
+	mux.Handle("/api/paste", wrapExpensive(20, h.PasteCreate))
 	mux.Handle("/api/email-auth-check", wrapAuth(h.EmailAuthCheck))
 	mux.Handle("/api/bitcoin-news", wrapAuth(h.BitcoinNews))
 	mux.Handle("/api/ai-chat", wrapDaily(5, h.AIChat))
@@ -256,6 +265,7 @@ func main() {
 	log.Printf("  POST /api/ip-abuse-check — %d sats", cfg.IPAbuseCheckCostSats)
 	log.Printf("  POST /api/ip-intel — %d sats", cfg.IPIntelCostSats)
 	log.Printf("  GET  /api/remote-job-search — %d sats", cfg.RemoteJobSearchCostSats)
+	log.Printf("  POST /api/paste — %d sats", cfg.PasteCostSats)
 	log.Printf("  POST /api/email-auth-check — %d sats", cfg.EmailAuthCostSats)
 	log.Printf("  GET  /api/bitcoin-news — %d sats", cfg.BitcoinNewsCostSats)
 	log.Printf("  POST /api/ai-chat — %d sats (5/day/token)", cfg.CloudflareAICostSats)

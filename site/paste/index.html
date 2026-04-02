@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paste / Scratchpad API | ArkAPI</title>
+<meta name="description" content="Store short-lived text or JSON through ArkAPI and get back a short public scratchpad URL. Retrieval is JSON-only, TTL-bound, and designed for agent checkpoints.">
+<meta name="keywords" content="paste api, scratchpad api, temporary json storage api, ephemeral paste api, agent scratchpad api, ArkAPI paste">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="ArkAPI">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="canonical" href="https://arkapi.dev/paste/">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arkapi.dev/paste/">
+<meta property="og:site_name" content="ArkAPI">
+<meta property="og:title" content="Paste / Scratchpad API | ArkAPI">
+<meta property="og:description" content="Store short-lived text or JSON and get back a short public scratchpad URL for 2 sats per call.">
+<meta property="og:image" content="https://arkapi.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Paste / Scratchpad API | ArkAPI">
+<meta name="twitter:description" content="Use ArkAPI to store agent notes, JSON checkpoints, and intermediate results with configurable TTL and JSON-only retrieval.">
+<meta name="twitter:image" content="https://arkapi.dev/og-image.png">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/css/common.min.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Paste / Scratchpad API","description":"ArkAPI scratchpad storage for agents and automations, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/paste/"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What can I store?","acceptedAnswer":{"@type":"Answer","text":"You can store UTF-8 text with content or structured JSON with the json field. Send exactly one of those fields per request."}},
+{"@type":"Question","name":"How long does a paste last?","acceptedAnswer":{"@type":"Answer","text":"TTL is configurable with ttl_seconds. The default is 24 hours and the response tells you the exact expires_at timestamp."}},
+{"@type":"Question","name":"Can a paste render HTML or act like a hosted script?","acceptedAnswer":{"@type":"Answer","text":"No. Retrieval is JSON-only, includes noindex headers, and does not offer raw executable download behavior."}}
+]}
+</script>
+<style>
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+.card h2 { font-size: 18px; margin-bottom: 14px; }
+.card p, .card li { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.card ul { list-style: none; padding-left: 0; }
+.card li { padding: 4px 0; }
+.card li::before { content: "\2014"; color: var(--accent); margin-right: 8px; }
+.card a { color: var(--accent); text-decoration: none; }
+.code-block { font-family: var(--mono); font-size: 13px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; color: var(--text-dim); line-height: 1.6; margin: 12px 0; white-space: pre-wrap; word-break: break-word; }
+.code-inline { font-family: var(--mono); font-size: 13px; background: rgba(247,147,26,0.08); border: 1px solid rgba(247,147,26,0.15); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-raised); color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+.copy-row { display: flex; justify-content: flex-end; margin: -2px 0 12px; }
+.copy-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.copy-btn-inline:hover {
+  border-color: rgba(247,147,26,0.5);
+  color: var(--accent);
+  background: rgba(247,147,26,0.06);
+}
+@media (max-width: 768px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .code-block { font-size: 11px; padding: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo"><div class="logo-icon">A</div>ArkAPI.dev</a>
+    <ul class="nav-links">
+      <li><a href="/#how">How it works</a></li>
+      <li><a href="/#apis">APIs</a></li>
+      <li><a href="/dashboard/">Dashboard</a></li>
+      <li><a href="/fund/">Fund</a></li>
+      <li><a href="/#docs">Stack</a></li>
+      <li><a href="/marketplace/">Early Access</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/docs/">Docs</a></li>
+    </ul>
+    <a href="/fund/" class="btn-nav">Fund</a>
+  </div>
+</nav>
+<div class="container">
+  <section class="hero">
+    <div class="eyebrow">Paste / Scratchpad API &bull; Live on Signet test network only</div>
+    <h1>Park intermediate text or JSON without turning ArkAPI into a file host.</h1>
+    <p class="sub">Store agent notes, workflow state, or JSON checkpoints for a bounded amount of time and get back a short public URL. Retrieval is always JSON, not HTML, with expiry and noindex headers by default.</p>
+    <div class="pill-row">
+      <div class="pill">2 sats / call</div>
+      <div class="pill">POST /api/paste</div>
+      <div class="pill">GET /v1/p/{id}</div>
+      <div class="pill">Default TTL: 24h</div>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Input Shape</h2>
+      <p>Send exactly one content field plus an optional TTL.</p>
+      <ul>
+        <li><span class="code-inline">content</span> for UTF-8 plain text</li>
+        <li><span class="code-inline">json</span> for structured JSON that ArkAPI stores compactly</li>
+        <li><span class="code-inline">ttl_seconds</span> to override the default retention window</li>
+        <li>Response includes the short <span class="code-inline">id</span>, public <span class="code-inline">url</span>, and exact <span class="code-inline">expires_at</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Safety Model</h2>
+      <p>This endpoint is intentionally constrained so it behaves like a scratchpad, not generic public hosting.</p>
+      <ul>
+        <li>Public retrieval is JSON-only</li>
+        <li>No HTML rendering or custom MIME types</li>
+        <li>No raw executable download behavior</li>
+        <li>Expiry is enforced and expired pastes disappear</li>
+        <li>Responses include <span class="code-inline">noindex</span> and <span class="code-inline">nosniff</span> headers</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Example Request</h2>
+    <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-request">Copy curl</button></div>
+    <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/paste \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"json":{"step":"extract","urls":["https://example.com"],"notes":"follow up tomorrow"},"ttl_seconds":3600}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The response gives you a short public URL under <span class="code-inline">/v1/p/{id}</span>.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Example Create Response</h2>
+      <div class="code-block">{
+  "success": true,
+  "data": {
+    "id": "k3m8v2q4r7tz",
+    "url": "https://arkapi.dev/v1/p/k3m8v2q4r7tz",
+    "content_kind": "json",
+    "size_bytes": 74,
+    "ttl_seconds": 3600,
+    "expires_at": "2026-04-02T13:00:00Z"
+  },
+  "cost_sats": 2,
+  "balance_remaining": 498,
+  "endpoint": "/api/paste"
+}</div>
+    </div>
+
+    <div class="card">
+      <h2>Example Public Fetch</h2>
+      <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-fetch">Copy curl</button></div>
+      <div id="example-fetch" class="code-block">curl https://arkapi.dev/v1/p/k3m8v2q4r7tz | jq</div>
+      <div class="code-block">{
+  "id": "k3m8v2q4r7tz",
+  "content_kind": "json",
+  "content": "{\"step\":\"extract\",\"urls\":[\"https://example.com\"],\"notes\":\"follow up tomorrow\"}",
+  "size_bytes": 74,
+  "created_at": "2026-04-02T12:00:00Z",
+  "expires_at": "2026-04-02T13:00:00Z"
+}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Good Uses</h2>
+    <ul>
+      <li>Save agent checkpoint JSON between steps</li>
+      <li>Hand off extracted links or notes to another tool or human</li>
+      <li>Park a temporary result without wiring object storage</li>
+      <li>Share a short-lived text blob with a teammate during triage</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Discovery</h2>
+    <ul>
+      <li><a href="/openapi.json">/openapi.json</a></li>
+      <li><a href="/llms.txt">/llms.txt</a></li>
+      <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+      <li><a href="/.well-known/arkapi.json">/.well-known/arkapi.json</a></li>
+    </ul>
+    <p>For broader platform usage, see the main <a href="/docs/">docs</a> and the live <a href="/v1/catalog">catalog</a>.</p>
+  </div>
+</div>
+<footer>
+  <div class="container" style="padding-top:0;padding-bottom:0;">
+    <div class="footer-inner">
+      <div class="footer-left">&copy; 2026 ArkAPI. Powered by Ark + Lightning via <a href="https://www.second.tech/" target="_blank" rel="noopener noreferrer">Second</a>.</div>
+      <ul class="footer-links">
+        <li><a href="/#how">How it works</a></li>
+        <li><a href="/#apis">APIs</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('[data-copy-code]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const targetId = button.getAttribute('data-copy-code');
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    const original = button.textContent;
+    try {
+      await navigator.clipboard.writeText(target.textContent.trim());
+      button.textContent = 'Copied';
+      button.disabled = true;
+      setTimeout(() => {
+        button.textContent = original;
+        button.disabled = false;
+      }, 1400);
+    } catch (error) {
+      button.textContent = 'Copy failed';
+      setTimeout(() => {
+        button.textContent = original;
+      }, 1400);
+    }
+  });
+});
+</script>
+</body>
+</html>

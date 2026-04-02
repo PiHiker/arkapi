@@ -134,6 +134,21 @@ curl -H "Authorization: Bearer ak_your_token" \
   "https://arkapi.dev/api/remote-job-search?search=golang&limit=5"
 ```
 
+### `/api/paste` - 2 sats
+- Natural-language example: `Store this JSON planning state for one hour and give me a short share URL.`
+- Request notes:
+  - Send exactly one of `content` or `json`
+  - Optional `ttl_seconds` defaults to 86400 seconds
+  - Public retrieval happens at `GET /v1/p/{id}`
+  - Retrieval is JSON-only with no HTML rendering or executable download behavior
+- Curl:
+```bash
+curl -X POST https://arkapi.dev/api/paste \
+  -H "Authorization: Bearer ak_your_token" \
+  -H "Content-Type: application/json" \
+  -d '{"json":{"step":"extract","urls":["https://example.com"]},"ttl_seconds":3600}'
+```
+
 ### `/api/email-auth-check` - 4 sats
 - Natural-language example: `Check SPF, DKIM, and DMARC posture for proton.me.`
 - Curl:

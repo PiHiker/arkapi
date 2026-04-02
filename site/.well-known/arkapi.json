@@ -6,7 +6,7 @@
   "llms_url": "https://arkapi.dev/llms.txt",
   "llms_full_url": "https://arkapi.dev/llms-full.txt",
   "catalog_url": "https://arkapi.dev/v1/catalog",
-  "version": "2026-03-27",
+  "version": "2026-04-02",
   "auth": {
     "type": "bearer",
     "format": "Authorization: Bearer ak_xxx",
@@ -38,6 +38,7 @@
     "headers",
     "weather",
     "ip-lookup",
+    "paste",
     "email-auth-check",
     "axfr-check",
     "domain-intel",
@@ -110,6 +111,15 @@
       "category": "osint",
       "description": "IP geolocation, ISP, and ASN lookup.",
       "sample_intent": "Look up the geolocation and ASN for 8.8.8.8."
+    },
+    {
+      "id": "paste",
+      "path": "/api/paste",
+      "method": "POST",
+      "cost_sats": 2,
+      "category": "utility",
+      "description": "Store short-lived text or JSON in an inert scratchpad and get back a short public JSON retrieval URL.",
+      "sample_intent": "Store a multi-step agent checkpoint for one hour and return the share URL."
     },
     {
       "id": "email-auth-check",

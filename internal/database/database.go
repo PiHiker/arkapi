@@ -50,6 +50,16 @@ type HashCrackCacheEntry struct {
 	ElapsedMs int
 }
 
+type PasteEntry struct {
+	ID           string
+	SessionToken string
+	ContentKind  string
+	Content      string
+	SizeBytes    int
+	CreatedAt    time.Time
+	ExpiresAt    time.Time
+}
+
 // New creates a new database connection.
 // sql.Open doesn't actually connect - it just prepares the connection pool.
 // The first real query will establish the connection.
@@ -208,6 +218,40 @@ func (db *DB) PutHashCrackCache(entry HashCrackCacheEntry) error {
 	return nil
 }
 
+func (db *DB) CreatePaste(entry PasteEntry) error {
+	if _, err := db.conn.Exec(
+		`INSERT INTO pastes (id, session_token, content_kind, content, size_bytes, expires_at)
+		 VALUES (?, ?, ?, ?, ?, ?)`,
+		entry.ID, entry.SessionToken, entry.ContentKind, entry.Content, entry.SizeBytes, entry.ExpiresAt.UTC(),
+	); err != nil {
+		return fmt.Errorf("failed to create paste: %w", err)
+	}
+	return nil
+}
+
+func (db *DB) GetPaste(id string) (*PasteEntry, error) {
+	paste := &PasteEntry{}
+	err := db.conn.QueryRow(
+		`SELECT id, session_token, content_kind, content, size_bytes, created_at, expires_at
+		   FROM pastes
+		  WHERE id = ? AND expires_at > UTC_TIMESTAMP()`,
+		id,
+	).Scan(&paste.ID, &paste.SessionToken, &paste.ContentKind, &paste.Content, &paste.SizeBytes, &paste.CreatedAt, &paste.ExpiresAt)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get paste: %w", err)
+	}
+	return paste, nil
+}
+
+func (db *DB) DeleteExpiredPastes() {
+	go func() {
+		_, _ = db.conn.Exec("DELETE FROM pastes WHERE expires_at <= UTC_TIMESTAMP()")
+	}()
+}
+
 // CreateAwaitingSession inserts a session with status "awaiting_payment" and stores invoice details.
 func (db *DB) CreateAwaitingSession(token string, paymentHash, lightningInvoice, arkAddress string, ttlHours int) error {
 	_, err := db.conn.Exec(
@@ -316,6 +360,7 @@ func newEndpointMap() map[string]int64 {
 		"ip-lookup":                0,
 		"ip-abuse-check":           0,
 		"ip-intel":                 0,
+		"paste":                    0,
 		"email-auth-check":         0,
 		"hash-crack":               0,
 		"bitcoin-news":             0,

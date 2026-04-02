@@ -2446,6 +2446,18 @@ footer {
 
       <div class="api-card">
         <span class="api-tag tag-utility">UTILITY</span>
+        <h3><a href="/paste/">Paste / Scratchpad</a></h3>
+        <p>Store short-lived text or JSON and get back a short public share URL for later retrieval. Responses stay JSON-only with no HTML rendering or raw executable download behavior. <a href="/paste/">Learn more</a>.</p>
+        <div class="api-endpoint"><span>Endpoint</span><br>/api/paste</div>
+        <div class="api-payload"><span>Body</span><br>{"json":{"step":"extract","urls":["https://example.com"]},"ttl_seconds":3600}</div>
+        <div class="api-meta">
+          <span class="api-price">2 sats <span>/ call</span></span>
+          <span class="api-method">POST</span>
+        </div>
+      </div>
+
+      <div class="api-card">
+        <span class="api-tag tag-utility">UTILITY</span>
         <h3><a href="/docs/">QR Generate</a></h3>
         <p>Generate a QR code PNG from any text, URL, or Bitcoin address. Returns a base64-encoded image and a ready-to-use data URI. Sizes from 64px to 1024px.</p>
         <div class="api-endpoint"><span>Endpoint</span><br>/api/qr-generate</div>

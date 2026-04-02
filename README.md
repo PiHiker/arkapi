@@ -73,6 +73,7 @@ ArkAPI publishes machine-readable metadata so AI agents and tooling can discover
 | [`headers/`](https://arkapi.dev/headers/) | Dedicated landing page for the Headers Audit API |
 | [`ip-abuse-check/`](https://arkapi.dev/ip-abuse-check/) | Dedicated landing page for the IP Abuse Check API |
 | [`ip-intel/`](https://arkapi.dev/ip-intel/) | Dedicated landing page for the IP Intel API |
+| [`paste/`](https://arkapi.dev/paste/) | Dedicated landing page for the Paste / Scratchpad API |
 | [`remote-job-search/`](https://arkapi.dev/remote-job-search/) | Dedicated landing page for the Remote Job Search API |
 | [`ssl-check/`](https://arkapi.dev/ssl-check/) | Dedicated landing page for the SSL Check API |
 | [`whois/`](https://arkapi.dev/whois/) | Dedicated landing page for the WHOIS API |
@@ -92,6 +93,7 @@ If you deploy your own instance, generate your own IndexNow verification key rat
 |--------|------|-------------|
 | GET | `/health` | Health check, returns `{"status":"ok"}` |
 | GET | `/v1/catalog` | List all endpoints and pricing |
+| GET | `/v1/p/{id}` | Fetch a short-lived paste by ID as JSON |
 | POST | `/v1/sessions` | Create a new session |
 
 ### Protected Endpoints (auth required)
@@ -106,6 +108,7 @@ All require header: `Authorization: Bearer ak_xxxxx`
 | POST | `/api/domain-intel` | 25 sats | Aggregate DNS, WHOIS, TLS, headers, email auth, nameserver and mail host intel, security.txt, robots.txt, improved tech fingerprints, HTTP behavior, and resolved IP intelligence |
 | GET | `/api/btc-price` | 1 sat | Live Bitcoin spot price in 10 major fiat currencies, with optional currency filtering, market stats, and Alternative.me fear_greed sentiment |
 | GET | `/api/remote-job-search` | 3 sats | Search remote jobs from Remotive by keyword, category, or company with a cached agent-friendly response |
+| POST | `/api/paste` | 2 sats | Store short-lived text or JSON and get back a short public scratchpad URL |
 | POST | `/api/prediction-market-search` | 4 sats | Search open Polymarket prediction markets |
 | POST | `/api/translate` | 3 sats | Self-hosted text translation with source auto-detection |
 | POST | `/api/url-to-markdown` | 5 sats | Extract clean Markdown from any public URL |
@@ -246,6 +249,32 @@ Optional query parameters:
 At least one of `search`, `category`, or `company_name` is required.
 
 Public guide: [Remote Job Search](https://arkapi.dev/remote-job-search/)
+</details>
+
+<details>
+<summary>Paste / Scratchpad (2 sats)</summary>
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"json":{"step":"extract","urls":["https://example.com"]},"ttl_seconds":3600}' \
+     https://arkapi.dev/api/paste
+```
+
+Response fields:
+- `id`
+- `url`
+- `content_kind`
+- `size_bytes`
+- `ttl_seconds`
+- `expires_at`
+
+Paste retrieval is public and JSON-only:
+```bash
+curl https://arkapi.dev/v1/p/k3m8v2q4r7tz
+```
+
+Public guide: [Paste / Scratchpad](https://arkapi.dev/paste/)
 </details>
 
 <details>

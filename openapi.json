@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "ArkAPI | Bitcoin-native Pay-per-call API Platform",
-    "version": "2026-03-27",
+    "version": "2026-04-02",
     "description": "Bitcoin-native pay-per-call API platform for developers and AI agents. Access security, OSINT, AI, and utility APIs anonymously using Signet Lightning and Ark. No API keys or accounts required."
   },
   "servers": [
@@ -301,6 +301,57 @@
           },
           "404": {
             "description": "Expired or missing download"
+          }
+        }
+      }
+    },
+    "/v1/p/{id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Fetch a short-lived paste by ID",
+        "description": "Public retrieval for Paste / Scratchpad entries. The response is always JSON with no HTML rendering, no raw executable download behavior, and no indexing headers.",
+        "operationId": "getPaste",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "k3m8v2q4r7tz"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paste found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasteReadResponse"
+                },
+                "example": {
+                  "id": "k3m8v2q4r7tz",
+                  "content_kind": "json",
+                  "content": "{\"step\":\"extract\",\"urls\":[\"https://example.com\"]}",
+                  "size_bytes": 48,
+                  "created_at": "2026-04-02T12:00:00Z",
+                  "expires_at": "2026-04-03T12:00:00Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expired or missing paste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -995,6 +1046,78 @@
                   "balance_remaining": 497,
                   "response_ms": 95,
                   "endpoint": "/api/remote-job-search"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/paste": {
+      "post": {
+        "tags": [
+          "utility"
+        ],
+        "summary": "Create a short-lived paste or scratchpad entry",
+        "description": "Cost: 2 sats. Stores UTF-8 text or JSON with a configurable TTL and returns a short public share URL. Retrieval is JSON-only with no HTML rendering or executable download behavior.",
+        "operationId": "createPaste",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-cost-sats": 2,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasteCreateRequest"
+              },
+              "examples": {
+                "text": {
+                  "value": {
+                    "content": "Follow-up items:\n- review DNS output\n- save notes for later",
+                    "ttl_seconds": 3600
+                  }
+                },
+                "json": {
+                  "value": {
+                    "json": {
+                      "step": "extract",
+                      "urls": [
+                        "https://example.com"
+                      ]
+                    },
+                    "ttl_seconds": 86400
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paste created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaidSuccessResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "id": "k3m8v2q4r7tz",
+                    "url": "https://arkapi.dev/v1/p/k3m8v2q4r7tz",
+                    "content_kind": "json",
+                    "size_bytes": 48,
+                    "ttl_seconds": 86400,
+                    "expires_at": "2026-04-03T12:00:00Z"
+                  },
+                  "cost_sats": 2,
+                  "balance_remaining": 498,
+                  "response_ms": 12,
+                  "endpoint": "/api/paste"
                 }
               }
             }
@@ -2517,6 +2640,69 @@
         },
         "required": [
           "ip"
+        ]
+      },
+      "PasteCreateRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "UTF-8 text content to store. Send either content or json, not both.",
+            "example": "Follow-up notes for later"
+          },
+          "json": {
+            "description": "A JSON value to store compactly. Send either content or json, not both.",
+            "example": {
+              "step": "extract",
+              "urls": [
+                "https://example.com"
+              ]
+            }
+          },
+          "ttl_seconds": {
+            "type": "integer",
+            "description": "How long the paste should live before expiring.",
+            "minimum": 60,
+            "maximum": 604800,
+            "example": 3600
+          }
+        }
+      },
+      "PasteReadResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "content_kind": {
+            "type": "string",
+            "enum": [
+              "text",
+              "json"
+            ]
+          },
+          "content": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "content_kind",
+          "content",
+          "size_bytes",
+          "created_at",
+          "expires_at"
         ]
       },
       "WeatherRequest": {
