@@ -81,8 +81,8 @@ var remoteJobSearchCache = struct {
 }
 
 var (
-	htmlTagPattern    = regexp.MustCompile(`(?s)<[^>]*>`)
-	spaceRunPattern   = regexp.MustCompile(`\s+`)
+	htmlTagPattern  = regexp.MustCompile(`(?s)<[^>]*>`)
+	spaceRunPattern = regexp.MustCompile(`\s+`)
 )
 
 // RemoteJobSearch handles /api/remote-job-search
@@ -167,6 +167,10 @@ func (h *Handler) doRemoteJobSearch(search, category, companyName string, limit 
 
 	items := make([]RemoteJobSearchEntry, 0, len(upstream.Jobs))
 	for _, job := range upstream.Jobs {
+		if len(items) >= limit {
+			break
+		}
+
 		var publishedAt *time.Time
 		if strings.TrimSpace(job.PublicationDate) != "" {
 			if ts, err := time.Parse("2006-01-02T15:04:05", job.PublicationDate); err == nil {
@@ -209,6 +213,10 @@ func (h *Handler) doRemoteJobSearch(search, category, companyName string, limit 
 	}
 	if result.TotalJobCount == 0 {
 		result.TotalJobCount = upstream.JobCount
+	}
+	if len(result.Jobs) > limit {
+		result.Jobs = result.Jobs[:limit]
+		result.JobCount = len(result.Jobs)
 	}
 
 	setCachedRemoteJobSearch(cacheKey, result)

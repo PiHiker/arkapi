@@ -246,6 +246,20 @@ func (db *DB) GetPaste(id string) (*PasteEntry, error) {
 	return paste, nil
 }
 
+func (db *DB) CountActivePastesForSession(token string) (int, error) {
+	var count int
+	err := db.conn.QueryRow(
+		`SELECT COUNT(*)
+		   FROM pastes
+		  WHERE session_token = ? AND expires_at > UTC_TIMESTAMP()`,
+		token,
+	).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count active pastes: %w", err)
+	}
+	return count, nil
+}
+
 func (db *DB) DeleteExpiredPastes() {
 	go func() {
 		_, _ = db.conn.Exec("DELETE FROM pastes WHERE expires_at <= UTC_TIMESTAMP()")

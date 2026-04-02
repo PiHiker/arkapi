@@ -40,6 +40,7 @@ type PasteReadResponse struct {
 }
 
 const minPasteTTLSeconds = 60
+const maxActivePastesPerSession = 100
 
 func (h *Handler) PasteCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -60,9 +61,18 @@ func (h *Handler) PasteCreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token := middleware.GetToken(r)
-	h.executeHandler(w, r, "/api/paste", h.Cfg.PasteCostSats, func() (interface{}, error) {
-		h.DB.DeleteExpiredPastes()
+	h.DB.DeleteExpiredPastes()
+	activeCount, err := h.DB.CountActivePastesForSession(token)
+	if err != nil {
+		sendJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to check active pastes"})
+		return
+	}
+	if activeCount >= maxActivePastesPerSession {
+		sendJSON(w, http.StatusTooManyRequests, map[string]string{"error": "active paste limit reached for this session"})
+		return
+	}
 
+	h.executeHandler(w, r, "/api/paste", h.Cfg.PasteCostSats, func() (interface{}, error) {
 		pasteID, err := generatePasteID()
 		if err != nil {
 			return nil, fmt.Errorf("failed to create paste id: %w", err)

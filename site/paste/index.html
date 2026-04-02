@@ -117,6 +117,7 @@
         <li><span class="code-inline">json</span> for structured JSON that ArkAPI stores compactly</li>
         <li><span class="code-inline">ttl_seconds</span> to override the default retention window</li>
         <li>Response includes the short <span class="code-inline">id</span>, public <span class="code-inline">url</span>, and exact <span class="code-inline">expires_at</span></li>
+        <li>Each funded session can keep up to <span class="code-inline">100</span> active pastes at once</li>
       </ul>
     </div>
 
@@ -124,6 +125,7 @@
       <h2>Safety Model</h2>
       <p>This endpoint is intentionally constrained so it behaves like a scratchpad, not generic public hosting.</p>
       <ul>
+        <li>Pastes are public-by-link until they expire</li>
         <li>Public retrieval is JSON-only</li>
         <li>No HTML rendering or custom MIME types</li>
         <li>No raw executable download behavior</li>

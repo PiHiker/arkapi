@@ -127,6 +127,7 @@ curl -X POST https://arkapi.dev/api/ip-intel \
 - Query notes:
   - Provide at least one of `search`, `category`, or `company_name`
   - Optional `limit` defaults to `10` and caps at `25`
+  - ArkAPI also hard-caps the returned jobs array locally at `25`
   - Results are cached for 24 hours
 - Curl:
 ```bash
@@ -140,6 +141,8 @@ curl -H "Authorization: Bearer ak_your_token" \
   - Send exactly one of `content` or `json`
   - Optional `ttl_seconds` defaults to 86400 seconds
   - Public retrieval happens at `GET /v1/p/{id}`
+  - Possession of the short URL grants read access until expiry
+  - Each funded session can hold up to 100 active pastes
   - Retrieval is JSON-only with no HTML rendering or executable download behavior
 - Curl:
 ```bash

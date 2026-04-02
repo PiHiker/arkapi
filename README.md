@@ -274,6 +274,10 @@ Paste retrieval is public and JSON-only:
 curl https://arkapi.dev/v1/p/k3m8v2q4r7tz
 ```
 
+Notes:
+- Pastes are public-by-link by design. Anyone with the short URL can read the paste until it expires.
+- Each session may hold up to `100` active pastes at a time.
+
 Public guide: [Paste / Scratchpad](https://arkapi.dev/paste/)
 </details>
 
