@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Paste / Scratchpad API | ArkAPI</title>
-<meta name="description" content="Store short-lived text or JSON through ArkAPI and get back a short public scratchpad URL. Retrieval is JSON-only, TTL-bound, and designed for agent checkpoints.">
+<meta name="description" content="Store temporary text or JSON with ArkAPI and get back a short shareable URL with automatic expiry. Simple scratchpad storage for notes, checkpoints, and handoffs.">
 <meta name="keywords" content="paste api, scratchpad api, temporary json storage api, ephemeral paste api, agent scratchpad api, ArkAPI paste">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="ArkAPI">
@@ -17,23 +17,23 @@
 <meta property="og:url" content="https://arkapi.dev/paste/">
 <meta property="og:site_name" content="ArkAPI">
 <meta property="og:title" content="Paste / Scratchpad API | ArkAPI">
-<meta property="og:description" content="Store short-lived text or JSON and get back a short public scratchpad URL for 2 sats per call.">
+<meta property="og:description" content="Store temporary text or JSON and get back a short shareable URL for 2 sats per call.">
 <meta property="og:image" content="https://arkapi.dev/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Paste / Scratchpad API | ArkAPI">
-<meta name="twitter:description" content="Use ArkAPI to store agent notes, JSON checkpoints, and intermediate results with configurable TTL and JSON-only retrieval.">
+<meta name="twitter:description" content="Use ArkAPI to store notes, JSON checkpoints, and intermediate results with configurable expiry and a short shareable URL.">
 <meta name="twitter:image" content="https://arkapi.dev/og-image.png">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/css/common.min.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"TechArticle","headline":"Paste / Scratchpad API","description":"ArkAPI scratchpad storage for agents and automations, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/paste/"}
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Paste / Scratchpad API","description":"ArkAPI scratchpad storage for temporary notes and JSON handoffs, priced per call in sats.","author":{"@type":"Organization","name":"ArkAPI"},"publisher":{"@type":"Organization","name":"ArkAPI","url":"https://arkapi.dev/"},"mainEntityOfPage":"https://arkapi.dev/paste/"}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"What can I store?","acceptedAnswer":{"@type":"Answer","text":"You can store UTF-8 text with content or structured JSON with the json field. Send exactly one of those fields per request."}},
-{"@type":"Question","name":"How long does a paste last?","acceptedAnswer":{"@type":"Answer","text":"TTL is configurable with ttl_seconds. The default is 24 hours and the response tells you the exact expires_at timestamp."}},
+{"@type":"Question","name":"How long does a paste last?","acceptedAnswer":{"@type":"Answer","text":"TTL is configurable with ttl_seconds. The default is 24 hours, and the response includes the exact expires_at timestamp."}},
 {"@type":"Question","name":"Can a paste render HTML or act like a hosted script?","acceptedAnswer":{"@type":"Answer","text":"No. Retrieval is JSON-only, includes noindex headers, and does not offer raw executable download behavior."}}
 ]}
 </script>
@@ -98,8 +98,8 @@
 <div class="container">
   <section class="hero">
     <div class="eyebrow">Paste / Scratchpad API &bull; Live on Signet test network only</div>
-    <h1>Park intermediate text or JSON without turning ArkAPI into a file host.</h1>
-    <p class="sub">Store agent notes, workflow state, or JSON checkpoints for a bounded amount of time and get back a short public URL. Retrieval is always JSON, not HTML, with expiry and noindex headers by default.</p>
+    <h1>Temporary notes and JSON snippets with a short shareable URL.</h1>
+    <p class="sub">Use Paste when you need a quick scratchpad for notes, draft output, or JSON checkpoints. Send text or JSON, set a TTL if you want, and ArkAPI gives you a short public URL that expires automatically.</p>
     <div class="pill-row">
       <div class="pill">2 sats / call</div>
       <div class="pill">POST /api/paste</div>
@@ -110,26 +110,25 @@
 
   <div class="grid-2">
     <div class="card">
-      <h2>Input Shape</h2>
-      <p>Send exactly one content field plus an optional TTL.</p>
+      <h2>How It Works</h2>
+      <p>Send one payload plus an optional TTL, and ArkAPI stores it until the expiry time you choose.</p>
       <ul>
-        <li><span class="code-inline">content</span> for UTF-8 plain text</li>
-        <li><span class="code-inline">json</span> for structured JSON that ArkAPI stores compactly</li>
-        <li><span class="code-inline">ttl_seconds</span> to override the default retention window</li>
-        <li>Response includes the short <span class="code-inline">id</span>, public <span class="code-inline">url</span>, and exact <span class="code-inline">expires_at</span></li>
+        <li>Use <span class="code-inline">content</span> for plain UTF-8 text</li>
+        <li>Use <span class="code-inline">json</span> for structured JSON</li>
+        <li>Use <span class="code-inline">ttl_seconds</span> to shorten or extend retention</li>
+        <li>The response includes a short <span class="code-inline">id</span>, a public <span class="code-inline">url</span>, and the exact <span class="code-inline">expires_at</span> time</li>
         <li>Each funded session can keep up to <span class="code-inline">100</span> active pastes at once</li>
       </ul>
     </div>
 
     <div class="card">
-      <h2>Safety Model</h2>
-      <p>This endpoint is intentionally constrained so it behaves like a scratchpad, not generic public hosting.</p>
+      <h2>What To Expect</h2>
+      <p>This is a simple expiring scratchpad, not a document editor or file hosting service.</p>
       <ul>
         <li>Pastes are public-by-link until they expire</li>
-        <li>Public retrieval is JSON-only</li>
-        <li>No HTML rendering or custom MIME types</li>
-        <li>No raw executable download behavior</li>
-        <li>Expiry is enforced and expired pastes disappear</li>
+        <li>Reading a paste does not require a token once you have the link</li>
+        <li>Public fetches are returned as JSON</li>
+        <li>Expired pastes disappear automatically</li>
         <li>Responses include <span class="code-inline">noindex</span> and <span class="code-inline">nosniff</span> headers</li>
       </ul>
     </div>
@@ -141,8 +140,8 @@
   <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/paste \
   -H "Authorization: Bearer ak_your_token" \
   -H "Content-Type: application/json" \
-  -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600}' | jq</div>
-    <p>Use a funded token from the <a href="/fund/">Fund page</a>. The response gives you a short public URL under <span class="code-inline">/v1/p/{id}</span>.</p>
+  -d '{"content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","ttl_seconds":3600}' | jq</div>
+    <p>Use a funded token from the <a href="/fund/">Fund page</a>. ArkAPI returns a short public URL under <span class="code-inline">/v1/p/{id}</span> that works until the paste expires.</p>
   </div>
 
   <div class="grid-2">
@@ -153,8 +152,8 @@
   "data": {
     "id": "k3m8v2q4r7tz",
     "url": "https://arkapi.dev/v1/p/k3m8v2q4r7tz",
-    "content_kind": "json",
-    "size_bytes": 94,
+    "content_kind": "text",
+    "size_bytes": 56,
     "ttl_seconds": 3600,
     "expires_at": "2026-04-02T13:00:00Z"
   },
@@ -170,9 +169,9 @@
       <div id="example-fetch" class="code-block">curl https://arkapi.dev/v1/p/k3m8v2q4r7tz | jq</div>
       <div class="code-block">{
   "id": "k3m8v2q4r7tz",
-  "content_kind": "json",
-  "content": "{\"title\":\"Example note\",\"body\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\",\"status\":\"draft\"}",
-  "size_bytes": 94,
+  "content_kind": "text",
+  "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "size_bytes": 56,
   "created_at": "2026-04-02T12:00:00Z",
   "expires_at": "2026-04-02T13:00:00Z"
 }</div>
@@ -182,10 +181,10 @@
   <div class="card">
     <h2>Good Uses</h2>
     <ul>
-      <li>Save agent checkpoint JSON between steps</li>
-      <li>Hand off draft notes or status blobs to another tool or human</li>
-      <li>Park a temporary result without wiring object storage</li>
-      <li>Share a short-lived text blob with a teammate during triage</li>
+      <li>Save a JSON checkpoint between agent steps</li>
+      <li>Share temporary notes with a teammate during triage</li>
+      <li>Park draft output without wiring up storage first</li>
+      <li>Hand off a short-lived result to another tool or workflow</li>
     </ul>
   </div>
 
