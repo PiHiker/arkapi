@@ -257,7 +257,7 @@ Public guide: [Remote Job Search](https://arkapi.dev/remote-job-search/)
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
-     -d '{"json":{"step":"extract","urls":["https://example.com"]},"ttl_seconds":3600}' \
+     -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600}' \
      https://arkapi.dev/api/paste
 ```
 

@@ -49,7 +49,7 @@ func (h *Handler) PasteCreate(w http.ResponseWriter, r *http.Request) {
 
 	var req PasteCreateRequest
 	if err := parseBody(w, r, &req); err != nil {
-		sendJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON — send {\"content\":\"notes\",\"ttl_seconds\":3600} or {\"json\":{\"step\":\"extract\"}}"})
+		sendJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON — send {\"content\":\"Lorem ipsum dolor sit amet.\",\"ttl_seconds\":3600} or {\"json\":{\"title\":\"Example note\",\"body\":\"Lorem ipsum dolor sit amet.\"}}"})
 		return
 	}
 

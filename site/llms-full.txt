@@ -146,7 +146,7 @@ curl -H "Authorization: Bearer ak_your_token" \
 curl -X POST https://arkapi.dev/api/paste \
   -H "Authorization: Bearer ak_your_token" \
   -H "Content-Type: application/json" \
-  -d '{"json":{"step":"extract","urls":["https://example.com"]},"ttl_seconds":3600}'
+  -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600}'
 ```
 
 ### `/api/email-auth-check` - 4 sats

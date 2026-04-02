@@ -335,8 +335,8 @@
                 "example": {
                   "id": "k3m8v2q4r7tz",
                   "content_kind": "json",
-                  "content": "{\"step\":\"extract\",\"urls\":[\"https://example.com\"]}",
-                  "size_bytes": 48,
+                  "content": "{\"title\":\"Example note\",\"body\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\",\"status\":\"draft\"}",
+                  "size_bytes": 94,
                   "created_at": "2026-04-02T12:00:00Z",
                   "expires_at": "2026-04-03T12:00:00Z"
                 }
@@ -1084,10 +1084,9 @@
                 "json": {
                   "value": {
                     "json": {
-                      "step": "extract",
-                      "urls": [
-                        "https://example.com"
-                      ]
+                      "title": "Example note",
+                      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                      "status": "draft"
                     },
                     "ttl_seconds": 86400
                   }
@@ -1110,7 +1109,7 @@
                     "id": "k3m8v2q4r7tz",
                     "url": "https://arkapi.dev/v1/p/k3m8v2q4r7tz",
                     "content_kind": "json",
-                    "size_bytes": 48,
+                    "size_bytes": 94,
                     "ttl_seconds": 86400,
                     "expires_at": "2026-04-03T12:00:00Z"
                   },
@@ -2653,10 +2652,9 @@
           "json": {
             "description": "A JSON value to store compactly. Send either content or json, not both.",
             "example": {
-              "step": "extract",
-              "urls": [
-                "https://example.com"
-              ]
+              "title": "Example note",
+              "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+              "status": "draft"
             }
           },
           "ttl_seconds": {

@@ -136,10 +136,10 @@
   <div class="card">
     <h2>Example Request</h2>
     <div class="copy-row"><button class="copy-btn-inline" type="button" data-copy-code="example-request">Copy curl</button></div>
-    <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/paste \
+  <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/paste \
   -H "Authorization: Bearer ak_your_token" \
   -H "Content-Type: application/json" \
-  -d '{"json":{"step":"extract","urls":["https://example.com"],"notes":"follow up tomorrow"},"ttl_seconds":3600}' | jq</div>
+  -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600}' | jq</div>
     <p>Use a funded token from the <a href="/fund/">Fund page</a>. The response gives you a short public URL under <span class="code-inline">/v1/p/{id}</span>.</p>
   </div>
 
@@ -152,7 +152,7 @@
     "id": "k3m8v2q4r7tz",
     "url": "https://arkapi.dev/v1/p/k3m8v2q4r7tz",
     "content_kind": "json",
-    "size_bytes": 74,
+    "size_bytes": 94,
     "ttl_seconds": 3600,
     "expires_at": "2026-04-02T13:00:00Z"
   },
@@ -169,8 +169,8 @@
       <div class="code-block">{
   "id": "k3m8v2q4r7tz",
   "content_kind": "json",
-  "content": "{\"step\":\"extract\",\"urls\":[\"https://example.com\"],\"notes\":\"follow up tomorrow\"}",
-  "size_bytes": 74,
+  "content": "{\"title\":\"Example note\",\"body\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\",\"status\":\"draft\"}",
+  "size_bytes": 94,
   "created_at": "2026-04-02T12:00:00Z",
   "expires_at": "2026-04-02T13:00:00Z"
 }</div>
@@ -181,7 +181,7 @@
     <h2>Good Uses</h2>
     <ul>
       <li>Save agent checkpoint JSON between steps</li>
-      <li>Hand off extracted links or notes to another tool or human</li>
+      <li>Hand off draft notes or status blobs to another tool or human</li>
       <li>Park a temporary result without wiring object storage</li>
       <li>Share a short-lived text blob with a teammate during triage</li>
     </ul>
