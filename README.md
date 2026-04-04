@@ -178,6 +178,14 @@ Current live public funding page: [Fund a session](https://arkapi.dev/fund/)
 
 This deployment is live on the **Signet test network only**. The same session object supports both funding routes, and ArkAPI activates the balance once either payment settles.
 
+### How Billing Works
+
+- Create a session and fund it with Signet sats.
+- Every protected endpoint has a fixed per-call price in sats.
+- Successful calls deduct that amount from the session balance.
+- Validation and auth errors return `cost_sats: 0` and do not bill the session.
+- Public endpoints like `/health`, `/v1/catalog`, `/v1/sessions`, and paste retrieval at `/v1/p/{id}` do not require a funded token.
+
 ### Request/Response Examples
 
 <details>
