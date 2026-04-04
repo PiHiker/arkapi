@@ -283,7 +283,7 @@ Public guide: [Remote Job Search](https://arkapi.dev/remote-job-search/)
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
-     -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600}' \
+     -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600,"max_views":3}' \
      https://arkapi.dev/api/paste
 ```
 
@@ -293,6 +293,9 @@ Response fields:
 - `content_kind`
 - `size_bytes`
 - `ttl_seconds`
+- `burn_after_read`
+- `max_views`
+- `views_remaining`
 - `expires_at`
 
 Paste retrieval is public and JSON-only:
@@ -302,6 +305,8 @@ curl https://arkapi.dev/v1/p/k3m8v2q4r7tz
 
 Notes:
 - Pastes are public-by-link by design. Anyone with the short URL can read the paste until it expires.
+- Optional `burn_after_read` turns the paste into a one-time handoff.
+- Optional `max_views` limits how many successful public reads are allowed before the paste disappears.
 - TTL can range from `60` seconds to `7` days. The default is `24` hours.
 - Each session may hold up to `100` active pastes at a time.
 

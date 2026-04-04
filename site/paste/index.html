@@ -34,6 +34,7 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"What can I store?","acceptedAnswer":{"@type":"Answer","text":"You can store UTF-8 text with content or structured JSON with the json field. Send exactly one of those fields per request."}},
 {"@type":"Question","name":"How long does a paste last?","acceptedAnswer":{"@type":"Answer","text":"TTL is configurable with ttl_seconds. The minimum is 60 seconds, the default is 24 hours, and the maximum is 7 days. The response includes the exact expires_at timestamp."}},
+{"@type":"Question","name":"Can I make a paste one-time or view-limited?","acceptedAnswer":{"@type":"Answer","text":"Yes. Set burn_after_read to true for a one-time handoff, or set max_views to limit how many successful public fetches are allowed before the paste disappears."}},
 {"@type":"Question","name":"Can a paste render HTML or act like a hosted script?","acceptedAnswer":{"@type":"Answer","text":"No. Retrieval is JSON-only, includes noindex headers, and does not offer raw executable download behavior."}}
 ]}
 </script>
@@ -119,6 +120,7 @@
         <li>Use <span class="code-inline">ttl_seconds</span> to shorten or extend retention from <span class="code-inline">60</span> seconds up to <span class="code-inline">7</span> days</li>
         <li>The response includes a short <span class="code-inline">id</span>, a public <span class="code-inline">url</span>, and the exact <span class="code-inline">expires_at</span> time</li>
         <li>Each funded session can keep up to <span class="code-inline">100</span> active pastes at once</li>
+        <li>Optional <span class="code-inline">burn_after_read</span> and <span class="code-inline">max_views</span> support one-time or limited-view sharing</li>
       </ul>
     </div>
 
@@ -128,6 +130,7 @@
       <ul>
         <li>Pastes are public-by-link until they expire</li>
         <li>Reading a paste does not require a token once you have the link</li>
+        <li>You can force a one-time handoff with <span class="code-inline">burn_after_read</span> or cap successful reads with <span class="code-inline">max_views</span></li>
         <li>Public fetches are returned as JSON</li>
         <li>Expired pastes disappear automatically</li>
         <li>Responses include <span class="code-inline">noindex</span> and <span class="code-inline">nosniff</span> headers</li>
@@ -141,7 +144,7 @@
   <div id="example-request" class="code-block">curl -X POST https://arkapi.dev/api/paste \
   -H "Authorization: Bearer ak_your_token" \
   -H "Content-Type: application/json" \
-  -d '{"content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","ttl_seconds":3600}' | jq</div>
+  -d '{"content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","ttl_seconds":3600,"max_views":3}' | jq</div>
     <p>Use a funded token from the <a href="/fund/">Fund page</a>. ArkAPI returns a short public URL under <span class="code-inline">/v1/p/{id}</span> that works until the paste expires.</p>
   </div>
 
@@ -156,6 +159,9 @@
     "content_kind": "text",
     "size_bytes": 56,
     "ttl_seconds": 3600,
+    "burn_after_read": false,
+    "max_views": 3,
+    "views_remaining": 3,
     "expires_at": "2026-04-02T13:00:00Z"
   },
   "cost_sats": 2,
@@ -173,6 +179,10 @@
   "content_kind": "text",
   "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   "size_bytes": 56,
+  "burn_after_read": false,
+  "max_views": 3,
+  "view_count": 1,
+  "views_remaining": 2,
   "created_at": "2026-04-02T12:00:00Z",
   "expires_at": "2026-04-02T13:00:00Z"
 }</div>
@@ -183,6 +193,7 @@
     <h2>Good Uses</h2>
     <ul>
       <li>Save a JSON checkpoint between agent steps</li>
+      <li>Pass a one-time secret or note with <span class="code-inline">burn_after_read</span></li>
       <li>Share temporary notes with a teammate during triage</li>
       <li>Park draft output without wiring up storage first</li>
       <li>Hand off a short-lived result to another tool or workflow</li>

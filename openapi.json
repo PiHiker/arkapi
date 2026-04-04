@@ -1059,7 +1059,7 @@
           "utility"
         ],
         "summary": "Create a short-lived paste or scratchpad entry",
-        "description": "Cost: 2 sats. Stores UTF-8 text or JSON with a configurable TTL and returns a short public share URL. Possession of the short URL grants read access until expiry. Retrieval is JSON-only with no HTML rendering or executable download behavior. Each funded session can hold up to 100 active pastes.",
+        "description": "Cost: 2 sats. Stores UTF-8 text or JSON with a configurable TTL and returns a short public share URL. Possession of the short URL grants read access until expiry or view exhaustion. Retrieval is JSON-only with no HTML rendering or executable download behavior. Optional burn_after_read and max_views controls support one-time or limited-view handoffs. Each funded session can hold up to 100 active pastes.",
         "operationId": "createPaste",
         "security": [
           {
@@ -1078,7 +1078,8 @@
                 "text": {
                   "value": {
                     "content": "Follow-up items:\n- review DNS output\n- save notes for later",
-                    "ttl_seconds": 3600
+                    "ttl_seconds": 3600,
+                    "max_views": 3
                   }
                 },
                 "json": {
@@ -1088,7 +1089,8 @@
                       "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                       "status": "draft"
                     },
-                    "ttl_seconds": 86400
+                    "ttl_seconds": 86400,
+                    "burn_after_read": true
                   }
                 }
               }
@@ -1111,6 +1113,9 @@
                     "content_kind": "json",
                     "size_bytes": 94,
                     "ttl_seconds": 86400,
+                    "burn_after_read": true,
+                    "max_views": 1,
+                    "views_remaining": 1,
                     "expires_at": "2026-04-03T12:00:00Z"
                   },
                   "cost_sats": 2,
@@ -2663,6 +2668,17 @@
             "minimum": 60,
             "maximum": 604800,
             "example": 3600
+          },
+          "burn_after_read": {
+            "type": "boolean",
+            "description": "If true, the first successful read consumes the paste and removes it immediately after the response is returned."
+          },
+          "max_views": {
+            "type": "integer",
+            "description": "Optional view limit for the public paste URL. Set to 1 for a one-time handoff, or use burn_after_read as a convenience flag.",
+            "minimum": 1,
+            "maximum": 100,
+            "example": 3
           }
         }
       },
@@ -2685,6 +2701,18 @@
           "size_bytes": {
             "type": "integer"
           },
+          "burn_after_read": {
+            "type": "boolean"
+          },
+          "max_views": {
+            "type": "integer"
+          },
+          "view_count": {
+            "type": "integer"
+          },
+          "views_remaining": {
+            "type": "integer"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -2699,6 +2727,8 @@
           "content_kind",
           "content",
           "size_bytes",
+          "burn_after_read",
+          "view_count",
           "created_at",
           "expires_at"
         ]

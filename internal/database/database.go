@@ -56,6 +56,9 @@ type PasteEntry struct {
 	ContentKind  string
 	Content      string
 	SizeBytes    int
+	BurnAfterRead bool
+	MaxViews     sql.NullInt64
+	ViewCount    int
 	CreatedAt    time.Time
 	ExpiresAt    time.Time
 }
@@ -220,29 +223,68 @@ func (db *DB) PutHashCrackCache(entry HashCrackCacheEntry) error {
 
 func (db *DB) CreatePaste(entry PasteEntry) error {
 	if _, err := db.conn.Exec(
-		`INSERT INTO pastes (id, session_token, content_kind, content, size_bytes, expires_at)
-		 VALUES (?, ?, ?, ?, ?, ?)`,
-		entry.ID, entry.SessionToken, entry.ContentKind, entry.Content, entry.SizeBytes, entry.ExpiresAt.UTC(),
+		`INSERT INTO pastes (id, session_token, content_kind, content, size_bytes, burn_after_read, max_views, view_count, expires_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+		entry.ID, entry.SessionToken, entry.ContentKind, entry.Content, entry.SizeBytes, entry.BurnAfterRead, entry.MaxViews, entry.ViewCount, entry.ExpiresAt.UTC(),
 	); err != nil {
 		return fmt.Errorf("failed to create paste: %w", err)
 	}
 	return nil
 }
 
-func (db *DB) GetPaste(id string) (*PasteEntry, error) {
+func (db *DB) ConsumePaste(id string) (*PasteEntry, error) {
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin paste transaction: %w", err)
+	}
+	defer tx.Rollback()
+
 	paste := &PasteEntry{}
-	err := db.conn.QueryRow(
-		`SELECT id, session_token, content_kind, content, size_bytes, created_at, expires_at
+	err = tx.QueryRow(
+		`SELECT id, session_token, content_kind, content, size_bytes, burn_after_read, max_views, view_count, created_at, expires_at
 		   FROM pastes
-		  WHERE id = ? AND expires_at > UTC_TIMESTAMP()`,
+		  WHERE id = ? AND expires_at > UTC_TIMESTAMP()
+		  FOR UPDATE`,
 		id,
-	).Scan(&paste.ID, &paste.SessionToken, &paste.ContentKind, &paste.Content, &paste.SizeBytes, &paste.CreatedAt, &paste.ExpiresAt)
+	).Scan(
+		&paste.ID,
+		&paste.SessionToken,
+		&paste.ContentKind,
+		&paste.Content,
+		&paste.SizeBytes,
+		&paste.BurnAfterRead,
+		&paste.MaxViews,
+		&paste.ViewCount,
+		&paste.CreatedAt,
+		&paste.ExpiresAt,
+	)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get paste: %w", err)
 	}
+
+	nextViewCount := paste.ViewCount + 1
+	shouldDelete := paste.BurnAfterRead
+	if paste.MaxViews.Valid && nextViewCount >= int(paste.MaxViews.Int64) {
+		shouldDelete = true
+	}
+
+	if shouldDelete {
+		if _, err := tx.Exec(`DELETE FROM pastes WHERE id = ?`, id); err != nil {
+			return nil, fmt.Errorf("failed to delete consumed paste: %w", err)
+		}
+	} else {
+		if _, err := tx.Exec(`UPDATE pastes SET view_count = ? WHERE id = ?`, nextViewCount, id); err != nil {
+			return nil, fmt.Errorf("failed to update paste view count: %w", err)
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("failed to commit paste read: %w", err)
+	}
+	paste.ViewCount = nextViewCount
 	return paste, nil
 }
 

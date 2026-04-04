@@ -140,6 +140,8 @@ curl -H "Authorization: Bearer ak_your_token" \
 - Request notes:
   - Send exactly one of `content` or `json`
   - Optional `ttl_seconds` defaults to 86400 seconds
+  - Optional `burn_after_read` turns the paste into a one-time handoff
+  - Optional `max_views` caps successful public reads from 1 to 100
   - Public retrieval happens at `GET /v1/p/{id}`
   - Possession of the short URL grants read access until expiry
   - Each funded session can hold up to 100 active pastes
@@ -149,7 +151,7 @@ curl -H "Authorization: Bearer ak_your_token" \
 curl -X POST https://arkapi.dev/api/paste \
   -H "Authorization: Bearer ak_your_token" \
   -H "Content-Type: application/json" \
-  -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600}'
+  -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600,"max_views":3}'
 ```
 
 ### `/api/email-auth-check` - 4 sats
