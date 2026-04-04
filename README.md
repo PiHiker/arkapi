@@ -8,6 +8,8 @@
 
 **Pay-per-call APIs powered by Bitcoin. No accounts. No long-lived API keys. Just sats.**
 
+Current public deployment runs on **Bitcoin Signet only**.
+
 [Live Site](https://arkapi.dev) ·
 [API Docs](https://arkapi.dev/docs/) ·
 [OpenAPI Spec](https://arkapi.dev/openapi.json) ·
@@ -15,7 +17,7 @@
 
 [![ArkAPI homepage preview](./assets/arkapi-homepage.png)](https://arkapi.dev)
 
-ArkAPI is a Bitcoin-native API gateway that meters access to security, OSINT, AI, and utility endpoints via micropayments. Fund an anonymous session with sats, then call any endpoint until your balance runs out.
+ArkAPI is a Bitcoin-native API gateway that meters access to security, OSINT, AI, and utility endpoints via micropayments. Fund an anonymous session with sats on Signet, then call any endpoint until your balance runs out.
 
 It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/bark) wallet and the [Ark protocol](https://ark-protocol.org/) for session funding on the Signet test network. Each session can currently be funded with either a Signet Lightning invoice or a Signet Ark address.
 
@@ -44,9 +46,14 @@ It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/b
 
 ```bash
 # 1. Create a Signet session
-curl -X POST https://arkapi.dev/v1/sessions
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"amount_sats": 500}' \
+     https://arkapi.dev/v1/sessions
 
-# 2. Use the returned token to call APIs
+# 2. Pay the returned Signet Lightning invoice or Signet Ark address
+#    and wait for the session to become active
+
+# 3. Use the returned token to call APIs
 TOKEN="ak_your_token_here"
 
 curl -H "Authorization: Bearer $TOKEN" \
@@ -54,6 +61,16 @@ curl -H "Authorization: Bearer $TOKEN" \
      -d '{"domain":"example.com"}' \
      https://arkapi.dev/api/dns-lookup
 ```
+
+The session starts in `awaiting_payment` state. Once either funding route settles, the token becomes active and `GET /v1/balance` will show a spendable balance.
+
+## Good Starting Endpoints
+
+- [`/api/ip-intel`](https://arkapi.dev/ip-intel/) for one-call IP context, reputation, and abuse-desk lookup
+- [`/api/domain-intel`](https://arkapi.dev/domain-intel/) for full DNS, WHOIS, TLS, MX, nameserver, and provider context
+- [`/api/dns-lookup`](https://arkapi.dev/dns-lookup/) for lightweight structured DNS records
+- [`/api/whois`](https://arkapi.dev/whois/) for registrar and lifecycle data
+- [`/api/ssl-check`](https://arkapi.dev/ssl-check/) for certificate validity, expiry, and SAN review
 
 ---
 
@@ -69,6 +86,7 @@ ArkAPI publishes machine-readable metadata so AI agents and tooling can discover
 | [`llms-full.txt`](https://arkapi.dev/llms-full.txt) | Extended LLM reference |
 | [`sitemap.xml`](https://arkapi.dev/sitemap.xml) | XML sitemap for crawlers |
 | [`bitcoin-news/`](https://arkapi.dev/bitcoin-news/) | Dedicated landing page for the Bitcoin News API |
+| [`domain-intel/`](https://arkapi.dev/domain-intel/) | Dedicated landing page for the Domain Intel API |
 | [`dns-lookup/`](https://arkapi.dev/dns-lookup/) | Dedicated landing page for the DNS Lookup API |
 | [`headers/`](https://arkapi.dev/headers/) | Dedicated landing page for the Headers Audit API |
 | [`ip-abuse-check/`](https://arkapi.dev/ip-abuse-check/) | Dedicated landing page for the IP Abuse Check API |
@@ -93,7 +111,7 @@ If you deploy your own instance, generate your own IndexNow verification key rat
 |--------|------|-------------|
 | GET | `/health` | Health check, returns `{"status":"ok"}` |
 | GET | `/v1/catalog` | List all endpoints and pricing |
-| GET | `/v1/p/{id}` | Fetch a short-lived paste by ID as JSON |
+| GET | `/v1/p/{id}` | Fetch a short-lived paste by ID as JSON (public-by-link) |
 | POST | `/v1/sessions` | Create a new session |
 
 ### Protected Endpoints (auth required)
@@ -276,6 +294,7 @@ curl https://arkapi.dev/v1/p/k3m8v2q4r7tz
 
 Notes:
 - Pastes are public-by-link by design. Anyone with the short URL can read the paste until it expires.
+- TTL can range from `60` seconds to `7` days. The default is `24` hours.
 - Each session may hold up to `100` active pastes at a time.
 
 Public guide: [Paste / Scratchpad](https://arkapi.dev/paste/)
