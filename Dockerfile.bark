@@ -1,6 +1,6 @@
 FROM rustlang/rust:nightly AS builder
 
-ARG BARK_COMMIT=4962bd70f568dedc30e622406a97067d4c43f800
+ARG BARK_COMMIT=e1cadf3812d809eaa52c1af085641de95e827080
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -16,8 +16,7 @@ RUN apt-get update && \
 
 WORKDIR /src
 
-# Build Bark from a pinned upstream commit because the panic fix needed by the
-# Signet deployment landed after the beta.8 release binaries.
+# Build Bark from a pinned upstream release commit for deterministic rebuilds.
 RUN git clone https://gitlab.com/ark-bitcoin/bark.git . && \
     git checkout "${BARK_COMMIT}" && \
     cargo build --release --bin bark --bin barkd

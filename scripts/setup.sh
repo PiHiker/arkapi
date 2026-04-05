@@ -7,6 +7,13 @@
 
 set -e
 
+write_secret_file() {
+    local path="$1"
+    local content="$2"
+    umask 077
+    printf "%s\n" "$content" >"$path"
+}
+
 echo ""
 echo "=============================="
 echo "  ArkAPI Server Setup"
@@ -111,7 +118,7 @@ EOF
 
 echo "  Database created"
 echo "  User: arkapi"
-echo "  Password: $ARKAPI_PASS"
+echo "  Password generated"
 echo ""
 
 # --- Build the binary ---
@@ -127,6 +134,14 @@ echo "Creating systemd service..."
 INSTALL_DIR="${ARKAPI_INSTALL_DIR:-/opt/arkapi}"
 sudo mkdir -p "$INSTALL_DIR"
 sudo cp arkapi "$INSTALL_DIR/"
+TEMP_SECRET_FILE="$(mktemp)"
+write_secret_file "$TEMP_SECRET_FILE" "ARKAPI_DB_USER=arkapi
+ARKAPI_DB_PASS=$ARKAPI_PASS
+ARKAPI_DB_HOST=localhost
+ARKAPI_DB_NAME=arkapi
+ARKAPI_PORT=${ARKAPI_PORT:-8080}"
+sudo install -m 600 "$TEMP_SECRET_FILE" "$INSTALL_DIR/arkapi.env"
+rm -f "$TEMP_SECRET_FILE"
 
 sudo tee /etc/systemd/system/arkapi.service > /dev/null <<EOF
 [Unit]
@@ -140,11 +155,7 @@ WorkingDirectory=$INSTALL_DIR
 ExecStart=$INSTALL_DIR/arkapi
 Restart=always
 RestartSec=5
-Environment=ARKAPI_DB_USER=arkapi
-Environment=ARKAPI_DB_PASS=$ARKAPI_PASS
-Environment=ARKAPI_DB_HOST=localhost
-Environment=ARKAPI_DB_NAME=arkapi
-Environment=ARKAPI_PORT=${ARKAPI_PORT:-8080}
+EnvironmentFile=$INSTALL_DIR/arkapi.env
 
 [Install]
 WantedBy=multi-user.target
@@ -168,9 +179,9 @@ echo "  1. Add Apache vhost (see README.md)"
 echo "  2. Point your domain or reverse proxy at this server"
 echo "  3. Run: bash scripts/test.sh"
 echo ""
-echo "MySQL credentials (save these!):"
+echo "MySQL credentials:"
 echo "  User: arkapi"
-echo "  Pass: $ARKAPI_PASS"
+echo "  Environment file: $INSTALL_DIR/arkapi.env"
 echo "  DB:   arkapi"
 echo ""
 echo "Manage the service:"

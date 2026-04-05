@@ -13,11 +13,7 @@ if [ ! -f "$DATADIR/db.sqlite" ]; then
         --esplora "$ESPLORA" \
         --datadir "$DATADIR"
     echo "=== Wallet created ==="
-    echo ""
-    echo "=== MERCHANT SEED PHRASE (back this up!) ==="
-    cat "$DATADIR/mnemonic"
-    echo ""
-    echo "============================================="
+    echo "Recovery phrase saved at $DATADIR/mnemonic. Back it up securely."
 fi
 
 echo "=== Wallet address ==="

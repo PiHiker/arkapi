@@ -13,21 +13,12 @@ if [ ! -f "$DATADIR/db.sqlite" ]; then
         --esplora "$ESPLORA" \
         --datadir "$DATADIR"
     echo "=== Wallet created ==="
-    echo ""
-    echo "=== SEED PHRASE (back this up) ==="
-    cat "$DATADIR/mnemonic"
-    echo ""
-    echo "================================="
+    echo "Recovery phrase saved at $DATADIR/mnemonic. Back it up securely."
 fi
 
 echo "=== Wallet address ==="
 bark --datadir "$DATADIR" address
 echo ""
-
-echo "=== Seed phrase ==="
-cat "$DATADIR/mnemonic"
-echo ""
-echo "================================="
 
 echo ""
 echo "Consumer wallet ready. Container will stay alive for CLI access."

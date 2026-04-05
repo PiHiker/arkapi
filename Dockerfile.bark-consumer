@@ -1,6 +1,6 @@
 FROM rustlang/rust:nightly AS builder
 
-ARG BARK_COMMIT=4962bd70f568dedc30e622406a97067d4c43f800
+ARG BARK_COMMIT=e1cadf3812d809eaa52c1af085641de95e827080
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
