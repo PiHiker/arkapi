@@ -8,12 +8,9 @@
 
 **Pay-per-call APIs powered by Bitcoin. No accounts. No long-lived API keys. Just sats.**
 
-Current public deployment runs on **Bitcoin Signet only**.
+**Hosted service:** [arkapi.dev](https://arkapi.dev/) runs on Bitcoin **mainnet**, with funding over Ark or Lightning. See the [current API docs](https://arkapi.dev/docs/) for endpoints, pricing, and funding instructions.
 
-[Live Site](https://arkapi.dev) ·
-[API Docs](https://arkapi.dev/docs/) ·
-[OpenAPI Spec](https://arkapi.dev/openapi.json) ·
-[Fund a Session](https://arkapi.dev/fund/)
+**This repository:** The earlier **Bitcoin Signet** implementation. The setup, prices, and examples below describe this version.
 
 [![ArkAPI homepage preview](./assets/arkapi-homepage.png)](https://arkapi.dev)
 
@@ -42,13 +39,15 @@ It uses [Second](https://second.tech/)'s [Bark](https://github.com/ark-bitcoin/b
 
 ---
 
-## Quick Start
+## Quick Start: Local Signet Instance
+
+Run these commands after starting the local server with `ARKAPI_PAYMENT_MODE=bark` and a Signet wallet. In the default `test` mode, sessions start with a test balance and no payment is needed.
 
 ```bash
 # 1. Create a Signet session
 curl -X POST -H "Content-Type: application/json" \
      -d '{"amount_sats": 500}' \
-     https://arkapi.dev/v1/sessions
+     http://127.0.0.1:8080/v1/sessions
 
 # 2. Pay the returned Signet Lightning invoice or Signet Ark address
 #    and wait for the session to become active
@@ -59,7 +58,7 @@ TOKEN="ak_your_token_here"
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"example.com"}' \
-     https://arkapi.dev/api/dns-lookup
+     http://127.0.0.1:8080/api/dns-lookup
 ```
 
 The session starts in `awaiting_payment` state. Once either funding route settles, the token becomes active and `GET /v1/balance` will show a spendable balance.
@@ -152,11 +151,11 @@ All require header: `Authorization: Bearer ak_xxxxx`
 
 ### Session Creation
 
-**Signet funding mode** (current live mode):
+**Local Signet funding** (`ARKAPI_PAYMENT_MODE=bark`):
 ```bash
 curl -X POST -H "Content-Type: application/json" \
      -d '{"amount_sats": 500}' \
-     https://arkapi.dev/v1/sessions
+     http://127.0.0.1:8080/v1/sessions
 ```
 Returns both a Signet Lightning invoice and a Signet Ark address. Pay either one to activate the session:
 ```json
@@ -174,9 +173,7 @@ Returns both a Signet Lightning invoice and a Signet Ark address. Pay either one
 }
 ```
 
-Current live public funding page: [Fund a session](https://arkapi.dev/fund/)
-
-This deployment is live on the **Signet test network only**. The same session object supports both funding routes, and ArkAPI activates the balance once either payment settles.
+Use Signet funds for this local session. Either payment route activates the same balance.
 
 ### How Billing Works
 
@@ -195,7 +192,7 @@ This deployment is live on the **Signet test network only**. The same session ob
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"example.com","ai_summary":true}' \
-     https://arkapi.dev/api/domain-intel
+     http://127.0.0.1:8080/api/domain-intel
 ```
 Returns DNS, WHOIS, TLS, headers, email auth, nameserver and mail host infrastructure intel, security.txt, robots.txt, tech fingerprints, HTTP behavior, subdomain hints, CT subdomains, network summary, findings, recommendations, and an optional AI summary. Cached for 24 hours.
 
@@ -209,7 +206,7 @@ Public guide: [Domain Intel](https://arkapi.dev/domain-intel/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"prompt":"How is Ark different from Lightning?"}' \
-     https://arkapi.dev/api/ai-chat
+     http://127.0.0.1:8080/api/ai-chat
 ```
 
 Public guide: [Anonymous AI Chat](https://arkapi.dev/ai-chat/)
@@ -222,7 +219,7 @@ Public guide: [Anonymous AI Chat](https://arkapi.dev/ai-chat/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"text":"Bonjour tout le monde","target_language":"en","style":"natural"}' \
-     https://arkapi.dev/api/ai-translate
+     http://127.0.0.1:8080/api/ai-translate
 ```
 
 Public guide: [AI Translate](https://arkapi.dev/ai-translate/)
@@ -233,13 +230,13 @@ Public guide: [AI Translate](https://arkapi.dev/ai-translate/)
 
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-     https://arkapi.dev/api/btc-price
+     http://127.0.0.1:8080/api/btc-price
 
 curl -H "Authorization: Bearer $TOKEN" \
-     "https://arkapi.dev/api/btc-price?currency=USD"
+     "http://127.0.0.1:8080/api/btc-price?currency=USD"
 
 curl -H "Authorization: Bearer $TOKEN" \
-     "https://arkapi.dev/api/btc-price?currencies=USD,EUR,CAD"
+     "http://127.0.0.1:8080/api/btc-price?currencies=USD,EUR,CAD"
 ```
 
 Public guide: [BTC Price](https://arkapi.dev/btc-price/)
@@ -252,7 +249,7 @@ Public guide: [BTC Price](https://arkapi.dev/btc-price/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"query":"bitcoin etf","limit":5}' \
-     https://arkapi.dev/api/prediction-market-search
+     http://127.0.0.1:8080/api/prediction-market-search
 ```
 
 Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-search/)
@@ -263,7 +260,7 @@ Public guide: [Prediction Market Search](https://arkapi.dev/prediction-market-se
 
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-     "https://arkapi.dev/api/remote-job-search?search=golang&limit=5"
+     "http://127.0.0.1:8080/api/remote-job-search?search=golang&limit=5"
 ```
 
 Optional query parameters:
@@ -284,7 +281,7 @@ Public guide: [Remote Job Search](https://arkapi.dev/remote-job-search/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"json":{"title":"Example note","body":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.","status":"draft"},"ttl_seconds":3600,"max_views":3}' \
-     https://arkapi.dev/api/paste
+     http://127.0.0.1:8080/api/paste
 ```
 
 Response fields:
@@ -300,7 +297,7 @@ Response fields:
 
 Paste retrieval is public and JSON-only:
 ```bash
-curl https://arkapi.dev/v1/p/k3m8v2q4r7tz
+curl http://127.0.0.1:8080/v1/p/k3m8v2q4r7tz
 ```
 
 Notes:
@@ -321,7 +318,7 @@ Public guide: [Paste / Scratchpad](https://arkapi.dev/paste/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"text":"Hola, me llamo ArkAPI.","target_language":"en"}' \
-     https://arkapi.dev/api/translate
+     http://127.0.0.1:8080/api/translate
 ```
 
 **URL to Markdown (5 sats):**
@@ -329,7 +326,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"url":"https://example.com"}' \
-     https://arkapi.dev/api/url-to-markdown
+     http://127.0.0.1:8080/api/url-to-markdown
 ```
 
 **AXFR Check (12 sats):**
@@ -337,7 +334,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"example.com"}' \
-     https://arkapi.dev/api/axfr-check
+     http://127.0.0.1:8080/api/axfr-check
 ```
 
 **CVE Lookup (3 sats):**
@@ -345,7 +342,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"cve":"CVE-2024-3400"}' \
-     https://arkapi.dev/api/cve-lookup
+     http://127.0.0.1:8080/api/cve-lookup
 ```
 
 **Hash Crack (25 sats):**
@@ -353,7 +350,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"hash":"482c811da5d5b4bc6d497ffa98491e38","type":"md5","mode":"fasttrack"}' \
-     https://arkapi.dev/api/hash-crack
+     http://127.0.0.1:8080/api/hash-crack
 ```
 
 **DNS Lookup (3 sats):**
@@ -361,7 +358,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"example.com"}' \
-     https://arkapi.dev/api/dns-lookup
+     http://127.0.0.1:8080/api/dns-lookup
 ```
 
 **WHOIS (5 sats):**
@@ -369,7 +366,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"example.com"}' \
-     https://arkapi.dev/api/whois
+     http://127.0.0.1:8080/api/whois
 ```
 
 **SSL Check (5 sats):**
@@ -377,7 +374,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"domain":"google.com"}' \
-     https://arkapi.dev/api/ssl-check
+     http://127.0.0.1:8080/api/ssl-check
 ```
 
 **HTTP Headers Audit (3 sats):**
@@ -385,7 +382,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"url":"https://google.com"}' \
-     https://arkapi.dev/api/headers
+     http://127.0.0.1:8080/api/headers
 ```
 
 **Weather (3 sats):**
@@ -393,7 +390,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"city":"New York"}' \
-     https://arkapi.dev/api/weather
+     http://127.0.0.1:8080/api/weather
 ```
 
 **IP Lookup (3 sats):**
@@ -401,7 +398,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"ip":"8.8.8.8"}' \
-     https://arkapi.dev/api/ip-lookup
+     http://127.0.0.1:8080/api/ip-lookup
 ```
 Public guide: [IP Lookup](https://arkapi.dev/ip-lookup/)
 
@@ -410,7 +407,7 @@ Public guide: [IP Lookup](https://arkapi.dev/ip-lookup/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"ip":"8.8.8.8","max_age_days":30}' \
-     https://arkapi.dev/api/ip-abuse-check
+     http://127.0.0.1:8080/api/ip-abuse-check
 ```
 Public guide: [IP Abuse Check](https://arkapi.dev/ip-abuse-check/)
 
@@ -419,7 +416,7 @@ Public guide: [IP Abuse Check](https://arkapi.dev/ip-abuse-check/)
 curl -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"ip":"8.8.8.8","max_age_days":30}' \
-     https://arkapi.dev/api/ip-intel
+     http://127.0.0.1:8080/api/ip-intel
 ```
 Public guide: [IP Intel](https://arkapi.dev/ip-intel/)
 </details>
@@ -826,7 +823,7 @@ arkapi/
 - **Apache or another reverse proxy** — front-end web tier in the reference deployment
 - **Cloudflare** — DNS, TLS/CDN, and AI inference for chat and AI translation
 - **Second Bark v0.1.0-beta.8** — Ark wallet daemon for session funding detection
-- **Bitcoin Signet** — current live funding network for testing
+- **Bitcoin Signet** — funding network for this implementation
 - **ComfyUI** — host-local image generation upstream for `/api/image-generate`
 - **LibreTranslate** — local translation backend for `/api/translate`
 - **Playwright** — local screenshot rendering backend for `/api/screenshot`
